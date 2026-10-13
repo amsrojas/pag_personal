@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sistemas de reescritura, fractales y patrones de crecimiento.">
+  <title>L-sistemas | Andrés M. Salazar</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="css/l-sistemas.css">
+  <link rel="stylesheet" href="css/adaptaciones.css">
+
+</head>
+<body class="pagina-exploracion pagina-l-sistemas">
+  <nav class="barra-exploracion" aria-label="Ruta de navegación">
+    <a href="../index.html">Andrés M. Salazar</a> / <a href="index.html">Exploraciones computacionales</a>
+  </nav>
+<main class="lsys-wrap">
+
+    <header class="lsys-header">
+      <p class="lsys-kicker">Exploraciones computacionales · Andrés M. Salazar</p>
+
+      <h1>Explorando con L-sistemas</h1>
+
+      <p class="lsys-lead">
+        Visualizador interactivo para estudiar cómo reglas simbólicas simples pueden producir
+        formas ramificadas, patrones fractales y estructuras asociadas al crecimiento natural.
+      </p>
+    </header>
+
+    <section id="lsistemas" class="lsys-section" aria-label="Visualizador de L-sistemas">
+      <h2>Reglas simples, formas complejas</h2>
+
+      <p>
+        Los <strong>L-sistemas</strong> describen procesos de crecimiento mediante reglas de producción.
+        A partir de un estado inicial y de sustituciones iteradas, es posible generar estructuras
+        de gran complejidad visual: curvas fractales, ramificaciones, configuraciones vegetales
+        y patrones geométricos inspirados en la naturaleza.
+      </p>
+
+      <p>
+        En un L-sistema se trabaja con un <strong>alfabeto</strong>, un <strong>axioma</strong>
+        o estado inicial, un conjunto de <strong>reglas de producción</strong> y una interpretación
+        geométrica de los símbolos. En el visualizador, algunos símbolos se interpretan como
+        movimientos de avance o giros, lo que permite transformar una cadena de texto en una figura.
+      </p>
+
+      <div class="lsys-example">
+        <h3>Ejemplo: curva de Koch</h3>
+
+        <p>
+          La curva de Koch puede construirse mediante una regla de sustitución aplicada de forma
+          repetida sobre un segmento inicial.
+        </p>
+
+        <ul>
+          <li><strong>Axioma:</strong> <code>F</code></li>
+          <li><strong>Regla:</strong> <code>F → F+F−F−F+F</code></li>
+          <li><strong>Ángulo:</strong> <code>90°</code></li>
+        </ul>
+
+        <p>
+          En esta interpretación, <code>F</code> significa avanzar, <code>+</code> girar a la izquierda
+          y <code>−</code> girar a la derecha. Al iterar la regla, el segmento inicial se transforma
+          progresivamente en una curva fractal: una figura que revela estructura a diferentes escalas.
+        </p>
+      </div>
+
+      <div class="lsys-card">
+        <h2>Exploración interactiva</h2>
+
+        <p>
+          Modifica el axioma, las reglas, el ángulo y el número de iteraciones para observar cómo
+          cambia la figura. La intención no es solo obtener una imagen final, sino reconocer la
+          relación entre regla, repetición y forma.
+        </p>
+
+        <div id="lsystem-interactive"></div>
+      </div>
+    </section>
+
+  </main>
+  <footer class="pie-exploracion">
+    <p><a href="index.html">← Volver a exploraciones</a></p>
+    <p>Adaptación de una exploración desarrollada para Fundación Radix.</p>
+  </footer>
+
+  <script src="js/lsystem-radix.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Curvas polares y geometrías inspiradas en las formas naturales.">
+  <title>Superfórmula de Gielis | Andrés M. Salazar</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="css/gielis.css">
+  <link rel="stylesheet" href="css/adaptaciones.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body class="pagina-exploracion pagina-gielis">
+  <nav class="barra-exploracion" aria-label="Ruta de navegación">
+    <a href="../index.html">Andrés M. Salazar</a> / <a href="index.html">Exploraciones computacionales</a>
+  </nav>
+<main class="gielis-wrap">
+
+    <header class="gielis-header">
+      <p class="gielis-kicker">Exploraciones computacionales · Andrés M. Salazar</p>
+
+      <h1>Superfórmula de Gielis</h1>
+
+      <p class="gielis-lead">
+        Exploración interactiva de una ecuación polar capaz de generar curvas con simetrías
+        florales, estrelladas y biomiméticas a partir de pocos parámetros.
+      </p>
+    </header>
+
+    <section class="gielis-section" id="descripcion">
+      <h2>Una fórmula para explorar formas</h2>
+
+      <p>
+        La <strong>superfórmula de Gielis</strong> generaliza ciertas expresiones polares
+        y permite construir una amplia familia de contornos cerrados. Con cambios en sus
+        parámetros pueden aparecer formas redondeadas, lobuladas, estrelladas o similares
+        a estructuras naturales.
+      </p>
+
+      <p>
+        La curva se define en coordenadas polares mediante:
+      </p>
+
+      <div class="gielis-formula">
+        \[
+          r(\theta)=
+          \left(
+            \left|\frac{\cos\left(\frac{m\theta}{4}\right)}{a}\right|^{n_2}
+            +
+            \left|\frac{\sin\left(\frac{m\theta}{4}\right)}{b}\right|^{n_3}
+          \right)^{-\frac{1}{n_1}},
+          \qquad
+          \theta \in [0,2\pi)
+        \]
+      </div>
+
+      <p>
+        Una vez calculado el radio \(r(\theta)\), la curva puede representarse en el plano
+        mediante las coordenadas cartesianas:
+      </p>
+
+      <div class="gielis-formula">
+        \[
+          x = r(\theta)\cos(\theta),
+          \qquad
+          y = r(\theta)\sin(\theta)
+        \]
+      </div>
+    </section>
+
+    <section class="gielis-section" id="parametros">
+      <h2>Parámetros</h2>
+
+      <ul>
+        <li>
+          <strong>\(m\)</strong>: controla la organización angular de la figura.
+          Está relacionado con la cantidad de repeticiones, lóbulos o simetrías visibles
+          alrededor del centro.
+        </li>
+
+        <li>
+          <strong>\(a &gt; 0\)</strong> y <strong>\(b &gt; 0\)</strong>: actúan como factores de escala
+          asociados a los términos de coseno y seno. Si \(a=b\), la figura suele conservar
+          mayor equilibrio entre ambas direcciones.
+        </li>
+
+        <li>
+          <strong>\(n_1 &gt; 0\)</strong>: regula el comportamiento global del contorno.
+          Al modificarlo cambian la expansión, contracción, redondez o agudeza general
+          de la curva.
+        </li>
+
+        <li>
+          <strong>\(n_2 &gt; 0\)</strong> y <strong>\(n_3 &gt; 0\)</strong>: modifican la forma local
+          de los lóbulos. Cuando difieren, pueden enfatizar direcciones o producir asimetrías
+          visuales entre las zonas dominadas por seno y coseno.
+        </li>
+      </ul>
+
+      <div class="gielis-note">
+        <p>
+          Para evitar curvas mal definidas, conviene mantener \(a\), \(b\), \(n_1\), \(n_2\)
+          y \(n_3\) estrictamente positivos. Valores cercanos a cero pueden producir radios
+          muy grandes o comportamientos numéricamente inestables.
+        </p>
+      </div>
+    </section>
+
+    <section class="gielis-section" id="interpretacion">
+      <h2>Interpretación</h2>
+
+      <p>
+        Esta exploración muestra cómo una fórmula compacta puede producir una gran diversidad
+        de formas. Su valor didáctico está en observar la relación entre parámetro y geometría:
+        cambios pequeños pueden alterar la simetría, la cantidad de lóbulos, la agudeza de las
+        puntas o la suavidad del contorno.
+      </p>
+
+      <p>
+        Desde una perspectiva educativa, la superfórmula permite conectar coordenadas polares,
+        funciones trigonométricas, simetría, parametrización y modelación de formas inspiradas
+        en la naturaleza.
+      </p>
+    </section>
+
+    <section class="gielis-card" aria-label="Aplicación interactiva de la superfórmula de Gielis">
+      <h2>Exploración interactiva</h2>
+
+      <p>
+        Modifica los parámetros y observa cómo cambia la curva. La intención no es encontrar
+        un único resultado correcto, sino reconocer cómo una estructura matemática produce
+        familias completas de formas.
+      </p>
+
+      <div id="gielis-app"></div>
+    </section>
+
+  </main>
+  <footer class="pie-exploracion">
+    <p><a href="index.html">← Volver a exploraciones</a></p>
+    <p>Adaptación de una exploración desarrollada para Fundación Radix.</p>
+  </footer>
+
+  <script src="js/gielis.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.GielisApp && typeof window.GielisApp.mount === 'function') {
+        window.GielisApp.mount("#gielis-app");
+      }
+    });
+  </script>
+</body>
+</html>

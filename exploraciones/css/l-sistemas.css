@@ -1,0 +1,119 @@
+:root {
+      --lsys-bg: #f7f7f7;
+      --lsys-card: #ffffff;
+      --lsys-border: #e8e8e8;
+      --lsys-muted: #666666;
+      --lsys-ink: #111111;
+      --lsys-accent: #b30059;
+    }
+
+    body {
+      margin: 0;
+      background: var(--lsys-bg);
+      color: var(--lsys-ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .lsys-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .lsys-header {
+      margin-bottom: 18px;
+    }
+
+    .lsys-kicker {
+      margin: 0 0 0.35rem 0;
+      color: var(--lsys-accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .lsys-header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: #111111;
+    }
+
+    .lsys-lead {
+      max-width: 820px;
+      margin: 0;
+      color: var(--lsys-muted);
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+
+    .lsys-section {
+      margin-top: 28px;
+    }
+
+    .lsys-section h2,
+    .lsys-section h3 {
+      color: #111111;
+    }
+
+    .lsys-section p,
+    .lsys-section li {
+      line-height: 1.65;
+      color: #333333;
+    }
+
+    .lsys-section ul {
+      padding-left: 1.2rem;
+    }
+
+    .lsys-card {
+      margin-top: 22px;
+      background: var(--lsys-card);
+      border: 1px solid var(--lsys-border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .lsys-example {
+      background: #ffffff;
+      border-left: 4px solid var(--lsys-accent);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 16px;
+    }
+
+    .lsys-example ul {
+      margin-bottom: 0;
+    }
+
+    code {
+      padding: 0.1rem 0.3rem;
+      background: #eeeeee;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.92em;
+    }
+
+    #lsystem-interactive {
+      margin-top: 18px;
+    }
+
+    .lsys-back-wrap {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: 24px 0 28px;
+    }
+
+    @media (max-width: 640px) {
+      .lsys-wrap {
+        padding: 18px;
+      }
+
+      .lsys-card {
+        padding: 16px;
+      }
+    }

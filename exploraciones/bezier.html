@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Construcción y manipulación de curvas a partir de puntos de control.">
+  <title>Curva de Bézier | Andrés M. Salazar</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="css/bezier.css">
+  <link rel="stylesheet" href="css/adaptaciones.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="pagina-exploracion pagina-bezier">
+  <nav class="barra-exploracion" aria-label="Ruta de navegación">
+    <a href="../index.html">Andrés M. Salazar</a> / <a href="index.html">Exploraciones computacionales</a>
+  </nav>
+<main class="bezier-wrap">
+
+    <header class="bezier-header">
+      <h1>Curva de Bézier interactiva</h1>
+      <p class="bezier-lead">
+        Exploración geométrica de una curva paramétrica mediante puntos de control manipulables.
+      </p>
+    </header>
+
+    <section id="descripcion">
+      <p>
+        Una <strong>curva de Bézier</strong> es una curva paramétrica determinada por un conjunto
+        finito de puntos. Los puntos extremos fijan el inicio y el final de la curva, mientras que
+        los puntos intermedios actúan como puntos de control que modifican su forma.
+      </p>
+
+      <div class="bezier-math">
+        \[
+          B(t)=\sum_{i=0}^{n} \binom{n}{i}(1-t)^{n-i}t^iP_i,
+          \qquad 0 \leq t \leq 1
+        \]
+      </div>
+
+      <p>
+        En esta expresión, los puntos \(P_0,P_1,\dots,P_n\) definen el polígono de control.
+        El parámetro \(t\) recorre el intervalo \([0,1]\): cuando \(t=0\), la curva inicia en
+        \(P_0\); cuando \(t=1\), termina en \(P_n\).
+      </p>
+    </section>
+
+    <section id="elementos">
+      <h2>Elementos de la construcción</h2>
+
+      <ul>
+        <li>
+          <strong>\(P_0\)</strong>: punto inicial de la curva.
+        </li>
+        <li>
+          <strong>\(P_n\)</strong>: punto final de la curva.
+        </li>
+        <li>
+          <strong>Puntos de control</strong>: puntos intermedios que atraen la curva y modifican su trayectoria.
+        </li>
+        <li>
+          <strong>Polígono de control</strong>: línea auxiliar que conecta los puntos \(P_i\) y permite visualizar la estructura que gobierna la curva.
+        </li>
+      </ul>
+    </section>
+
+    <section id="interpretacion">
+      <h2>Interpretación</h2>
+
+      <p>
+        Aunque la curva no suele pasar por los puntos de control intermedios, estos determinan
+        la dirección, tensión y forma global de la trayectoria. Al moverlos, se observa cómo
+        una estructura geométrica simple puede generar formas suaves, flexibles y controlables.
+      </p>
+    </section>
+
+    <section id="exploracion">
+      <h2>Exploración interactiva</h2>
+
+      <p>
+        Usa los botones para agregar o quitar puntos de control. Arrastra cualquier punto para
+        modificar la curva. El botón de quitar se desactiva cuando solo quedan los dos puntos
+        extremos, porque esos dos puntos son la estructura mínima de una curva de Bézier.
+      </p>
+
+      <div class="bezier-app">
+        <div class="bezier-controls">
+          <button id="agregarPunto" type="button" class="bezier-btn">
+            Agregar punto de control
+          </button>
+
+          <button id="quitarPunto" type="button" class="bezier-btn">
+            Quitar punto de control
+          </button>
+
+          <button id="reiniciar" type="button" class="bezier-btn">
+            Reiniciar
+          </button>
+
+          <button id="guardarImagen" type="button" class="bezier-btn">
+            Guardar imagen
+          </button>
+        </div>
+
+        <canvas id="canvasBezier" width="900" height="600" aria-label="Visualización interactiva de curva de Bézier"></canvas>
+      </div>
+    </section>
+
+  </main>
+  <footer class="pie-exploracion">
+    <p><a href="index.html">← Volver a exploraciones</a></p>
+    <p>Adaptación de una exploración desarrollada para Fundación Radix.</p>
+  </footer>
+
+  <script src="js/bezier.js"></script>
+</body>
+</html>

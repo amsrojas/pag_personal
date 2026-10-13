@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Conversión RGB y CIELAB, interpolación de colores y visualización del gamut sRGB.">
+  <title>RGB ↔ CIELAB | Andrés M. Salazar</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="css/rgb-cielab.css">
+  <link rel="stylesheet" href="css/adaptaciones.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body class="pagina-exploracion pagina-rgb-cielab">
+  <nav class="barra-exploracion" aria-label="Ruta de navegación">
+    <a href="../index.html">Andrés M. Salazar</a> / <a href="index.html">Exploraciones computacionales</a>
+  </nav>
+<main class="color-wrap">
+
+    <header class="color-header">
+      <p class="color-kicker">Exploraciones computacionales · Andrés M. Salazar</p>
+
+      <h1>Exploración RGB ↔ CIELAB</h1>
+
+      <p class="color-lead">
+        Esta herramienta permite convertir colores entre el espacio RGB y el espacio CIELAB,
+        observar sus coordenadas y recorrer un segmento entre dos colores en CIELAB y reconocer sus límites de representación en sRGB.
+      </p>
+    </header>
+
+    <section class="color-section" id="introduccion">
+      <h2>Color, percepción y coordenadas</h2>
+
+      <p>
+        El modelo <strong>RGB</strong> describe un color mediante la intensidad de rojo, verde y azul
+        en una pantalla. Es útil para dispositivos digitales, pero no mide directamente
+        la diferencia perceptual entre colores.
+      </p>
+
+      <p>
+        El espacio <strong>CIELAB</strong>, también escrito como \(L^*a^*b^*\), organiza el color a partir
+        de tres coordenadas: \(L^*\), asociada a la luminosidad; \(a^*\), asociada al eje verde–rojo;
+        y \(b^*\), asociada al eje azul–amarillo. En esta página se usa una conversión desde sRGB
+        con iluminante D65.
+      </p>
+
+      <p>
+        Una ventaja de CIELAB es que permite aproximar mejor la diferencia percibida entre colores:
+        dos puntos cercanos en \(L^*a^*b^*\) suelen corresponder a colores visualmente similares,
+        mientras que distancias mayores indican cambios perceptuales más notorios.
+      </p>
+    </section>
+
+    <section class="color-section" id="conversion">
+      <h2>Conversión interactiva</h2>
+
+      <div class="color-grid">
+
+        <section class="color-card" aria-labelledby="h-rgb-lab">
+          <h3 id="h-rgb-lab">RGB → CIELAB</h3>
+
+          <div class="color-row">
+            <div>
+              <label for="inR">R (0–255)</label>
+              <input type="number" id="inR" min="0" max="255" step="1" value="30">
+            </div>
+
+            <div>
+              <label for="inG">G (0–255)</label>
+              <input type="number" id="inG" min="0" max="255" step="1" value="120">
+            </div>
+
+            <div>
+              <label for="inB">B (0–255)</label>
+              <input type="number" id="inB" min="0" max="255" step="1" value="200">
+            </div>
+          </div>
+
+          <div id="swatchRGB" class="swatch" role="img" aria-label="Muestra de color RGB">
+            <span>Entrada RGB</span>
+            <span id="hexRGB" class="mono"></span>
+          </div>
+
+          <div class="color-out">
+            <div class="color-box">
+              <div class="hint">L*</div>
+              <div class="mono" id="Lval">–</div>
+            </div>
+
+            <div class="color-box">
+              <div class="hint">a*</div>
+              <div class="mono" id="aval">–</div>
+            </div>
+
+            <div class="color-box">
+              <div class="hint">b*</div>
+              <div class="mono" id="bval">–</div>
+            </div>
+          </div>
+
+          <div class="hint">
+            Rangos típicos: \(L^* \in [0,100]\), mientras que \(a^*\) y \(b^*\)
+            suelen ubicarse aproximadamente entre −128 y 127.
+          </div>
+        </section>
+
+        <section class="color-card" aria-labelledby="h-lab-rgb">
+          <h3 id="h-lab-rgb">CIELAB → RGB</h3>
+
+          <div class="color-row">
+            <div>
+              <label for="inL">L* (0–100)</label>
+              <input type="number" id="inL" min="0" max="100" step="0.1" value="50">
+            </div>
+
+            <div>
+              <label for="ina">a* (≈ −128…127)</label>
+              <input type="number" id="ina" min="-200" max="200" step="0.1" value="0">
+            </div>
+
+            <div>
+              <label for="inb">b* (≈ −128…127)</label>
+              <input type="number" id="inb" min="-200" max="200" step="0.1" value="0">
+            </div>
+          </div>
+
+          <div id="swatchLAB" class="swatch" role="img" aria-label="Muestra de color CIELAB">
+            <span>Salida RGB</span>
+            <span id="hexLAB" class="mono"></span>
+          </div>
+
+          <div class="color-out">
+            <div class="color-box">
+              <div class="hint">R</div>
+              <div class="mono" id="Rval">–</div>
+            </div>
+
+            <div class="color-box">
+              <div class="hint">G</div>
+              <div class="mono" id="Gval">–</div>
+            </div>
+
+            <div class="color-box">
+              <div class="hint">B</div>
+              <div class="mono" id="Bval">–</div>
+            </div>
+          </div>
+
+          <div class="hint" id="gamutNote"></div>
+        </section>
+
+      </div>
+    </section>
+
+    <section class="color-section" id="trayectoria-color">
+      <h2>Un camino continuo entre dos colores</h2>
+
+      <p>
+        Elegimos dos colores sRGB, <strong>A</strong> y <strong>B</strong>, y los convertimos en
+        los puntos <strong>A′</strong> y <strong>B′</strong> del espacio CIELAB. El segmento que los une
+        se parametriza mediante
+      </p>
+
+      <p class="ecuacion-trayectoria">
+        \[
+          \gamma(t)=(1-t)A' + tB', \qquad 0\leq t\leq 1.
+        \]
+      </p>
+
+      <p>
+        Al variar <em>t</em>, recorremos continuamente el segmento de A′ a B′. Algunos puntos
+        intermedios pueden quedar fuera de la gama de colores que una pantalla sRGB puede
+        representar. Esas partes se señalan en el recorrido y no se sustituyen silenciosamente.
+      </p>
+
+      <section class="color-card color-path-card" aria-labelledby="h-path">
+        <h3 id="h-path">Trayectoria en CIELAB</h3>
+
+        <div class="path-endpoints">
+          <fieldset class="path-endpoint">
+            <legend>Color A</legend>
+            <div class="path-picker-row">
+              <label for="pickerA">Selector</label>
+              <input type="color" id="pickerA" value="#1E78C8" aria-label="Seleccionar color A">
+              <output id="hexA" class="mono">#1E78C8</output>
+            </div>
+            <div class="color-row">
+              <div><label for="AR">R</label><input id="AR" type="number" min="0" max="255" step="1" value="30"></div>
+              <div><label for="AG">G</label><input id="AG" type="number" min="0" max="255" step="1" value="120"></div>
+              <div><label for="AB">B</label><input id="AB" type="number" min="0" max="255" step="1" value="200"></div>
+            </div>
+            <div id="labA" class="path-coordinates mono"></div>
+          </fieldset>
+
+          <fieldset class="path-endpoint">
+            <legend>Color B</legend>
+            <div class="path-picker-row">
+              <label for="pickerB">Selector</label>
+              <input type="color" id="pickerB" value="#FF8C00" aria-label="Seleccionar color B">
+              <output id="hexB" class="mono">#FF8C00</output>
+            </div>
+            <div class="color-row">
+              <div><label for="BR">R</label><input id="BR" type="number" min="0" max="255" step="1" value="255"></div>
+              <div><label for="BG">G</label><input id="BG" type="number" min="0" max="255" step="1" value="140"></div>
+              <div><label for="BB">B</label><input id="BB" type="number" min="0" max="255" step="1" value="0"></div>
+            </div>
+            <div id="labB" class="path-coordinates mono"></div>
+          </fieldset>
+        </div>
+
+        <div class="path-visualization">
+          <p class="path-track-title">Segmento continuo en CIELAB</p>
+          <canvas id="labPathCanvas" width="960" height="105"
+            role="img" aria-label="Trayectoria cromática entre A y B; las franjas rayadas indican puntos fuera de la gama sRGB">
+            Trayectoria en CIELAB entre los colores A y B.
+          </canvas>
+          <div class="path-axis"><span>A · t = 0</span><span>B · t = 1</span></div>
+        </div>
+
+        <div class="path-discretization">
+          <div class="path-segments-control">
+            <label for="pathSegments">Número de tramos (N)</label>
+            <input id="pathSegments" type="number" min="1" max="100" step="1" value="12"
+              aria-describedby="pathSegmentsHelp">
+            <output id="pathSegmentsValue" class="mono" for="pathSegments">12 tramos · 13 nodos</output>
+          </div>
+          <p id="pathSegmentsHelp" class="path-hint">
+            Dividimos el segmento en N partes iguales, con nodos t<sub>k</sub> = k/N.
+            Cada franja muestra el color del punto medio de su tramo. Selecciona una franja
+            para examinar su color; las franjas rayadas indican muestras fuera del gamut sRGB.
+          </p>
+          <canvas id="labStepsCanvas" width="960" height="88" role="img"
+            aria-label="Aproximación de la trayectoria CIELAB en un número configurable de tramos">
+            Aproximación discreta de la trayectoria en CIELAB.
+          </canvas>
+          <div class="path-axis"><span>A · t = 0</span><span>B · t = 1</span></div>
+          <p id="pathStepsSummary" class="path-hint" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="path-slider">
+          <label for="pathT">Posición sobre el segmento: <output id="pathTValue" class="mono">t = 0.500</output></label>
+          <input id="pathT" type="range" min="0" max="1000" step="1" value="500"
+            aria-label="Parámetro t del segmento en CIELAB">
+        </div>
+
+        <div class="path-result">
+          <div id="pathSwatch" class="path-swatch" role="img" aria-label="Color seleccionado sobre el segmento"></div>
+          <div class="path-result-text">
+            <div id="pathLab" class="mono" aria-label="Coordenadas CIELAB"></div>
+            <div id="pathRgb" class="mono" aria-label="Color sRGB de visualización"></div>
+            <p id="pathGamut" class="path-gamut" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+        <p id="pathGamutSummary" class="path-summary" role="status" aria-live="polite"></p>
+
+        <details class="path-note">
+          <summary>Sobre la continuidad y los límites de sRGB</summary>
+          <p>
+            La transformación de sRGB a CIELAB es continua. Su imagen es conexa por caminos,
+            aunque no tiene por qué ser convexa: el segmento recto entre dos colores válidos
+            puede salir del gamut sRGB. Una zona rayada significa que ese punto del segmento
+            no tiene representación sRGB exacta. En la muestra se ve una aproximación por
+            recorte de canales y se indica expresamente cuando ocurre.
+          </p>
+          <p>
+            Como referencia, el camino obtenido al interpolar los valores sRGB de A y B
+            permanece en gamut, aunque su imagen en CIELAB normalmente es una curva diferente
+            del segmento recto anterior.
+          </p>
+          <canvas id="rgbSafeCanvas" width="960" height="48"
+            role="img" aria-label="Camino alternativo entre A y B que permanece en gama sRGB">
+            Camino alternativo en gama sRGB.
+          </canvas>
+          <div class="path-axis"><span>A</span><span>B</span></div>
+        </details>
+      </section>
+    </section>
+
+  </main>
+  <footer class="pie-exploracion">
+    <p><a href="index.html">← Volver a exploraciones</a></p>
+    <p>Adaptación de una exploración desarrollada para Fundación Radix.</p>
+  </footer>
+
+  <script src="js/cal_rgb_cielab.js" defer></script>
+  <script src="js/trayectoria_lab.js" defer></script>
+</body>
+</html>

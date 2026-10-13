@@ -1,0 +1,115 @@
+:root {
+      --chry-bg: #f7f7f7;
+      --chry-card: #ffffff;
+      --chry-border: #e8e8e8;
+      --chry-muted: #666666;
+      --chry-ink: #111111;
+    }
+
+    body {
+      margin: 0;
+      background: var(--chry-bg);
+      color: var(--chry-ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .chryzode-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .chryzode-header {
+      margin-bottom: 18px;
+    }
+
+    .chryzode-kicker {
+      margin: 0 0 0.35rem 0;
+      color: #b30059;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .chryzode-header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: #111111;
+    }
+
+    .chryzode-lead {
+      max-width: 780px;
+      margin: 0;
+      color: var(--chry-muted);
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+
+    .chryzode-section {
+      margin-top: 28px;
+    }
+
+    .chryzode-section h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      color: #111111;
+    }
+
+    .chryzode-section p,
+    .chryzode-section li {
+      line-height: 1.65;
+      color: #333333;
+    }
+
+    .chryzode-section ul {
+      padding-left: 1.2rem;
+    }
+
+    .chryzode-math {
+      overflow-x: auto;
+      padding: 8px 0;
+      margin: 12px 0;
+    }
+
+    .chryzode-card {
+      background: var(--chry-card);
+      border: 1px solid var(--chry-border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+      margin-top: 18px;
+    }
+
+    .chryzode-app-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 16px;
+    }
+
+    #chryzode-app {
+      margin-top: 18px;
+    }
+
+    .chryzode-back-wrap {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: 24px 0 28px;
+    }
+
+    mjx-container {
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .chryzode-wrap,
+      .chryzode-app-wrap {
+        padding-inline: 18px;
+      }
+    }

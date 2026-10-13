@@ -1,0 +1,169 @@
+/* Adaptación de exploraciones Radix al sistema visual del sitio personal.
+   La lógica matemática original permanece en exploraciones/js/. */
+:root {
+  --lsys-bg:#fff; --lsys-card:#fff; --lsys-border:#DFE2DD; --lsys-accent:#366B61; --lsys-ink:#242B32; --lsys-muted:#657078;
+  --voro-bg:#fff; --voro-card:#fff; --voro-border:#DFE2DD; --voro-accent:#253D52; --voro-ink:#242B32; --voro-muted:#657078;
+  --gielis-bg:#fff; --gielis-card:#fff; --gielis-border:#DFE2DD; --gielis-accent:#366B61; --gielis-ink:#242B32; --gielis-muted:#657078;
+  --chry-bg:#fff; --chry-card:#fff; --chry-border:#DFE2DD; --chry-ink:#242B32; --chry-muted:#657078;
+  --bezier-bg:#fff; --bezier-card:#fff; --bezier-border:#DFE2DD; --bezier-ink:#242B32; --bezier-muted:#657078;
+  --color-bg:#fff; --color-fg:#242B32; --color-muted:#657078;
+  --color-card:#fff; --color-card-soft:#F5F7F8; --color-border:#DFE2DD;
+  --color-accent:#366B61; --color-accent-soft:rgba(54,107,97,.14);
+  --color-warn:#9F5B37; --color-shadow:none;
+}
+html, body.pagina-exploracion { background:#fff; color-scheme:light; }
+body.pagina-exploracion {
+  background:#fff; color:#242B32;
+  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  font-size:16px; line-height:1.7;
+}
+body.pagina-exploracion a { color:#253D52; }
+body.pagina-exploracion a:hover { color:#366B61; }
+body.pagina-exploracion main { margin:0 auto; }
+body.pagina-exploracion .lsys-wrap,
+body.pagina-exploracion .voro-wrap,
+body.pagina-exploracion .gielis-wrap,
+body.pagina-exploracion .bezier-wrap,
+body.pagina-exploracion .color-wrap,
+body.pagina-exploracion .chryzode-wrap,
+body.pagina-exploracion .chryzode-app-wrap {
+  width:min(calc(100% - 48px),1052px);
+  max-width:1052px;
+  margin-inline:auto;
+  padding:26px 0 8px;
+}
+body.pagina-exploracion .chryzode-app-wrap { padding-top:0; }
+body.pagina-exploracion .lsys-header,
+body.pagina-exploracion .voro-header,
+body.pagina-exploracion .gielis-header,
+body.pagina-exploracion .chryzode-header,
+body.pagina-exploracion .bezier-header,
+body.pagina-exploracion .color-header { margin:0 0 1.8rem; max-width:100%; }
+body.pagina-exploracion h1,
+body.pagina-exploracion .lsys-header h1,
+body.pagina-exploracion .voro-header h1,
+body.pagina-exploracion .gielis-header h1,
+body.pagina-exploracion .chryzode-header h1,
+body.pagina-exploracion .bezier-header h1,
+body.pagina-exploracion .color-header h1 {
+  font-family:Georgia,"Times New Roman",serif;
+  color:#253D52;
+  font-size:clamp(2rem,5vw,2.7rem);
+  line-height:1.2;
+  letter-spacing:-.02em;
+  font-weight:400;
+  margin:0 0 .7rem;
+}
+body.pagina-exploracion h2 { color:#253D52; font-family:Georgia,"Times New Roman",serif; font-weight:400; font-size:1.62rem; line-height:1.25; }
+body.pagina-exploracion h3 { color:#253D52; font-size:1.22rem; }
+body.pagina-exploracion .lsys-kicker,
+body.pagina-exploracion .voro-kicker,
+body.pagina-exploracion .gielis-kicker,
+body.pagina-exploracion .chryzode-kicker,
+body.pagina-exploracion .color-kicker {color:#366B61;letter-spacing:.06em;}
+body.pagina-exploracion .lsys-lead,
+body.pagina-exploracion .voro-lead,
+body.pagina-exploracion .gielis-lead,
+body.pagina-exploracion .chryzode-lead,
+body.pagina-exploracion .bezier-lead,
+body.pagina-exploracion .color-lead {color:#657078;max-width:850px;font-size:1rem;}
+body.pagina-exploracion .lsys-card,
+body.pagina-exploracion .voro-panel,
+body.pagina-exploracion .gielis-card,
+body.pagina-exploracion .chryzode-card,
+body.pagina-exploracion .color-card {
+  background:#fff; border:1px solid #DFE2DD;
+  box-shadow:none; border-radius:8px;
+}
+body.pagina-exploracion .lsys-example,
+body.pagina-exploracion .gielis-note { border-left-color:#366B61; background:#F5F7F8; border-radius:4px; }
+body.pagina-exploracion button { cursor:pointer; }
+body.pagina-exploracion button:focus-visible,
+body.pagina-exploracion input:focus-visible,
+body.pagina-exploracion select:focus-visible {outline:2px solid #366B61;outline-offset:2px;}
+body.pagina-exploracion .voro-btn,
+body.pagina-exploracion .bezier-btn,
+body.pagina-exploracion .chryzode-app-wrap .btn,
+body.pagina-exploracion .ls-container button {background:#253D52;color:#fff;border-radius:5px;}
+body.pagina-exploracion .voro-btn:hover,
+body.pagina-exploracion .bezier-btn:hover,
+body.pagina-exploracion .chryzode-app-wrap .btn:hover,
+body.pagina-exploracion .ls-container button:hover {background:#366B61;}
+body.pagina-exploracion input[type="number"],
+body.pagina-exploracion select {background:#fff;color:#242B32;border-color:#DFE2DD;}
+body.pagina-exploracion .color-box {background:#F5F7F8;}
+body.pagina-exploracion .color-card h2,
+body.pagina-exploracion .color-card h3,
+body.pagina-exploracion .color-section h2 {color:#253D52;}
+body.pagina-exploracion .color-section p {color:#657078;}
+body.pagina-exploracion .color-card label {color:#657078;}
+body.pagina-exploracion .color-back {background:#253D52;color:#fff;}
+body.pagina-exploracion mjx-container {color:#242B32;}
+body.pagina-exploracion .chryzode-app-wrap .card {border-color:#DFE2DD;}
+body.pagina-exploracion .gielis-simple button {color:#253D52;}
+body.pagina-exploracion .barra-exploracion {margin-bottom:0;}
+@media(max-width:640px){
+  body.pagina-exploracion .lsys-wrap,
+  body.pagina-exploracion .voro-wrap,
+  body.pagina-exploracion .gielis-wrap,
+  body.pagina-exploracion .chryzode-wrap,
+  body.pagina-exploracion .bezier-wrap,
+  body.pagina-exploracion .color-wrap,
+  body.pagina-exploracion .chryzode-app-wrap {width:calc(100% - 36px);padding:20px 0 8px;}
+  body.pagina-exploracion .color-grid {grid-template-columns:1fr;}
+  body.pagina-exploracion .ls-container {grid-template-columns:1fr;}
+}
+
+/* El módulo Chryzode usaba componentes de la hoja global de Radix.
+   Se reconstruyen aquí para que sea autónomo en el sitio personal. */
+body.pagina-chryzode #chryzode-app .wrap { display:grid; gap:1rem; }
+body.pagina-chryzode #chryzode-app .card {
+  background:#fff;
+  border:1px solid #DFE2DD;
+  border-radius:8px;
+  padding:1rem;
+}
+body.pagina-chryzode #chryzode-app .controls {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:.7rem 1rem;
+}
+body.pagina-chryzode #chryzode-app .controls label {
+  display:inline-flex;
+  gap:.5rem;
+  align-items:center;
+  font-size:.9rem;
+}
+body.pagina-chryzode #chryzode-app .controls input[type="number"] {
+  width:85px;
+  padding:.4rem;
+  border:1px solid #DFE2DD;
+  border-radius:5px;
+}
+body.pagina-chryzode #chryzode-app .btn {
+  display:inline-flex;
+  padding:.6rem .85rem;
+  border:1px solid #253D52;
+  font:inherit;
+}
+body.pagina-chryzode #chryzode-app .btn.ghost {
+  color:#253D52;
+  background:#fff;
+}
+body.pagina-chryzode #chryzode-app .btn.ghost:hover {
+  color:#fff;
+  background:#366B61;
+  border-color:#366B61;
+}
+body.pagina-chryzode #chryzode-app svg {
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:auto;
+}
+body.pagina-chryzode #chryzode-app .muted {
+  color:#657078;
+  font-size:.9rem;
+  padding-top:.6rem;
+}

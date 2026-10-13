@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Particiones del plano mediante regiones de proximidad y exportación SVG.">
+  <title>Teselación de Voronoi | Andrés M. Salazar</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="css/voronoi.css">
+  <link rel="stylesheet" href="css/adaptaciones.css">
+
+</head>
+<body class="pagina-exploracion pagina-voronoi">
+  <nav class="barra-exploracion" aria-label="Ruta de navegación">
+    <a href="../index.html">Andrés M. Salazar</a> / <a href="index.html">Exploraciones computacionales</a>
+  </nav>
+<main class="voro-wrap">
+
+    <header class="voro-header">
+      <p class="voro-kicker">Exploraciones computacionales · Andrés M. Salazar</p>
+
+      <h1>Diagrama de Voronoi</h1>
+
+      <p class="voro-lead">
+        Generador interactivo para explorar cómo un conjunto de puntos semilla divide el plano
+        en regiones de proximidad. Incluye control de grosor y exportación en formato SVG.
+      </p>
+    </header>
+
+    <section id="voronoi-doc" class="voro-doc" aria-labelledby="voronoi-title">
+      <h2 id="voronoi-title">Teselación de Voronoi</h2>
+
+      <p>
+        Un <strong>diagrama de Voronoi</strong> es una partición del plano en celdas a partir
+        de un conjunto de puntos semilla. Cada celda contiene todos los puntos del plano que
+        están más cerca de su semilla que de cualquier otra.
+      </p>
+
+      <p>
+        Estas estructuras aparecen en geometría computacional, análisis espacial, biología,
+        diseño, arquitectura, simulación de territorios y fabricación digital.
+      </p>
+
+      <h3>Cómo usar el generador</h3>
+
+      <ol>
+        <li>
+          <strong>Número de puntos:</strong> ingresa entre <strong>1 y 100</strong> semillas
+          y pulsa <strong>Generar</strong>.
+        </li>
+
+        <li>
+          <strong>Vista real en milímetros:</strong> activa esta casilla para previsualizar
+          en el lienzo el grosor físico que tendrá el SVG exportado.
+        </li>
+
+        <li>
+          <strong>Grosor de pantalla:</strong> si la vista real está desactivada, usa el
+          deslizador para ajustar el grosor visual en píxeles.
+        </li>
+
+        <li>
+          <strong>Grosor de exportación:</strong> define el grosor de línea del archivo SVG
+          en milímetros. Esto es útil para corte láser, plotter o impresión.
+        </li>
+
+        <li>
+          <strong>Exportar SVG:</strong> descarga el diagrama con tamaño físico fijo y líneas
+          configuradas con el grosor seleccionado.
+        </li>
+      </ol>
+    </section>
+
+    <section class="voro-panel" aria-label="Generador interactivo de Voronoi">
+
+      <div class="voro-controls">
+        <div class="voro-field">
+          <label for="n">Número de puntos (1–100)</label>
+          <input id="n" type="number" value="30" min="1" max="100">
+        </div>
+
+        <div class="voro-field">
+          <label for="strokePx">Grosor pantalla (px)</label>
+          <input id="strokePx" type="range" min="0.5" max="6" step="0.1" value="1.6">
+        </div>
+
+        <div class="voro-field">
+          <label for="strokeMm">Grosor exportación (mm)</label>
+          <input id="strokeMm" type="number" min="0.01" max="10" step="0.01" value="0.10">
+        </div>
+
+        <div class="voro-check">
+          <input id="previewMm" type="checkbox" checked>
+          <label for="previewMm">Vista real (mm)</label>
+        </div>
+
+        <button id="btn-gen" type="button" class="voro-btn">
+          Generar
+        </button>
+
+        <button id="btn-exp" type="button" class="voro-btn">
+          Exportar SVG
+        </button>
+
+        <span class="voro-status" id="status" role="status" aria-live="polite"></span>
+      </div>
+
+      <div class="voro-canvas-box">
+        <svg id="voronoi"
+             viewBox="0 0 900 560"
+             preserveAspectRatio="xMidYMid meet"
+             aria-label="Diagrama de Voronoi">
+        </svg>
+      </div>
+
+      <p class="voro-note">
+        Sugerencia: usa pocos puntos para estudiar la estructura geométrica y más puntos para
+        obtener patrones de teselación más densos.
+      </p>
+
+    </section>
+
+  </main>
+  <footer class="pie-exploracion">
+    <p><a href="index.html">← Volver a exploraciones</a></p>
+    <p>Adaptación de una exploración desarrollada para Fundación Radix.</p>
+  </footer>
+<script src="https://cdn.jsdelivr.net/npm/d3-delaunay@6"></script>
+  <script src="js/voronoi.js"></script>
+</body>
+</html>

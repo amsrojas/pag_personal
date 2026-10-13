@@ -1,0 +1,285 @@
+/* ============================================================
+   ANDRÉS M. SALAZAR — ESTILOS COMPARTIDOS
+   Versión 1 · Tipografía, colores y componentes del sitio.
+
+   Este archivo se utiliza en la portada y en las futuras páginas
+   de cursos, publicaciones, proyectos y scripts.
+   ============================================================ */
+
+/* 1. PALETA Y VARIABLES ------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Identidad: estructura, naturaleza, expresión */
+  --color-matematicas: #253D52;
+  --color-ciencias: #366B61;
+  --color-arte: #9F5B37;
+
+  /* Base: fondo siempre blanco puro */
+  --color-fondo: #FFFFFF;
+  --color-texto: #242B32;
+  --color-secundario: #657078;
+  --color-borde: #DFE2DD;
+  --color-suave: #F5F7F8;
+
+  /* Navegación y enlaces */
+  --color-enlace: var(--color-matematicas);
+  --color-enlace-hover: var(--color-ciencias);
+
+  /* Tipografía y ancho de lectura */
+  --fuente-texto: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --fuente-titulos: Georgia, "Times New Roman", serif;
+  --ancho-contenido: 740px;
+}
+
+/* 2. BASE --------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.contenedor {
+  width: min(calc(100% - 48px), var(--ancho-contenido));
+  margin-inline: auto;
+  padding-block: 64px 52px;
+}
+
+p { margin: 0 0 1rem; }
+small, .texto-secundario { color: var(--color-secundario); }
+hr { border: 0; border-top: 1px solid var(--color-borde); margin: 2rem 0; }
+img { max-width: 100%; height: auto; }
+
+/* 3. TITULARES Y TEXTO DE PÁGINAS INTERIORES ----------------- */
+h1, h2, h3, h4 {
+  color: var(--color-matematicas);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+h1, h2 { font-family: var(--fuente-titulos); font-weight: 400; }
+h1 { font-size: clamp(2rem, 5vw, 2.7rem); margin: 0 0 1.3rem; }
+h2 { font-size: 1.65rem; margin: 2.7rem 0 1rem; }
+h3 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 0.7rem; }
+h4 { font-size: 1.06rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+
+.subtitulo { color: var(--color-secundario); font-size: 1.05rem; margin: -0.6rem 0 1.6rem; }
+.introduccion { font-size: 1.06rem; }
+.etiqueta {
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+  margin: 0 0 .5rem;
+}
+
+/* Clases opcionales para distinguir áreas sin llenar la página de color. */
+.tema-matematicas { color: var(--color-matematicas); }
+.tema-ciencias { color: var(--color-ciencias); }
+.tema-arte { color: var(--color-arte); }
+
+/* 4. ENLACES, LISTAS Y NAVEGACIÓN ---------------------------- */
+a {
+  color: var(--color-enlace);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--color-enlace-hover); text-decoration-thickness: 2px; }
+a:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--color-ciencias);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+ul, ol { padding-left: 1.4rem; margin: 0 0 1.4rem; }
+li + li { margin-top: .35rem; }
+
+/* Enlace para volver desde cursos/proyectos al inicio. */
+.volver { display: inline-block; font-size: .9rem; margin-bottom: 2.2rem; }
+
+/* Listas limpias para materiales, scripts o recursos. */
+.lista-recursos { list-style: none; padding-left: 0; }
+.lista-recursos li { border-bottom: 1px solid var(--color-borde); padding: .65rem 0; }
+.lista-recursos li:first-child { border-top: 1px solid var(--color-borde); }
+.lista-recursos li + li { margin-top: 0; }
+.descripcion-recurso { display: block; color: var(--color-secundario); font-size: .9rem; }
+
+/* 5. ELEMENTOS PARA LOS FUTUROS CURSOS Y SCRIPTS ------------ */
+.nota {
+  color: var(--color-secundario);
+  font-size: .93rem;
+}
+.aviso {
+  border-left: 3px solid var(--color-ciencias);
+  padding: .15rem 0 .15rem 1rem;
+  margin: 1.6rem 0;
+}
+.aviso p:last-child { margin-bottom: 0; }
+
+code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+code { font-size: .92em; }
+pre {
+  overflow-x: auto;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 4px;
+  background: var(--color-suave);
+  line-height: 1.55;
+}
+pre code { font-size: .88rem; }
+/* Una fórmula larga podrá desplazarse en pantalla pequeña. */
+.formula { max-width: 100%; overflow-x: auto; padding-block: .5rem; }
+
+.tabla-desplazable { max-width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.6rem; font-size: .95rem; }
+th, td { padding: .6rem .75rem; border-bottom: 1px solid var(--color-borde); text-align: left; }
+th { color: var(--color-matematicas); font-weight: 600; }
+
+/* 6. PORTADA ------------------------------------------------ */
+.portada h1 { margin-bottom: 1.5rem; }
+.foto-perfil {
+  display: block;
+  width: 180px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin: 0 0 1.3rem;
+}
+.afiliacion { color: var(--color-secundario); margin: 0 0 .85rem; }
+.portada p:last-child { margin-bottom: 0; }
+
+/* Secciones desplegables de la página inicial. */
+.secciones { margin-top: 2.6rem; border-top: 1px solid var(--color-borde); }
+.secciones details { border-bottom: 1px solid var(--color-borde); }
+.secciones summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+  padding: 1rem 0;
+  color: var(--color-matematicas);
+  font-size: 1.14rem;
+  font-weight: 500;
+}
+.secciones summary::-webkit-details-marker { display: none; }
+.secciones summary::after {
+  content: "⌄";
+  color: var(--color-secundario);
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1;
+  transition: transform .15s ease;
+}
+.secciones details[open] summary::after { transform: rotate(180deg); }
+.secciones ul { list-style: none; margin: 0 0 1.1rem; padding: 0 0 0 .9rem; }
+.secciones li + li { margin-top: .5rem; }
+.secciones .nota { margin: 0 0 1.2rem .9rem; }
+
+/* 7. PIE COMÚN --------------------------------------------- */
+.pie-sitio { margin-top: 3rem; padding-top: .2rem; }
+.pie-sitio h2 {
+  font-family: var(--fuente-texto);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  margin: 0 0 .8rem;
+}
+.pie-sitio p { margin-bottom: .55rem; }
+.institucion { color: var(--color-secundario); }
+
+/* 8. PANTALLAS PEQUEÑAS Y ACCESIBILIDAD ---------------------- */
+@media (max-width: 520px) {
+  .contenedor { width: min(calc(100% - 40px), var(--ancho-contenido)); padding-block: 42px 46px; }
+  .foto-perfil { width: 160px; height: 196px; }
+  .secciones { margin-top: 2rem; }
+  h2 { font-size: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .secciones summary::after { transition: none; }
+}
+
+/* 9. ENLACES PRINCIPALES Y LISTADOS DE EXPLORACIONES -------- */
+.seccion-enlace {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-borde);
+  color: var(--color-matematicas);
+  font-size: 1.14rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+.seccion-enlace span { color: var(--color-secundario); }
+.seccion-enlace:hover { color: var(--color-ciencias); }
+
+.lista-exploraciones { list-style:none; padding:0; margin:2rem 0; }
+.lista-exploraciones li { margin:0; border-bottom: 1px solid var(--color-borde); }
+.lista-exploraciones li:first-child { border-top:1px solid var(--color-borde); }
+.lista-exploraciones a { display:block; padding:1rem 0; text-decoration:none; }
+.lista-exploraciones a:hover .nombre-exploracion { text-decoration:underline; text-underline-offset:3px; }
+.nombre-exploracion { display:block; color:var(--color-matematicas); font-size:1.12rem; font-weight:600; }
+.descripcion-exploracion { display:block; color:var(--color-secundario); font-size:.93rem; margin-top:.15rem; }
+.indice-seccion { margin-top: 3rem; }
+.barra-exploracion {
+  margin: 0 auto;
+  width: min(calc(100% - 48px), 1052px);
+  padding: 1.9rem 0 .5rem;
+  font-size:.92rem;
+  border-bottom:1px solid var(--color-borde);
+}
+.barra-exploracion a { text-decoration:none; }
+.pie-exploracion {
+  width: min(calc(100% - 48px), 1052px);
+  margin: 2rem auto 4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-borde);
+  color: var(--color-secundario);
+  font-size:.9rem;
+}
+.pie-exploracion p { margin:.4rem 0; }
+@media (max-width:520px) {
+  .barra-exploracion, .pie-exploracion { width: min(calc(100% - 36px), 1052px); }
+}
+
+
+/* 10. PÁGINAS DE CURSOS ------------------------------------- */
+.pagina-curso .datos-curso {
+  color: var(--color-secundario);
+  font-size: .9rem;
+  margin: -.75rem 0 1.4rem;
+}
+.pagina-curso .datos-curso span { padding-inline: .32rem; }
+.lista-contenidos {
+  counter-reset: contenido;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+.lista-contenidos li {
+  counter-increment: contenido;
+  display: grid;
+  grid-template-columns: 2.2rem minmax(0, 1fr);
+  gap: .65rem;
+  align-items: baseline;
+  padding: .7rem 0;
+  border-bottom: 1px solid var(--color-borde);
+  margin: 0;
+}
+.lista-contenidos li:first-child { border-top: 1px solid var(--color-borde); }
+.lista-contenidos li::before {
+  content: counter(contenido, decimal-leading-zero);
+  font-size: .83rem;
+  color: var(--color-arte);
+  font-variant-numeric: tabular-nums;
+}
+.pagina-curso .lista-recursos a { font-weight: 500; }
+.pagina-curso .descripcion-recurso { margin-top: .15rem; }

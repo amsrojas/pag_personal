@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Patrones de cuerdas sobre una circunferencia y aritmética modular.">
+  <title>Chryzode | Andrés M. Salazar</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="css/chryzode.css">
+  <link rel="stylesheet" href="css/adaptaciones.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body class="pagina-exploracion pagina-chryzode">
+  <nav class="barra-exploracion" aria-label="Ruta de navegación">
+    <a href="../index.html">Andrés M. Salazar</a> / <a href="index.html">Exploraciones computacionales</a>
+  </nav>
+<main>
+
+    <div class="chryzode-wrap">
+
+      <header class="chryzode-header">
+        <p class="chryzode-kicker">Exploraciones computacionales · Andrés M. Salazar</p>
+
+        <h1>Chryzode</h1>
+
+        <p class="chryzode-lead">
+          Exploración de patrones geométricos generados mediante una regla modular aplicada
+          sobre puntos distribuidos en una circunferencia.
+        </p>
+      </header>
+
+      <section class="chryzode-section" id="descripcion">
+        <p>
+          Un <strong>chryzode</strong> es una estructura discreta trazada sobre una circunferencia.
+          Se construye distribuyendo un conjunto finito de puntos y conectando cada uno de ellos
+          con otro punto determinado por una regla aritmética.
+        </p>
+
+        <div class="chryzode-math">
+          \[
+            f(k) = a k \pmod{n}
+          \]
+        </div>
+
+        <p>
+          Los enteros \(0,1,\dots,n-1\) se ubican sobre la circunferencia, y cada índice \(k\)
+          se conecta con su imagen \(f(k)\). La figura resultante depende de la relación entre
+          el número total de puntos \(n\) y el parámetro \(a\).
+        </p>
+      </section>
+
+      <section class="chryzode-section" id="elementos">
+        <h2>Elementos de la construcción</h2>
+
+        <ul>
+          <li>
+            <strong>\(n\)</strong>: número total de puntos distribuidos sobre la circunferencia.
+            Define la resolución discreta de la figura.
+          </li>
+
+          <li>
+            <strong>\(a\)</strong>: parámetro de la regla modular.
+            Determina cómo se conectan los puntos y modifica el patrón visual.
+          </li>
+
+          <li>
+            <strong>Puntos base</strong>: representan los índices del conjunto
+            \(\{0,1,\dots,n-1\}\).
+          </li>
+
+          <li>
+            <strong>Cuerdas</strong>: segmentos que unen cada punto \(k\) con su imagen \(f(k)\).
+          </li>
+        </ul>
+      </section>
+
+      <section class="chryzode-section" id="interpretacion">
+        <h2>Interpretación</h2>
+
+        <p>
+          Esta visualización muestra cómo una regla aritmética simple puede generar estructuras
+          de gran riqueza geométrica. Su interés no está solo en la figura final, sino en la relación
+          entre número, repetición, simetría y forma.
+        </p>
+      </section>
+
+      <section class="chryzode-section" id="observaciones">
+        <h2>Observaciones</h2>
+
+        <ul>
+          <li>
+            Según la relación entre \(a\) y \(n\), pueden aparecer simetrías y patrones periódicos.
+          </li>
+
+          <li>
+            Modificar \(n\) cambia la densidad de la representación.
+          </li>
+
+          <li>
+            Modificar \(a\) altera la conectividad y, con ello, la estructura global del dibujo.
+          </li>
+
+          <li>
+            La figura también puede entenderse como un grafo dispuesto sobre una circunferencia.
+          </li>
+        </ul>
+      </section>
+
+    </div>
+
+    <section class="chryzode-app-wrap" aria-label="Aplicación interactiva Chryzode">
+      <div id="chryzode-app"></div>
+    </section>
+
+  </main>
+  <footer class="pie-exploracion">
+    <p><a href="index.html">← Volver a exploraciones</a></p>
+    <p>Adaptación de una exploración desarrollada para Fundación Radix.</p>
+  </footer>
+
+  <script src="js/chryzode.js"></script>
+  <script>
+    window.ChryzodeApp.mount("#chryzode-app");
+  </script>
+</body>
+</html>
