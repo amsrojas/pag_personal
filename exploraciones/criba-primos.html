@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Detector de números primos y factorización prima exacta hasta 10¹² con la criba de Eratóstenes hasta 10⁶.">
+  <title>Detector de números primos · Andrés M. Salazar</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .herramienta { max-width: 760px; margin: 1.5rem 0; }
+    .herramienta .panel { border: 1px solid #d5dee2; border-radius: 12px; padding: 1.25rem; background: #f8fafb; }
+    .herramienta label { display: block; font-weight: 650; margin-bottom: .5rem; }
+    .herramienta input { box-sizing: border-box; width: min(100%, 340px); padding: .7rem .8rem; font: inherit; border: 1px solid #aabac0; border-radius: 7px; background: white; color: #172c35; }
+    .herramienta input:focus { outline: 2px solid #356e83; outline-offset: 1px; }
+    .herramienta button { padding: .65rem 1rem; margin-left: .35rem; background: #23586c; color: white; border: 1px solid #23586c; border-radius: 7px; cursor: pointer; font: inherit; font-weight: 650; }
+    .herramienta button:focus-visible { outline: 3px solid #356e83; outline-offset: 2px; }
+    .herramienta .resultado { margin-top: 1.2rem; border-left: 4px solid #28748a; border-radius: 0 8px 8px 0; background: #edf5f6; padding: 1rem 1.2rem; overflow-wrap: anywhere; }
+    .herramienta .resultado strong { font-size: clamp(1.2rem, 4vw, 1.7rem); display: block; }
+    .herramienta .resultado p { margin: .35rem 0; }
+    .herramienta .ayuda { color: #52636a; font-size: .92rem; }
+    .herramienta .error { color: #8c2929; }
+    @media (max-width: 520px) { .herramienta button { margin: .65rem 0 0; display: block; } .herramienta .panel { padding: 1rem; } }
+  </style>
+</head>
+<body>
+  <main class="contenedor pagina-curso">
+    <a class="volver" href="../index.html">← Volver al inicio</a>
+    <header>
+      <p class="etiqueta tema-ciencias">Investigación · Herramientas computacionales</p>
+      <h1>Detector de números primos</h1>
+      <p class="subtitulo">Criba de Eratóstenes · Primalidad y factorización hasta 10<sup>12</sup></p>
+      <p class="introduccion">
+        Comprueba si un número es primo y, si es compuesto, obtén su factorización
+        prima. Para ello se utiliza una criba de Eratóstenes con los primos
+        hasta 1.000.000, construida directamente en tu navegador.
+      </p>
+    </header>
+
+    <section class="herramienta" aria-labelledby="titulo-consulta">
+      <h2 id="titulo-consulta">Consulta de primalidad</h2>
+      <div class="panel">
+        <form id="formulario" novalidate>
+          <label for="numero">Introduce un entero entre 0 y 1.000.000.000.000</label>
+          <input id="numero" type="text" inputmode="numeric" autocomplete="off"
+                 value="999983" required aria-describedby="estado">
+          <button type="submit">Comprobar</button>
+        </form>
+        <p class="ayuda" id="estado">Preparando la criba…</p>
+        <p id="error" class="error" role="alert" hidden></p>
+        <div id="resultado" class="resultado" role="status" aria-live="polite" hidden>
+          <strong id="respuesta"></strong>
+          <p id="detalle"></p>
+          <p id="factorizacion" hidden></p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="titulo-metodo">
+      <h2 id="titulo-metodo">Método</h2>
+      <p>
+        Todo número compuesto <em>N</em> tiene al menos un divisor primo
+        menor o igual que √<em>N</em>. Por tanto, para determinar la primalidad
+        de cualquier entero hasta 10<sup>12</sup>, basta con probar la divisibilidad
+        por los primos hasta √(10<sup>12</sup>) = 10<sup>6</sup>.
+      </p>
+      <p>
+        La criba de Eratóstenes encuentra los <strong>78.498 números primos</strong>
+        hasta 1.000.000. La herramienta divide únicamente entre estos primos
+        y se detiene cuando el siguiente primo supera la raíz cuadrada del
+        número restante. Así también obtiene la factorización prima completa
+        de los números compuestos.
+      </p>
+      <p>
+        Los cálculos son exactos para todo entero del intervalo indicado
+        y se realizan localmente en el navegador, sin enviar datos a un servidor.
+      </p>
+      <p><a href="representaciones-coprimas.html">Ir a la calculadora de representaciones coprimas →</a></p>
+    </section>
+    <noscript><p>Esta herramienta necesita JavaScript habilitado.</p></noscript>
+  </main>
+
+  <script>
+    'use strict';
+
+    const LIMITE_CRIBA = 1_000_000;
+    const MAXIMO_CONSULTA = 1_000_000_000_000;
+    const compuesto = new Uint8Array(LIMITE_CRIBA + 1);
+    compuesto[0] = compuesto[1] = 1;
+
+    for (let p = 2; p * p <= LIMITE_CRIBA; p++) {
+      if (!compuesto[p]) {
+        for (let multiplo = p * p; multiplo <= LIMITE_CRIBA; multiplo += p) {
+          compuesto[multiplo] = 1;
+        }
+      }
+    }
+
+    const primos = [];
+    for (let p = 2; p <= LIMITE_CRIBA; p++) {
+      if (!compuesto[p]) primos.push(p);
+    }
+
+    const $ = (id) => document.getElementById(id);
+    const mostrarNumero = (n) => n.toLocaleString('es-CO');
+    $('estado').textContent = `Criba preparada: ${mostrarNumero(primos.length)} primos hasta ${mostrarNumero(LIMITE_CRIBA)}.`;
+
+    // División únicamente entre los primos generados por la criba.
+    // n es un entero seguro de JavaScript y no supera 10^12.
+    function factorizar(n) {
+      const factores = [];
+      let restante = n;
+
+      for (const p of primos) {
+        if (p * p > restante) break;
+        if (restante % p !== 0) continue;
+
+        let exponente = 0;
+        do {
+          restante /= p;
+          exponente++;
+        } while (restante % p === 0);
+
+        factores.push([p, exponente]);
+      }
+
+      if (restante > 1) factores.push([restante, 1]);
+      return factores;
+    }
+
+    function mostrarFactorizacion(n, factores) {
+      const salida = $('factorizacion');
+      salida.replaceChildren();
+      salida.append(document.createTextNode('Factorización prima: ' + mostrarNumero(n) + ' = '));
+
+      factores.forEach(([primo, exponente], indice) => {
+        if (indice > 0) salida.append(document.createTextNode(' × '));
+        salida.append(document.createTextNode(mostrarNumero(primo)));
+        if (exponente > 1) {
+          const superindice = document.createElement('sup');
+          superindice.textContent = String(exponente);
+          salida.append(superindice);
+        }
+      });
+      salida.hidden = false;
+    }
+
+    function consultar() {
+      $('resultado').hidden = true;
+      $('factorizacion').hidden = true;
+      $('error').hidden = true;
+
+      const cadena = $('numero').value.trim();
+      if (!/^\d+$/.test(cadena)) {
+        $('error').textContent = 'Introduce un número entero no negativo, sin puntos ni espacios.';
+        $('error').hidden = false;
+        return;
+      }
+
+      const n = Number(cadena);
+      if (!Number.isSafeInteger(n) || n > MAXIMO_CONSULTA) {
+        $('error').textContent = 'El número debe estar entre 0 y 1.000.000.000.000.';
+        $('error').hidden = false;
+        return;
+      }
+
+      if (n < 2) {
+        $('respuesta').textContent = `${mostrarNumero(n)} no es primo.`;
+        $('detalle').textContent = 'El 0 y el 1 no son primos ni compuestos.';
+      } else {
+        const factores = factorizar(n);
+        const esPrimo = factores.length === 1 && factores[0][1] === 1;
+
+        $('respuesta').textContent = `${mostrarNumero(n)} ${esPrimo ? 'es primo' : 'es compuesto'}.`;
+        $('detalle').textContent = esPrimo
+          ? 'No tiene divisores positivos distintos de 1 y de sí mismo.'
+          : `Su menor divisor primo es ${mostrarNumero(factores[0][0])}.`;
+
+        if (!esPrimo) mostrarFactorizacion(n, factores);
+      }
+
+      $('resultado').hidden = false;
+    }
+
+    $('formulario').addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      consultar();
+    });
+    consultar();
+  </script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Calculadora de representaciones coprimas de enteros pares mediante la fórmula exacta CRT de Andrés M. Salazar.">
+  <title>Representaciones coprimas · Andrés M. Salazar</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .herramienta { max-width: 800px; margin: 1.5rem 0; }
+    .herramienta .panel { border: 1px solid #d5dee2; border-radius: 12px; padding: 1.25rem; background: #f8fafb; }
+    .herramienta .formulario { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .herramienta label { display: block; margin-bottom: .4rem; font-weight: 650; }
+    .herramienta input { box-sizing: border-box; width: 100%; font: inherit; padding: .7rem .8rem; border: 1px solid #aabac0; border-radius: 7px; background: white; color: #172c35; }
+    .herramienta input:focus { outline: 2px solid #356e83; outline-offset: 1px; }
+    .herramienta .ayuda { font-size: .91rem; color: #52636a; margin: .45rem 0 0; }
+    .herramienta .acciones { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-top: 1.1rem; }
+    .herramienta button { font: inherit; padding: .65rem 1rem; border-radius: 7px; cursor: pointer; }
+    .herramienta .principal { background: #23586c; color: white; border: 1px solid #23586c; font-weight: 650; }
+    .herramienta .secundario { background: white; color: #23586c; border: 1px solid #aac0c8; }
+    .herramienta button:focus-visible { outline: 3px solid #356e83; outline-offset: 2px; }
+    .herramienta .resultado { margin-top: 1.2rem; padding: 1rem 1.2rem; border-left: 4px solid #28748a; background: #edf5f6; border-radius: 0 8px 8px 0; overflow-wrap: anywhere; }
+    .herramienta .resultado strong { display: block; font-size: clamp(1.4rem, 4vw, 2.25rem); line-height: 1.4; }
+    .herramienta .resultado p { margin: .35rem 0; }
+    .herramienta .error { color: #8c2929; margin-top: .8rem; }
+    .herramienta code { font-size: .96em; }
+    @media (max-width: 620px) { .herramienta .formulario { grid-template-columns: 1fr; } .herramienta .panel { padding: 1rem; } }
+  </style>
+</head>
+<body>
+  <main class="contenedor pagina-curso">
+    <a class="volver" href="../index.html">← Volver al inicio</a>
+
+    <header>
+      <h1>Representaciones coprimas</h1>
+      <p class="subtitulo">Fórmula exacta con módulo 6P</p>
+      <p class="introduccion">
+        Calculadora del número de descomposiciones no ordenadas de un entero par
+        <em>2n = h + k</em>, con <em>1 ≤ h ≤ k</em>, en las que ambos sumandos
+        son coprimos con <em>6P</em>. El producto <em>P</em> se construye con
+        los primos distintos que elijas, todos mayores o iguales a 5.
+      </p>
+    </header>
+
+    <section class="herramienta" aria-labelledby="titulo-calculadora">
+      <h2 id="titulo-calculadora">Calculadora</h2>
+      <div class="panel">
+        <form id="formulario" novalidate>
+          <div class="formulario">
+            <div>
+              <label for="par">Número par (2n)</label>
+              <input id="par" name="par" type="text" inputmode="numeric" autocomplete="off" value="40" required>
+              <p class="ayuda">Introduce un entero par positivo, por ejemplo, 40.</p>
+            </div>
+            <div>
+              <label for="primos">Lista de primos de P</label>
+              <input id="primos" name="primos" type="text" autocomplete="off" value="5, 7" required>
+              <p class="ayuda">Primos distintos separados por comas o espacios; de 5 a 1.000.000.</p>
+            </div>
+          </div>
+          <div class="acciones">
+            <button class="principal" type="submit">Calcular</button>
+            <button class="secundario" type="button" id="ejemplo-contact">Ejemplo CONTACT (P = 5)</button>
+            <button class="secundario" type="button" id="ejemplo-6p">Ejemplo 6P (P = 35)</button>
+          </div>
+        </form>
+        <p id="error" class="error" role="alert" hidden></p>
+        <div id="resultado" class="resultado" role="status" aria-live="polite" hidden>
+          <strong id="valor"></strong>
+          <p id="detalle"></p>
+          <p class="ayuda" id="metodo"></p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="titulo-metodo">
+      <h2 id="titulo-metodo">Sobre el cálculo</h2>
+      <p>
+        Se aplica exclusivamente la fórmula exacta de inclusión-exclusión y el
+        teorema chino del resto (CRT). No se recorren las posibles parejas
+        <em>h + k</em> por fuerza bruta. La fórmula para varios primos incluye
+        el caso de un único primo estudiado en el artículo publicado en CONTACT.
+      </p>
+      <p>
+        El conteo admite el sumando 1 y, cuando corresponde, la pareja
+        central <em>n + n</em>. <strong>No es un contador de parejas de primos</strong>.
+      </p>
+      <p>
+        El tiempo de cálculo crece exponencialmente con la cantidad de primos
+        seleccionados: a lo sumo 3<sup>r</sup> términos para <em>r</em> primos.
+        Para mantener una respuesta ágil en el navegador, esta versión admite
+        hasta 9 primos distintos. El número par puede tener hasta 120 dígitos.
+      </p>
+      <p>
+        Referencias:
+        <a href="https://research.library.kutztown.edu/contact/vol7/iss1/2/" target="_blank" rel="noopener noreferrer">artículo en CONTACT</a>
+        y <a href="https://arxiv.org/abs/2609.22305" target="_blank" rel="noopener noreferrer">extensión al módulo 6P (arXiv)</a>.
+      </p>
+      <p><a href="criba-primos.html">Consultar la criba de números primos →</a></p>
+    </section>
+
+    <noscript><p>Esta calculadora necesita JavaScript habilitado.</p></noscript>
+  </main>
+
+  <script>
+    'use strict';
+
+    // Criba usada SOLAMENTE para validar los primos introducidos.
+    // El conteo g_P(2n) se hace mediante la fórmula CRT, nunca por fuerza bruta.
+    const LIMITE_PRIMOS = 1_000_000;
+    const MAX_PRIMOS = 9;
+    const compuesto = new Uint8Array(LIMITE_PRIMOS + 1);
+    compuesto[0] = compuesto[1] = 1;
+    for (let p = 2; p * p <= LIMITE_PRIMOS; p++) {
+      if (compuesto[p] === 0) {
+        for (let k = p * p; k <= LIMITE_PRIMOS; k += p) compuesto[k] = 1;
+      }
+    }
+
+    const $ = (id) => document.getElementById(id);
+    const mod = (a, q) => ((a % q) + q) % q;
+
+    // Inverso modular calculado con Euclides extendido; q y p son coprimos.
+    function inversoModular(a, p) {
+      let t = 0n, nuevoT = 1n;
+      let r = p, nuevoR = mod(a, p);
+      while (nuevoR !== 0n) {
+        const c = r / nuevoR;
+        [t, nuevoT] = [nuevoT, t - c * nuevoT];
+        [r, nuevoR] = [nuevoR, r - c * nuevoR];
+      }
+      if (r !== 1n) throw new Error('No existe el inverso modular.');
+      return mod(t, p);
+    }
+
+    function validarPar(texto) {
+      const limpio = texto.trim();
+      if (!/^\d+$/.test(limpio)) throw new Error('El número debe ser un entero par positivo.');
+      if (limpio.length > 120) throw new Error('El número par no puede superar 120 dígitos.');
+      const N = BigInt(limpio);
+      if (N < 2n || N % 2n !== 0n) throw new Error('Introduce un número par mayor o igual que 2.');
+      return N;
+    }
+
+    function validarLista(texto) {
+      const tokens = texto.trim().split(/[,;\s]+/).filter(Boolean);
+      if (tokens.length === 0) throw new Error('Introduce al menos un primo mayor o igual que 5.');
+      if (tokens.length > MAX_PRIMOS) throw new Error(`Se admiten como máximo ${MAX_PRIMOS} primos.`);
+      const vistos = new Set();
+      return tokens.map((token) => {
+        if (!/^\d+$/.test(token)) throw new Error(`«${token}» no es un entero válido.`);
+        const p = Number(token);
+        if (!Number.isSafeInteger(p) || p < 5 || p > LIMITE_PRIMOS || compuesto[p] !== 0) {
+          throw new Error(`«${token}» no es un número primo entre 5 y 1.000.000.`);
+        }
+        if (vistos.has(p)) throw new Error(`El primo ${p} está repetido.`);
+        vistos.add(p);
+        return BigInt(p);
+      });
+    }
+
+    function datosLocales(n, primos, m, e) {
+      return primos.map((p) => {
+        const a = (p * (p % 6n) - 1n) / 6n;
+        const b = p - 1n - a;
+        let x, y;
+        if (e === 0n) {
+          x = a;
+          y = mod(m - b, p);
+        } else if (e === 1n) {
+          x = a;
+          y = mod(m - a, p);
+        } else {
+          x = b;
+          y = mod(m - b, p);
+        }
+        const colision = (n % p === 0n);
+        if (colision !== (x === y)) throw new Error('Inconsistencia en las clases locales.');
+        return { p, x, y, colision };
+      });
+    }
+
+    // Fórmula CRT exacta del artículo 6P.
+    // Recorre los términos de inclusión-exclusión, NO los posibles sumandos.
+    function calcularRepresentaciones(N, primos) {
+      const n = N / 2n;
+      const e = n % 3n;
+      const m = e === 0n ? n / 3n - 1n : e === 1n ? (n - 1n) / 3n : (n - 5n) / 3n;
+      const locales = datosLocales(n, primos, m, e);
+      let C = 0n;
+      let terminos = 0;
+
+      // Cada paso combina una congruencia mediante CRT en forma canónica:
+      // eta' = eta + Q * ((s - eta) * Q^{-1} mod p), modulo Qp.
+      function sumarTerminos(indice, Q, eta, signo) {
+        if (indice === locales.length) {
+          // L(m,Q,eta) = 1 + floor((m-eta)/Q); si eta>m, L=0.
+          // Esta forma evita la división truncada de BigInt para negativos.
+          const L = m >= eta ? 1n + (m - eta) / Q : 0n;
+          C += signo * L;
+          terminos++;
+          return;
+        }
+
+        const { p, x, y, colision } = locales[indice];
+        sumarTerminos(indice + 1, Q, eta, signo); // alfa_i = 0
+        const inverso = inversoModular(Q, p);
+        const Qnuevo = Q * p;
+        if (!colision) { // alfa_i = 1; peso -(1-epsilon_i)
+          const etaX = eta + Q * mod((x - eta) * inverso, p);
+          sumarTerminos(indice + 1, Qnuevo, etaX, -signo);
+        }
+        // alfa_i = 2; peso -1. La colisión se descuenta una sola vez.
+        const etaY = eta + Q * mod((y - eta) * inverso, p);
+        sumarTerminos(indice + 1, Qnuevo, etaY, -signo);
+      }
+
+      sumarTerminos(0, 1n, 0n, 1n);
+      const F = (n % 2n !== 0n && n % 3n !== 0n && primos.every((p) => n % p !== 0n)) ? 1n : 0n;
+      if (C < 0n || (e !== 0n && (C + F) % 2n !== 0n)) {
+        throw new Error('La evaluación de la fórmula no produjo un resultado consistente.');
+      }
+      const g = e === 0n ? C : (C + F) / 2n;
+      const P = primos.reduce((ac, p) => ac * p, 1n);
+      return { g, P, M: 6n * P, terminos };
+    }
+
+    function mostrar() {
+      $('resultado').hidden = true;
+      $('error').hidden = true;
+      try {
+        const N = validarPar($('par').value);
+        const primos = validarLista($('primos').value);
+        const { g, P, M, terminos } = calcularRepresentaciones(N, primos);
+        $('valor').textContent = `g_P(${N}) = ${g}`;
+        $('detalle').textContent = `P = ${P} · M = 6P = ${M}`;
+        $('metodo').textContent = `Fórmula CRT exacta · ${terminos.toLocaleString('es-CO')} términos evaluados · Sin fuerza bruta`;
+        $('resultado').hidden = false;
+      } catch (err) {
+        $('error').textContent = err instanceof Error ? err.message : 'No se pudo completar el cálculo.';
+        $('error').hidden = false;
+      }
+    }
+
+    $('formulario').addEventListener('submit', (evento) => { evento.preventDefault(); mostrar(); });
+    $('ejemplo-contact').addEventListener('click', () => { $('par').value = '20'; $('primos').value = '5'; mostrar(); });
+    $('ejemplo-6p').addEventListener('click', () => { $('par').value = '40'; $('primos').value = '5, 7'; mostrar(); });
+    mostrar();
+  </script>
+</body>
+</html>
