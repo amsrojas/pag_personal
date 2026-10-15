@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Detector de números primos y factorización prima exacta hasta 10¹² con la criba de Eratóstenes hasta 10⁶.">
+  <meta name="description" content="Detector exacto de números primos hasta 10¹² mediante una criba de Eratóstenes hasta 10⁶ y divisibilidad por números primos.">
   <title>Detector de números primos · Andrés M. Salazar</title>
   <link rel="stylesheet" href="../css/estilos.css">
   <style>
@@ -21,6 +21,18 @@
     .herramienta .error { color: #8c2929; }
     @media (max-width: 520px) { .herramienta button { margin: .65rem 0 0; display: block; } .herramienta .panel { padding: 1rem; } }
   </style>
+      <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
   <main class="contenedor pagina-curso">
@@ -28,11 +40,12 @@
     <header>
       <p class="etiqueta tema-ciencias">Investigación · Herramientas computacionales</p>
       <h1>Detector de números primos</h1>
-      <p class="subtitulo">Criba de Eratóstenes · Primalidad y factorización hasta 10<sup>12</sup></p>
+      <p class="subtitulo">Criba de Eratóstenes · Primalidad hasta $10^{12}$</p>
       <p class="introduccion">
-        Comprueba si un número es primo y, si es compuesto, obtén su factorización
-        prima. Para ello se utiliza una criba de Eratóstenes con los primos
-        hasta 1.000.000, construida directamente en tu navegador.
+        Comprueba si un entero es primo o compuesto. Cuando es compuesto,
+        la herramienta identifica su menor divisor primo. Para ello utiliza
+        una criba de Eratóstenes hasta 1.000.000, construida directamente
+        en el navegador.
       </p>
     </header>
 
@@ -50,7 +63,6 @@
         <div id="resultado" class="resultado" role="status" aria-live="polite" hidden>
           <strong id="respuesta"></strong>
           <p id="detalle"></p>
-          <p id="factorizacion" hidden></p>
         </div>
       </div>
     </section>
@@ -58,23 +70,25 @@
     <section aria-labelledby="titulo-metodo">
       <h2 id="titulo-metodo">Método</h2>
       <p>
-        Todo número compuesto <em>N</em> tiene al menos un divisor primo
-        menor o igual que √<em>N</em>. Por tanto, para determinar la primalidad
-        de cualquier entero hasta 10<sup>12</sup>, basta con probar la divisibilidad
-        por los primos hasta √(10<sup>12</sup>) = 10<sup>6</sup>.
+        La herramienta genera, mediante la criba de Eratóstenes,
+        todos los números primos comprendidos entre 2 y 1.000.000,
+        obteniendo un total de <strong>78.498 números primos</strong>.
+        La lista se construye una sola vez al cargar la página.
       </p>
       <p>
-        La criba de Eratóstenes encuentra los <strong>78.498 números primos</strong>
-        hasta 1.000.000. La herramienta divide únicamente entre estos primos
-        y se detiene cuando el siguiente primo supera la raíz cuadrada del
-        número restante. Así también obtiene la factorización prima completa
-        de los números compuestos.
+        Todo número compuesto $N$ tiene al menos un divisor primo
+        menor o igual que $\sqrt{N}$. Por tanto, los primos obtenidos
+        permiten determinar exactamente la primalidad de cualquier
+        entero hasta $10^{12}$.
       </p>
       <p>
-        Los cálculos son exactos para todo entero del intervalo indicado
-        y se realizan localmente en el navegador, sin enviar datos a un servidor.
+        Si el número es compuesto, se muestra su menor divisor primo;
+        no se calcula ni se presenta su factorización completa.
+        Todas las operaciones se realizan localmente en el navegador,
+        sin enviar datos a servidores externos.
       </p>
       <p><a href="representaciones-coprimas.html">Ir a la calculadora de representaciones coprimas →</a></p>
+      <p><a href="index.html">← Volver a exploraciones</a></p>
     </section>
     <noscript><p>Esta herramienta necesita JavaScript habilitado.</p></noscript>
   </main>
@@ -104,49 +118,18 @@
     const mostrarNumero = (n) => n.toLocaleString('es-CO');
     $('estado').textContent = `Criba preparada: ${mostrarNumero(primos.length)} primos hasta ${mostrarNumero(LIMITE_CRIBA)}.`;
 
-    // División únicamente entre los primos generados por la criba.
-    // n es un entero seguro de JavaScript y no supera 10^12.
-    function factorizar(n) {
-      const factores = [];
-      let restante = n;
-
+    // Devuelve el menor divisor primo o null si n es primo.
+    // Para n <= 10^12 es suficiente probar los primos hasta 10^6.
+    function menorDivisorPrimo(n) {
       for (const p of primos) {
-        if (p * p > restante) break;
-        if (restante % p !== 0) continue;
-
-        let exponente = 0;
-        do {
-          restante /= p;
-          exponente++;
-        } while (restante % p === 0);
-
-        factores.push([p, exponente]);
+        if (p * p > n) break;
+        if (n % p === 0) return p;
       }
-
-      if (restante > 1) factores.push([restante, 1]);
-      return factores;
-    }
-
-    function mostrarFactorizacion(n, factores) {
-      const salida = $('factorizacion');
-      salida.replaceChildren();
-      salida.append(document.createTextNode('Factorización prima: ' + mostrarNumero(n) + ' = '));
-
-      factores.forEach(([primo, exponente], indice) => {
-        if (indice > 0) salida.append(document.createTextNode(' × '));
-        salida.append(document.createTextNode(mostrarNumero(primo)));
-        if (exponente > 1) {
-          const superindice = document.createElement('sup');
-          superindice.textContent = String(exponente);
-          salida.append(superindice);
-        }
-      });
-      salida.hidden = false;
+      return null;
     }
 
     function consultar() {
       $('resultado').hidden = true;
-      $('factorizacion').hidden = true;
       $('error').hidden = true;
 
       const cadena = $('numero').value.trim();
@@ -167,15 +150,14 @@
         $('respuesta').textContent = `${mostrarNumero(n)} no es primo.`;
         $('detalle').textContent = 'El 0 y el 1 no son primos ni compuestos.';
       } else {
-        const factores = factorizar(n);
-        const esPrimo = factores.length === 1 && factores[0][1] === 1;
-
-        $('respuesta').textContent = `${mostrarNumero(n)} ${esPrimo ? 'es primo' : 'es compuesto'}.`;
-        $('detalle').textContent = esPrimo
-          ? 'No tiene divisores positivos distintos de 1 y de sí mismo.'
-          : `Su menor divisor primo es ${mostrarNumero(factores[0][0])}.`;
-
-        if (!esPrimo) mostrarFactorizacion(n, factores);
+        const divisor = menorDivisorPrimo(n);
+        if (divisor === null) {
+          $('respuesta').textContent = `${mostrarNumero(n)} es primo.`;
+          $('detalle').textContent = 'No tiene divisores positivos distintos de 1 y de sí mismo.';
+        } else {
+          $('respuesta').textContent = `${mostrarNumero(n)} es compuesto.`;
+          $('detalle').textContent = `Es divisible por ${mostrarNumero(divisor)}, su menor divisor primo.`;
+        }
       }
 
       $('resultado').hidden = false;

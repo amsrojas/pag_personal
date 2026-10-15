@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BIA - Bioinspiración Aplicada. Semillero de Modelización Matemática y Diseño Biomimético de la Pontificia Universidad Javeriana Cali. Proyectos de investigación, modelización de sistemas biológicos y diseño bioinspirado.">
+  <meta name="theme-color" content="#225500">
+  <title>BIA - Bioinspiración Aplicada</title>
+
+  <!-- Hoja general de la página académica personal -->
+  <link rel="stylesheet" href="../css/estilos.css">
+
+  <!-- Estilos particulares de BIA. Se mantienen aquí para facilitar su edición. -->
+  <style>
+    :root {
+      --bia-verde: #225500;
+      --bia-verde-oscuro: #193f00;
+      --bia-verde-claro: #ecf3e5;
+      --bia-fondo: #f8faf6;
+      --bia-tinta: #252d23;
+      --bia-secundario: #5b6657;
+      --bia-linea: #dfe8d9;
+    }
+
+    html { scroll-behavior: smooth; }
+    body.sitio-bia {
+      margin: 0;
+      background: var(--bia-fondo);
+      color: var(--bia-tinta);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+    .pagina-bia, .pagina-bia * { box-sizing: border-box; }
+    .pagina-bia {
+      width: min(1080px, calc(100% - 2.5rem));
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2.3rem 0 4rem;
+    }
+    .pagina-bia a { color: var(--bia-verde); }
+    .pagina-bia a:focus-visible { outline: 3px solid var(--bia-verde); outline-offset: 4px; }
+    .pagina-bia p { margin: .5rem 0 1.2rem; }
+    .pagina-bia h1, .pagina-bia h2, .pagina-bia h3 { margin-top: 0; line-height: 1.22; }
+    .pagina-bia h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -.025em; }
+    .pagina-bia h3 { font-size: 1.14rem; }
+    .pagina-bia section { margin: 0; padding: 0; }
+
+    .bia-barra {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-bottom: 3.3rem;
+    }
+    .bia-volver { text-decoration: none; font-size: .91rem; font-weight: 600; }
+    .bia-nav { display: flex; flex-wrap: wrap; gap: .7rem 1.3rem; }
+    .bia-nav a { text-decoration: none; font-size: .9rem; color: var(--bia-secundario); }
+    .bia-nav a:hover, .bia-volver:hover { text-decoration: underline; }
+
+    .bia-cabecera {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      align-items: center;
+      gap: clamp(1.5rem, 5vw, 5rem);
+      padding-bottom: 3.1rem;
+      border-bottom: 1px solid var(--bia-linea);
+    }
+    .bia-etiqueta {
+      display: block;
+      margin: 0 0 .75rem;
+      color: var(--bia-verde);
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .bia-cabecera h1 {
+      color: var(--bia-verde-oscuro);
+      font-size: clamp(4.4rem, 10vw, 7rem);
+      font-weight: 760;
+      letter-spacing: -.08em;
+      margin: 0;
+    }
+    .bia-nombre { font-size: clamp(1.35rem, 2.8vw, 1.9rem); font-weight: 650; margin: -.15rem 0 1rem !important; }
+    .bia-descripcion { max-width: 57ch; color: var(--bia-secundario); font-size: 1.08rem; }
+    .bia-emblema {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      padding: .7rem;
+    }
+    .bia-emblema img { display: block; width: 100%; height: auto; }
+    .bia-dato { color: var(--bia-secundario); font-size: .93rem; margin: .3rem 0 0 !important; }
+
+    .bia-seccion { margin-top: 4rem !important; }
+    .bia-encabezado { max-width: 67ch; margin-bottom: 1.5rem; }
+    .bia-encabezado p { color: var(--bia-secundario); }
+    .bia-cuadricula { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    .bia-bloque, .bia-proyecto {
+      background: white;
+      border: 1px solid var(--bia-linea);
+      border-radius: 14px;
+      padding: 1.4rem;
+    }
+    .bia-numero { font-weight: 750; font-size: .79rem; color: var(--bia-verde); letter-spacing: .1em; }
+    .bia-bloque h3 { margin: .65rem 0 .6rem; }
+    .bia-bloque p { color: var(--bia-secundario); font-size: .95rem; margin-bottom: 0; }
+
+    .bia-destacado {
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 2rem;
+      background: var(--bia-verde-claro);
+      border: 1px solid #d6e5cb;
+      border-radius: 18px;
+      padding: clamp(1.5rem, 4vw, 2.6rem);
+    }
+    .bia-destacado h3 { font-size: clamp(1.35rem, 2.4vw, 1.8rem); max-width: 27ch; }
+    .bia-destacado p { max-width: 67ch; }
+    .bia-temas { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; align-content: center; }
+    .bia-temas li { border-bottom: 1px solid #c9d8c1; padding-bottom: .55rem; font-size: .95rem; }
+    .bia-temas li:last-child { border-bottom: none; }
+
+    .bia-proyectos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .bia-proyecto { display: flex; flex-direction: column; gap: .6rem; }
+    .bia-proyecto h3 { margin: 0; }
+    .bia-proyecto p { color: var(--bia-secundario); font-size: .95rem; margin: 0; }
+    .bia-proyecto details { margin-top: auto; padding-top: 1rem; }
+    .bia-proyecto summary { cursor: pointer; color: var(--bia-verde); font-size: .91rem; font-weight: 650; }
+    .bia-proyecto details p { margin-top: .65rem; color: var(--bia-tinta); }
+    .bia-nota { color: var(--bia-secundario); font-size: .88rem; margin-top: 1rem !important; }
+
+    .bia-identidad {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      align-items: center;
+      gap: 2rem;
+      border-top: 1px solid var(--bia-linea);
+      border-bottom: 1px solid var(--bia-linea);
+      padding: 2rem 0;
+    }
+    .bia-identidad img { display: block; width: 110px; height: auto; }
+    .bia-identidad p { color: var(--bia-secundario); margin-bottom: 0; }
+    .bia-cierre { margin-top: 3.6rem !important; padding-top: 2rem !important; border-top: 1px solid var(--bia-linea); }
+    .bia-cierre p { margin: .45rem 0; color: var(--bia-secundario); }
+    .bia-cierre a { font-weight: 650; overflow-wrap: anywhere; }
+
+    @media (max-width: 760px) {
+      .pagina-bia { width: min(100% - 2rem, 1080px); padding-top: 1.4rem; }
+      .bia-barra { margin-bottom: 2.3rem; }
+      .bia-cabecera { grid-template-columns: 1fr 115px; gap: 1rem; }
+      .bia-descripcion { font-size: 1rem; }
+      .bia-cuadricula { grid-template-columns: 1fr; }
+      .bia-destacado { grid-template-columns: 1fr; gap: .8rem; }
+      .bia-proyectos { grid-template-columns: 1fr; }
+      .bia-seccion { margin-top: 3rem !important; }
+    }
+    @media (max-width: 440px) {
+      .bia-cabecera { grid-template-columns: 1fr; }
+      .bia-emblema { grid-row: 1; width: 105px; }
+      .bia-identidad { grid-template-columns: 72px 1fr; gap: 1rem; }
+      .bia-identidad img { width: 72px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    /* -------------------------------------
+   Preguntas de investigación
+------------------------------------- */
+
+.bia-pregunta {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dce5d7;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: #455047;
+}
+
+.bia-pregunta strong {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  color: #225500;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+
+/* -------------------------------------
+   Enlaces a simulaciones
+------------------------------------- */
+
+.bia-enlace-simulacion {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.55rem 0;
+  color: #225500;
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.bia-enlace-simulacion:hover {
+  border-bottom-color: #225500;
+}
+
+.bia-enlace-simulacion:focus-visible {
+  outline: 2px solid #225500;
+  outline-offset: 4px;
+}
+  </style>
+</head>
+
+<body class="sitio-bia">
+  <main class="contenedor pagina-bia">
+
+    <div class="bia-barra">
+      <a class="bia-volver" href="../index.html">← Volver a la página principal</a>
+      <nav class="bia-nav" aria-label="Navegación de BIA">
+        <a href="#presentacion">Presentación</a>
+        <a href="#exploraciones">Exploraciones</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+
+<header class="bia-cabecera" style="display: block;">
+  <div>
+    <span class="bia-etiqueta">Semillero de investigación</span>
+
+    <div style="display: flex; align-items: center; gap: 1.2rem;">
+      <img
+        src="img/logo_BIA.png"
+        alt="Logo de BIA"
+        style="width: clamp(65px, 9vw, 95px); height: auto; 
+               display: block; mix-blend-mode: multiply;"
+      >
+      <h1>BIA</h1>
+    </div>
+
+     <p class="bia-descripcion">
+      Semillero de Modelización Matemática y Diseño Biomimético.
+      Estudiamos sistemas biológicos para comprender sus formas,
+      estructuras y dinámicas mediante el lenguaje matemático y
+      herramientas computacionales.
+    </p>
+
+    <p class="bia-dato">Pontificia Universidad Javeriana Cali</p>
+  </div>
+</header>
+
+    <section id="presentacion" class="bia-seccion" aria-labelledby="titulo-presentacion">
+      <div class="bia-encabezado">
+        <h2 id="titulo-presentacion">Nuestro propósito</h2>
+        <p>
+          BIA busca desarrollar competencias investigativas en modelización matemática
+          y computacional de sistemas biológicos. Exploramos sus principios estructurales
+          y dinámicos para identificar posibilidades de aplicación bioinspirada en el diseño
+          y la optimización estructural.
+        </p>
+      </div>
+
+      <div class="bia-cuadricula">
+        <article class="bia-bloque">
+          <span class="bia-numero">1 - OBSERVAR</span>
+          <h3>Comprender la biología</h3>
+          <p>Examinar patrones, comportamientos, interacciones y relaciones con el ambiente.</p>
+        </article>
+        <article class="bia-bloque">
+          <span class="bia-numero">2 - MODELIZAR</span>
+          <h3>Construir explicaciones</h3>
+          <p>Representar procesos mediante modelos matemáticos, análisis de datos y simulaciones.</p>
+        </article>
+        <article class="bia-bloque">
+          <span class="bia-numero">3 - DISEÑAR</span>
+          <h3>Explorar aplicaciones</h3>
+          <p>Investigar cómo los principios biológicos pueden inspirar soluciones de diseño.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="exploraciones" class="bia-seccion" aria-labelledby="titulo-proyectos">
+      <div class="bia-encabezado">
+        <h2 id="titulo-proyectos">Exploraciones</h2>
+
+      </div>
+
+
+     <div class="bia-proyectos">
+
+  <!-- TIBURONES -->
+  <article class="bia-proyecto">
+    <h3>Geometría y conectividad del hábitat de tiburones</h3>
+
+    <p>
+      Estudio de cómo las condiciones oceanográficas configuran
+      regiones de hábitat potencial, su continuidad, fragmentación
+      y conectividad.
+    </p>
+
+    <p class="bia-pregunta">
+      <strong>Pregunta de investigación</strong><br>
+      ¿Cómo se relacionan las condiciones oceanográficas con la
+      geometría y la conectividad del hábitat potencial de los tiburones?
+    </p>
+
+    <a class="bia-enlace-simulacion"
+       href="simulaciones/tiburones/index.html">
+      Explorar simulación →
+    </a>
+  </article>
+
+
+  <!-- MURCIÉLAGOS -->
+  <article class="bia-proyecto">
+    <h3>Movimiento, percepción y ecología de murciélagos</h3>
+
+    <p>
+      Exploración de la relación entre los mecanismos sensoriales,
+      la navegación y las características del paisaje.
+    </p>
+
+    <p class="bia-pregunta">
+      <strong>Pregunta de investigación</strong><br>
+      ¿Cómo se relacionan los mecanismos de percepción y las
+      características del ambiente con los patrones de movimiento
+      y uso del espacio en los murciélagos?
+    </p>
+
+    <a class="bia-enlace-simulacion"
+       href="simulaciones/murcielagos/index.html">
+      Explorar simulación →
+    </a>
+  </article>
+
+
+  <!-- GENES Y COLOR -->
+  <article class="bia-proyecto">
+    <h3>Formación de patrones: señales, genes y color</h3>
+
+    <p>
+      Investigación sobre señales biológicas, expresión génica
+      y organización espacial de la pigmentación en los organismos.
+    </p>
+
+    <p class="bia-pregunta">
+      <strong>Pregunta de investigación</strong><br>
+      ¿Cómo se relacionan las señales biológicas y la regulación
+      de la expresión génica con la formación espacial de patrones
+      de color en los organismos?
+    </p>
+
+    <a class="bia-enlace-simulacion"
+       href="simulaciones/genes_color/index.html">
+      Explorar simulación →
+    </a>
+  </article>
+
+
+  <!-- DESARROLLO EMBRIONARIO -->
+  <article class="bia-proyecto">
+    <h3>Desarrollo embrionario: señales, organización y forma</h3>
+
+    <p>
+      Estudio de las interacciones celulares y los procesos
+      que contribuyen a la organización espacial de los tejidos.
+    </p>
+
+    <p class="bia-pregunta">
+      <strong>Pregunta de investigación</strong><br>
+      ¿Cómo se relacionan las señales biológicas y las
+      interacciones celulares con la organización espacial
+      de los tejidos durante el desarrollo embrionario?
+    </p>
+
+    <a class="bia-enlace-simulacion"
+       href="simulaciones/genes_embrion/index.html">
+      Explorar simulación →
+    </a>
+  </article>
+
+
+  <!-- ETNOBIOLOGÍA -->
+  <article class="bia-proyecto">
+    <span class="bia-numero">BIODIVERSIDAD Y TERRITORIO</span>
+
+    <h3>Etnobiología y conocimientos ancestrales</h3>
+
+    <p>
+      Exploración de las relaciones entre conocimientos locales,
+      prácticas culturales y uso y manejo de la biodiversidad.
+    </p>
+
+    <p class="bia-pregunta">
+      <strong>Pregunta de investigación</strong><br>
+      ¿Cómo se relacionan los conocimientos ancestrales y las
+      prácticas culturales con la comprensión, el uso y el
+      manejo de la biodiversidad en un territorio determinado?
+    </p>
+
+    <a class="bia-enlace-simulacion"
+       href="simulaciones/etnobiologia/index.html">
+      Explorar simulación →
+    </a>
+  </article>
+
+</div>
+      <p class="bia-nota">Las propuestas se presentan como líneas en exploración, no como resultados concluidos.</p>
+    </section>
+
+    
+
+    <footer id="contacto" class="bia-cierre">
+      <span class="bia-etiqueta">Contacto</span>
+      <p><a href="mailto:andresmsalazar@javerianacali.edu.co">andresmsalazar@javerianacali.edu.co</a></p>
+      <p>Semillero BIA - Pontificia Universidad Javeriana Cali</p>
+    </footer>
+
+  </main>
+</body>
+</html>

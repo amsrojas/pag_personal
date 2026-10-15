@@ -17,7 +17,6 @@
     .herramienta .acciones { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-top: 1.1rem; }
     .herramienta button { font: inherit; padding: .65rem 1rem; border-radius: 7px; cursor: pointer; }
     .herramienta .principal { background: #23586c; color: white; border: 1px solid #23586c; font-weight: 650; }
-    .herramienta .secundario { background: white; color: #23586c; border: 1px solid #aac0c8; }
     .herramienta button:focus-visible { outline: 3px solid #356e83; outline-offset: 2px; }
     .herramienta .resultado { margin-top: 1.2rem; padding: 1rem 1.2rem; border-left: 4px solid #28748a; background: #edf5f6; border-radius: 0 8px 8px 0; overflow-wrap: anywhere; }
     .herramienta .resultado strong { display: block; font-size: clamp(1.4rem, 4vw, 2.25rem); line-height: 1.4; }
@@ -26,6 +25,18 @@
     .herramienta code { font-size: .96em; }
     @media (max-width: 620px) { .herramienta .formulario { grid-template-columns: 1fr; } .herramienta .panel { padding: 1rem; } }
   </style>
+    <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
   <main class="contenedor pagina-curso">
@@ -34,12 +45,14 @@
     <header>
       <h1>Representaciones coprimas</h1>
       <p class="subtitulo">Fórmula exacta con módulo 6P</p>
-      <p class="introduccion">
-        Calculadora del número de descomposiciones no ordenadas de un entero par
-        <em>2n = h + k</em>, con <em>1 ≤ h ≤ k</em>, en las que ambos sumandos
-        son coprimos con <em>6P</em>. El producto <em>P</em> se construye con
-        los primos distintos que elijas, todos mayores o iguales a 5.
-      </p>
+    <p class="introduccion">
+      Calculadora del número de parejas de enteros positivos
+      $(h, k)$, con $h \leq k$, cuya suma es un
+      número par $2n = h + k$ y cuyos elementos son
+      coprimos con $6P$.
+      El producto $P$ se construye a partir de una lista
+      de números primos distintos, mayores o iguales que $5$.
+    </p>
     </header>
 
     <section class="herramienta" aria-labelledby="titulo-calculadora">
@@ -60,8 +73,6 @@
           </div>
           <div class="acciones">
             <button class="principal" type="submit">Calcular</button>
-            <button class="secundario" type="button" id="ejemplo-contact">Ejemplo CONTACT (P = 5)</button>
-            <button class="secundario" type="button" id="ejemplo-6p">Ejemplo 6P (P = 35)</button>
           </div>
         </form>
         <p id="error" class="error" role="alert" hidden></p>
@@ -78,18 +89,17 @@
       <p>
         Se aplica exclusivamente la fórmula exacta de inclusión-exclusión y el
         teorema chino del resto (CRT). No se recorren las posibles parejas
-        <em>h + k</em> por fuerza bruta. La fórmula para varios primos incluye
-        el caso de un único primo estudiado en el artículo publicado en CONTACT.
+        $h + k$ por fuerza bruta. 
       </p>
       <p>
         El conteo admite el sumando 1 y, cuando corresponde, la pareja
-        central <em>n + n</em>. <strong>No es un contador de parejas de primos</strong>.
+        central $n + n$. <strong> No es un contador de parejas de primos</strong>.
       </p>
       <p>
         El tiempo de cálculo crece exponencialmente con la cantidad de primos
-        seleccionados: a lo sumo 3<sup>r</sup> términos para <em>r</em> primos.
+        seleccionados: a lo sumo $3^r$ términos para $r$ primos.
         Para mantener una respuesta ágil en el navegador, esta versión admite
-        hasta 9 primos distintos. El número par puede tener hasta 120 dígitos.
+        hasta $9$ primos distintos. El número par puede tener hasta $120$ dígitos.
       </p>
       <p>
         Referencias:
@@ -97,10 +107,21 @@
         y <a href="https://arxiv.org/abs/2609.22305" target="_blank" rel="noopener noreferrer">extensión al módulo 6P (arXiv)</a>.
       </p>
       <p><a href="criba-primos.html">Consultar la criba de números primos →</a></p>
+
+
+    <p><a href="index.html">← Volver a exploraciones</a></p>
+
     </section>
 
+
+
     <noscript><p>Esta calculadora necesita JavaScript habilitado.</p></noscript>
+
+
+
   </main>
+
+
 
   <script>
     'use strict';
@@ -243,9 +264,11 @@
     }
 
     $('formulario').addEventListener('submit', (evento) => { evento.preventDefault(); mostrar(); });
-    $('ejemplo-contact').addEventListener('click', () => { $('par').value = '20'; $('primos').value = '5'; mostrar(); });
-    $('ejemplo-6p').addEventListener('click', () => { $('par').value = '40'; $('primos').value = '5, 7'; mostrar(); });
     mostrar();
   </script>
+
+
+
+
 </body>
 </html>

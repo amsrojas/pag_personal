@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#225500">
+  <meta name="description" content="Laboratorio interactivo de patrones de pigmentación mediante el modelo de reacción-difusión de Gray–Scott. Semillero BIA.">
+  <title>Patrones de color · Laboratorio BIA</title>
+
+  <style>
+    :root {
+      --verde: #225500;
+      --verde-oscuro: #193f00;
+      --tinta: #263026;
+      --gris: #596559;
+      --linea: #dfe8d9;
+      --fondo: #f8faf6;
+      --claro: #edf3e7;
+      --blanco: #fff;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--fondo); color: var(--tinta); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: var(--verde); }
+    button, input, select { font: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, canvas:focus-visible { outline: 3px solid var(--verde); outline-offset: 3px; }
+    .pagina { width: min(1160px, calc(100% - 2.2rem)); margin: 0 auto; padding: 1.8rem 0 4rem; }
+    .barra { display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 2rem; }
+    .volver { text-decoration: none; font-size: .92rem; font-weight: 650; }
+    .marca { color: var(--verde); font-weight: 780; font-size: .85rem; letter-spacing: .11em; }
+    .etiqueta { display: block; text-transform: uppercase; font-size: .76rem; font-weight: 750; letter-spacing: .11em; color: var(--verde); margin-bottom: .5rem; }
+    h1, h2, h3 { line-height: 1.22; letter-spacing: -.02em; }
+    h1 { margin: .35rem 0 .65rem; font-size: clamp(2rem, 4.3vw, 3.05rem); }
+    h2 { font-size: clamp(1.4rem, 2.5vw, 1.8rem); margin: 0 0 .6rem; }
+    h3 { font-size: 1.05rem; margin: 0 0 .9rem; }
+    .introduccion { max-width: 74ch; margin: 0 0 2rem; color: var(--gris); }
+    .rejilla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 310px); gap: 1.1rem; align-items: start; }
+    .tarjeta { border: 1px solid var(--linea); border-radius: 16px; background: var(--blanco); min-width: 0; }
+    .panel-simulacion { padding: 1rem; }
+    .titulo-panel { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; flex-wrap: wrap; margin: 0 0 .75rem; }
+    .titulo-panel h2 { font-size: 1.06rem; margin: 0; letter-spacing: 0; }
+    .estado { color: var(--gris); font-size: .82rem; }
+    .lienzo-marco { overflow: hidden; background: #deba83; border: 1px solid #e7dfd0; border-radius: 10px; }
+    #patron { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; cursor: crosshair; touch-action: none; }
+    .leyenda-lienzo { color: var(--gris); margin: .7rem 0 .3rem; font-size: .88rem; }
+    .acciones { display: flex; flex-wrap: wrap; gap: .55rem; margin: .85rem 0 .15rem; }
+    .boton { border: 1px solid var(--linea); background: white; color: var(--verde-oscuro); border-radius: 9px; padding: .56rem .9rem; cursor: pointer; font-weight: 650; font-size: .91rem; min-height: 42px; }
+    .boton:hover { background: var(--claro); }
+    .boton-principal { background: var(--verde); color: white; border-color: var(--verde); }
+    .boton-principal:hover { background: var(--verde-oscuro); }
+    .panel-controles { padding: 1.35rem; }
+    .panel-controles h2 { font-size: 1.15rem; margin-bottom: .35rem; }
+    .controles-info { color: var(--gris); margin: 0 0 1.1rem; font-size: .89rem; }
+    .control { margin: 0 0 1.3rem; }
+    .control > label, .control-titulo { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: .2rem; font-weight: 620; font-size: .92rem; }
+    output { color: var(--verde); font-weight: 730; font-variant-numeric: tabular-nums; }
+    .control input[type=range] { width: 100%; accent-color: var(--verde); cursor: pointer; margin: .45rem 0 .15rem; min-height: 24px; }
+    .control .detalle { color: var(--gris); font-size: .8rem; line-height: 1.45; margin: 0; }
+    .selector { display: block; width: 100%; padding: .62rem .68rem; border-radius: 8px; border: 1px solid #cfdac7; background: #fff; color: var(--tinta); }
+    .nota-rapida { background: var(--claro); color: #3d5136; padding: .9rem 1rem; border-radius: 10px; font-size: .86rem; margin: .2rem 0 0; }
+    .contadores { display: flex; flex-wrap: wrap; gap: .75rem 1.35rem; padding: .55rem .1rem 0; color: var(--gris); font-size: .86rem; }
+    .contadores strong { color: var(--tinta); font-variant-numeric: tabular-nums; }
+    .seccion { margin-top: 2.8rem; }
+    .descripcion { max-width: 80ch; color: var(--gris); }
+    .matematica { padding: clamp(1rem, 2.5vw, 1.8rem); }
+    .ecuacion { max-width: 100%; overflow-x: auto; padding: .5rem 0; }
+    .texto-pequeno { color: var(--gris); font-size: .91rem; }
+    .matematica p { margin: .8rem 0; }
+    .modelo-datos { display: flex; gap: .55rem; flex-wrap: wrap; margin: .9rem 0; }
+    .modelo-datos span { display: inline-block; background: var(--claro); color: #365a24; border-radius: 100px; padding: .22rem .68rem; font-size: .8rem; font-weight: 650; }
+    .pie { border-top: 1px solid var(--linea); padding-top: 1.5rem; margin-top: 3rem; font-size: .88rem; color: var(--gris); }
+    @media (max-width: 850px) { .rejilla { grid-template-columns: 1fr; } .panel-controles { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0 1.5rem; } .panel-controles h2, .panel-controles .controles-info, .panel-controles .nota-rapida { grid-column: 1/-1; } }
+    @media (max-width: 560px) { .pagina { width: min(100% - 1.3rem, 1160px); padding-top: 1rem; } .panel-simulacion { padding: .6rem; } .panel-controles { display: block; padding: 1.1rem; } .acciones .boton { flex: 1 1 auto; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+
+  <!-- MathJax interpreta el LaTeX de las ecuaciones (JavaScript, no Java). -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+  <script defer src="simulacion.js"></script>
+</head>
+<body>
+  <main class="pagina">
+    <div class="barra">
+      <a class="volver" href="../../index.html">← Volver a los proyectos BIA</a>
+      <span class="marca">BIA · BIOINSPIRACIÓN APLICADA</span>
+    </div>
+
+    <header>
+      <span class="etiqueta">Laboratorio de modelización matemática · Patrones biológicos</span>
+      <h1>Manchas y patrones de color</h1>
+      <p class="introduccion">Experimento de reacción–difusión basado en el modelo de Gray–Scott. La simulación adapta el código original <em>guepardo.pde</em>: sobre un fondo inspirado en el pelaje, emergen patrones de pigmentación a partir de interacciones locales entre dos campos químicos idealizados.</p>
+    </header>
+
+    <div class="rejilla">
+      <section class="tarjeta panel-simulacion" aria-labelledby="titulo-lienzo">
+        <div class="titulo-panel">
+          <h2 id="titulo-lienzo">Evolución del patrón</h2>
+          <span id="estado" class="estado" role="status">Preparando la simulación…</span>
+        </div>
+        <div class="lienzo-marco">
+          <canvas id="patron" width="640" height="400" tabindex="0" aria-label="Simulación de Gray–Scott. Haz clic o arrastra para introducir una perturbación en el tejido.">
+            Tu navegador necesita admitir HTML Canvas para mostrar la simulación.
+          </canvas>
+        </div>
+        <p class="leyenda-lienzo">Haz clic o arrastra sobre el lienzo para introducir nuevas perturbaciones en el sistema.</p>
+        <div class="acciones" role="group" aria-label="Acciones de la simulación">
+          <button class="boton boton-principal" id="pausa" type="button" disabled>Iniciar</button>
+          <button class="boton" id="reiniciar" type="button" disabled>Nueva simulación</button>
+          <button class="boton" id="restaurar" type="button" disabled>Parámetros originales</button>
+          <button class="boton" id="guardar" type="button" disabled>Guardar imagen</button>
+        </div>
+        <div class="contadores">
+          <span>Iteraciones: <strong id="iteraciones">0</strong></span>
+          <span>Malla: <strong>320 × 200</strong></span>
+          <span>Condición inicial: <strong>aleatoria</strong></span>
+        </div>
+      </section>
+
+      <aside class="tarjeta panel-controles" aria-labelledby="titulo-controles">
+        <h2 id="titulo-controles">Parámetros del modelo</h2>
+        <p class="controles-info">Puedes modificar las tasas durante la evolución. Para comparar resultados desde el inicio, ajusta los parámetros y pulsa «Nueva simulación».</p>
+        <div class="control">
+          <label for="F">Alimentación <span>\(F\)</span> <output id="F-valor" for="F">0.0390</output></label>
+          <input id="F" type="range" min="0.0100" max="0.0700" step="0.0005" value="0.0390">
+          <p class="detalle">Entrada del primer componente al sistema.</p>
+        </div>
+        <div class="control">
+          <label for="K">Eliminación base <span>\(k_0\)</span> <output id="K-valor" for="K">0.0650</output></label>
+          <input id="K" type="range" min="0.0400" max="0.0800" step="0.0005" value="0.0650">
+          <p class="detalle">Pérdida del segundo componente; incluye variaciones espaciales.</p>
+        </div>
+        <div class="control">
+          <label for="DU">Difusión <span>\(D_u\)</span> <output id="DU-valor" for="DU">1.00</output></label>
+          <input id="DU" type="range" min="0.30" max="1.00" step="0.05" value="1.00">
+        </div>
+        <div class="control">
+          <label for="DV">Difusión <span>\(D_v\)</span> <output id="DV-valor" for="DV">0.50</output></label>
+          <input id="DV" type="range" min="0.15" max="0.80" step="0.05" value="0.50">
+        </div>
+        <div class="control">
+          <label for="velocidad">Pasos por cuadro <output id="velocidad-valor" for="velocidad">5</output></label>
+          <input id="velocidad" type="range" min="1" max="20" step="1" value="5">
+          <p class="detalle">Número máximo de pasos por ciclo; el modo automático puede reducirlos para ahorrar recursos.</p>
+        </div>
+        <div class="control">
+          <label for="consumo">Rendimiento del dispositivo</label>
+          <select id="consumo" class="selector">
+            <option value="auto" selected>Automático (recomendado)</option>
+            <option value="ahorro">Ahorro de batería</option>
+            <option value="rendimiento">Rendimiento máximo</option>
+          </select>
+          <p class="detalle">Ajusta el ritmo de cálculo sin modificar la malla ni las ecuaciones.</p>
+        </div>
+        <div class="control">
+          <label for="visualizacion">Representación</label>
+          <select id="visualizacion" class="selector">
+            <option value="pigmento">Pigmentación (umbral)</option>
+            <option value="campo">Campo de concentración v</option>
+          </select>
+        </div>
+        <p class="nota-rapida"><strong>Importante:</strong> los campos \(u\) y \(v\) son variables químicas abstractas. El modelo ilustra un mecanismo posible de generación de patrones, pero no reproduce explícitamente genes ni la fisiología de la pigmentación.</p>
+      </aside>
+    </div>
+
+    <section class="seccion tarjeta matematica" aria-labelledby="titulo-modelo">
+      <span class="etiqueta">Fundamento matemático</span>
+      <h2 id="titulo-modelo">Modelo de reacción–difusión de Gray–Scott</h2>
+      <p class="descripcion">Dos campos adimensionales, \(u(x,y,t)\) y \(v(x,y,t)\), evolucionan por difusión e interacciones locales. La formulación continua correspondiente al algoritmo utilizado es:</p>
+      <div class="ecuacion">
+        \[
+        \begin{aligned}
+        \frac{\partial u}{\partial t} &= s(x,y)D_u\nabla^2 u - uv^2 + F(1-u),\\[4pt]
+        \frac{\partial v}{\partial t} &= s(x,y)D_v\nabla^2 v + uv^2 - (F+k(x,y))v.
+        \end{aligned}
+        \]
+      </div>
+      <p>En la simulación, \(F\) es la tasa de alimentación, \(k(x,y)\) la tasa de eliminación local y \(s(x,y)\) un factor espacial de difusión. Los términos \(uv^2\) describen la interacción no lineal que puede originar estructuras espaciales.</p>
+      <h3>Cómo se calcula</h3>
+      <p>Se utiliza una malla de \(320\times200\) celdas y actualización explícita con paso temporal \(\Delta t=1\). El laplaciano discreto pondera vecinos ortogonales y diagonales:</p>
+      <div class="ecuacion">
+        \[
+        \mathcal L[w]_{i,j}= -w_{i,j}
+        +0.2\!\sum_{q\in\mathrm{ort}(i,j)} w_q
+        +0.05\!\sum_{q\in\mathrm{diag}(i,j)} w_q.
+        \]
+      </div>
+      <p>Se aplican condiciones periódicas horizontalmente y de reflexión en los bordes superior e inferior. La función \(k(x,y)\) aumenta gradualmente hacia el borde inferior; tanto \(k\) como \(s\) contienen heterogeneidades espaciales suaves generadas mediante ruido coherente periódico en horizontal.</p>
+      <div class="modelo-datos">
+        <span>Condiciones de borde mixtas</span>
+        <span>Ruido coherente espacial</span>
+        <span>Euler explícito</span>
+        <span>Umbral de pigmentación</span>
+      </div>
+      <p class="texto-pequeno"><strong>Interpretación:</strong> la representación «Pigmentación» transforma el campo \(v\) en regiones oscuras mediante un umbral espacialmente irregular; este paso es una regla de visualización, no una ecuación adicional de biología celular. La opción «Campo de concentración v» permite separar la dinámica matemática del acabado gráfico.</p>
+    </section>
+
+    <footer class="pie">Semillero BIA · Grupo de Estadística y Matemáticas Aplicadas (EMAP) · Pontificia Universidad Javeriana Cali</footer>
+  </main>
+</body>
+</html>

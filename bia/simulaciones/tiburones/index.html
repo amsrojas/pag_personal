@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#225500">
+  <meta name="description" content="Laboratorio BIA: exploración batimétrica de Malpelo y geometría de regiones ambientales conectadas a partir de datos de GEBCO y Copernicus Marine.">
+  <title>Hábitat marino y conectividad · Laboratorio BIA</title>
+  <style>
+    :root{--verde:#225500;--verdeOscuro:#173900;--tinta:#263026;--gris:#5a685d;--borde:#dfe8d9;--fondo:#f8faf6;--blanco:#fff;--claro:#eef4e8}
+    *,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;background:var(--fondo);color:var(--tinta);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+    button,input,select{font:inherit}a{color:var(--verde)}
+    :focus-visible{outline:3px solid var(--verde);outline-offset:3px}
+    .pagina{width:min(1240px,calc(100% - 2.2rem));margin:0 auto;padding:1.65rem 0 3.5rem}
+    .barra{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem}
+    .volver{font-size:.9rem;font-weight:670;text-decoration:none}.marca{color:var(--verde);font-weight:790;font-size:.78rem;letter-spacing:.13em}
+    .etiqueta{display:block;text-transform:uppercase;font-size:.75rem;font-weight:750;letter-spacing:.1em;color:var(--verde);margin-bottom:.6rem}
+    h1,h2,h3{line-height:1.22;letter-spacing:-.018em}h1{margin:.35rem 0 .7rem;font-size:clamp(2rem,4.2vw,3rem)}h2{font-size:1.3rem;margin:0 0 .6rem}h3{font-size:1.05rem;margin:1.2rem 0 .5rem}
+    .introduccion{color:var(--gris);max-width:83ch;margin:0 0 1.25rem}
+    .aviso-fuente{display:flex;align-items:start;gap:.7rem;background:#eaf2e7;border:1px solid #d1e2ce;border-radius:10px;padding:.7rem .9rem;margin-bottom:1.4rem;font-size:.88rem;color:#375333}
+    .aviso-fuente strong{color:var(--verde)}
+    .rejilla{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,330px);align-items:start;gap:1.05rem}
+    .tarjeta{background:var(--blanco);border:1px solid var(--borde);border-radius:15px;min-width:0}
+    .panel-mapa{padding:1.2rem}.encabezado-panel{display:flex;align-items:start;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-bottom:.8rem}
+    .encabezado-panel h2{font-size:1.17rem;margin:0}.chip{font-size:.77rem;font-weight:650;background:#eaf2e5;color:#3e6533;border-radius:20px;padding:.3rem .65rem}
+    .marco-mapa{background:#eaf1f2;border-radius:11px;border:1px solid #c9d9d7;overflow:hidden;position:relative}
+    #mapa{display:block;width:100%;height:auto;aspect-ratio:760 / 710;cursor:crosshair;touch-action:manipulation}
+    .escala{display:flex;align-items:center;gap:.65rem;margin:.85rem 0 .2rem;font-size:.76rem;color:var(--gris)}
+    .escala-barra{flex:1;min-width:48px;height:11px;border-radius:5px;background:linear-gradient(90deg,#e2e5d4,#7ed2d1,#3a97b4,#1c567c,#091d38)}
+    .pie-mapa{font-size:.84rem;color:var(--gris);margin:.75rem 0 .8rem}
+    .fila-botones{display:flex;flex-wrap:wrap;gap:.52rem}.boton{background:#fff;border:1px solid #d0ddca;color:var(--verdeOscuro);border-radius:9px;padding:.5rem .78rem;min-height:43px;font-size:.88rem;font-weight:650;cursor:pointer}.boton:hover{background:var(--claro)}
+    .boton-principal{background:var(--verde);color:white;border-color:var(--verde)}.boton-principal:hover{background:var(--verdeOscuro)}
+    .metricas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.52rem;margin:1rem 0 0}
+    .metrica{min-width:0;background:#f9fbf8;border:1px solid #e6ede1;border-radius:10px;padding:.7rem}
+    .metrica span{display:block;color:var(--gris);font-size:.72rem;line-height:1.25;min-height:2.5em}
+    .metrica strong{font-variant-numeric:tabular-nums;font-size:1.18rem;color:#1c3825;display:block;margin-top:.25rem}
+    .ficha{margin-top:1rem;padding:1rem;border:1px solid var(--borde);border-radius:10px;background:#fcfdfb}
+    .ficha h3{margin:0 0 .35rem;font-size:1rem}.ficha p{margin:.3rem 0;font-size:.85rem;color:var(--gris)}
+    .valores-celda{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-top:.65rem}
+    .valor-celda{background:#f3f7f0;border-radius:7px;padding:.55rem;min-width:0}
+    .valor-celda span{display:block;color:#506a51;font-size:.72rem}.valor-celda strong{display:block;font-size:.9rem;overflow-wrap:anywhere}
+    .serie-contenedor{margin-top:1.1rem;padding:1rem;border:1px solid var(--borde);border-radius:10px}
+    .serie-contenedor h3{margin:0 0 .5rem;font-size:.98rem}.serie-contenedor svg{width:100%;height:auto;display:block;background:#fbfdfb;border-radius:8px}
+    .serie-nota{font-size:.8rem;color:var(--gris);margin:.4rem 0 0}
+    .panel-controles{padding:1.22rem}.panel-controles h2{font-size:1.18rem}.subayuda{margin:0 0 1.1rem;font-size:.85rem;color:var(--gris)}
+    .control{margin-bottom:1.2rem}.control label.titulo{display:block;font-size:.88rem;font-weight:690;margin-bottom:.4rem}
+    .selector,.campo-numero{width:100%;padding:.63rem .72rem;border:1px solid #cbd9c5;border-radius:8px;background:#fff;color:var(--tinta);font-size:.93rem;min-height:43px}
+    .rango-caja{background:#f9fbf7;border:1px solid var(--borde);padding:.8rem;border-radius:9px}
+    .rango-caja[hidden]{display:none}.rango-caja label{display:flex;align-items:center;justify-content:space-between;gap:.4rem;font-size:.79rem;font-weight:600}
+    .rango-caja output{font-size:.8rem;font-weight:700;color:var(--verde);font-variant-numeric:tabular-nums}
+    .rango-caja input[type=range]{width:100%;accent-color:var(--verde);min-height:24px;display:block;margin:0 0 .55rem}
+    .rango-caja input[type=range]:last-child{margin:0}
+    .seleccionado{border-left:3px solid #225500;padding-left:.7rem;margin:.75rem 0 1.15rem;font-size:.8rem;color:#42603b}
+    .alerta{background:var(--claro);border-radius:9px;padding:.85rem;color:#40583a;font-size:.82rem;line-height:1.5}
+    .importar{border-top:1px solid var(--borde);margin-top:1.4rem;padding-top:1.2rem}.importar p{font-size:.81rem;color:var(--gris);margin:.3rem 0 .75rem}
+    .archivo{display:block;width:100%;font-size:.84rem;color:var(--gris);overflow-wrap:anywhere}
+    .archivo::file-selector-button{background:var(--claro);color:var(--verdeOscuro);border:1px solid var(--borde);border-radius:8px;padding:.4rem .6rem;cursor:pointer;margin-right:.5rem}
+    .status{margin:.6rem 0 0;font-size:.81rem;color:#365a33;overflow-wrap:anywhere}
+    .seccion{margin-top:2.35rem}.matematica{padding:clamp(1.1rem,2.8vw,1.8rem)}.matematica p{max-width:88ch}.ecuacion{max-width:100%;overflow-x:auto;padding:.3rem 0}.texto-pequeno{font-size:.87rem;color:var(--gris)}
+    .pasos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem;margin:1rem 0}.pasos article{padding:1rem;border:1px solid var(--borde);border-radius:9px;background:#fbfdfb}.pasos strong{color:var(--verde)}.pasos p{font-size:.86rem;margin:.45rem 0 0}
+    .pie{font-size:.85rem;color:var(--gris);border-top:1px solid var(--borde);margin-top:2.8rem;padding-top:1.4rem}
+    @media(max-width:940px){.rejilla{grid-template-columns:1fr}.panel-controles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 1rem}.panel-controles h2,.panel-controles>.subayuda,.panel-controles>.alerta,.panel-controles>.importar{grid-column:1/-1}}
+    @media(max-width:600px){.pagina{width:calc(100% - 1.2rem);padding-top:1rem}.panel-mapa,.panel-controles{padding:.8rem}.panel-controles{display:block}.metricas{grid-template-columns:repeat(2,minmax(0,1fr))}.metrica span{min-height:1em}.valores-celda{grid-template-columns:repeat(2,minmax(0,1fr))}.pasos{grid-template-columns:1fr}.fila-botones .boton{flex:1 1 140px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+  <script>
+    window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+<main class="pagina">
+  <div class="barra">
+    <a class="volver" href="../../index.html">← Volver a los proyectos BIA</a>
+    <span class="marca">BIA · BIOINSPIRACIÓN APLICADA</span>
+  </div>
+  <header>
+    <span class="etiqueta">Laboratorio de modelización matemática · Oceanografía y geometría</span>
+    <h1>Geometría y conectividad del hábitat de tiburones</h1>
+    <p class="introduccion">Explora la región de Malpelo mediante una malla oceanográfica georreferenciada. Selecciona intervalos ambientales, observa las regiones que forman y analiza su fragmentación y conectividad. <strong>Los criterios son exploratorios: aún no describen la presencia ni el hábitat validado de los tiburones.</strong></p>
+  </header>
+  <div class="aviso-fuente"><span aria-hidden="true">◉</span><div><strong id="fuente-titulo">Datos disponibles: profundidad batimétrica real.</strong> <span id="fuente-texto">Malla de 23 × 24 celdas de Malpelo extraída de los resultados guardados en nuestro cuaderno Copernicus–GEBCO. Carga el CSV integrado para explorar también las otras cinco variables y los doce meses de 2024.</span></div></div>
+  <div class="rejilla">
+    <section class="tarjeta panel-mapa" aria-label="Exploración geográfica">
+      <div class="encabezado-panel"><h2 id="titulo-mapa">Profundidad media · GEBCO</h2><span class="chip" id="etiqueta-mes">Batimetría estática</span></div>
+      <div class="marco-mapa"><canvas id="mapa" width="760" height="710" tabindex="0" aria-label="Mapa de celdas ambientales cerca de Malpelo. Pulsa una celda para conocer sus datos. Con el teclado utiliza las flechas para mover la selección.">Se requiere un navegador con soporte Canvas.</canvas></div>
+      <div class="escala"><span id="escala-min">—</span><div class="escala-barra" id="escala-barra" aria-hidden="true"></div><span id="escala-max">—</span><span id="escala-unidad">m</span></div>
+      <p class="pie-mapa">Selecciona una celda con el cursor o el dedo. El marcador corresponde al <strong>centro aproximado de la región de estudio</strong> (4° N, 81,6° O). La cuadrícula es geográfica y la profundidad es <strong>media por celda</strong>, no un mapa batimétrico fino.</p>
+      <div class="fila-botones">
+        <button type="button" id="vista-componentes" class="boton">Ver componentes conectadas</button>
+        <button type="button" id="todo" class="boton">Seleccionar todo el dominio</button>
+        <button type="button" id="png" class="boton">Guardar imagen PNG</button>
+        <button type="button" id="exportar" class="boton">Exportar celdas CSV</button>
+      </div>
+      <div class="metricas" aria-live="polite" aria-label="Indicadores geométricos">
+        <div class="metrica"><span>Celdas seleccionadas</span><strong id="n-celdas">—</strong></div>
+        <div class="metrica"><span>Área aproximada</span><strong id="area">—</strong></div>
+        <div class="metrica"><span>Componentes (4 vecinas)</span><strong id="n-componentes">—</strong></div>
+        <div class="metrica"><span>Mayor componente</span><strong id="mayor">—</strong></div>
+      </div>
+      <div class="ficha" id="ficha" aria-live="polite"><h3>Celda seleccionada</h3><p id="celda-titulo">Selecciona una posición de la malla.</p><p id="detalle-batimetria"></p><div id="valores-celda" class="valores-celda"></div></div>
+      <div class="serie-contenedor" id="seccion-serie" hidden>
+        <h3>Variación mensual en la celda seleccionada (2024)</h3>
+        <div class="control" style="max-width:300px;margin:.65rem 0"><label class="titulo" for="serie-variable">Variable de la serie</label><select class="selector" id="serie-variable"><option value="T">Temperatura · T</option><option value="Z">Salinidad · Z</option><option value="A">Productividad · A</option></select></div>
+        <svg id="grafica" viewBox="0 0 620 190" role="img" aria-label="Serie mensual calculada con los datos cargados"></svg>
+        <p class="serie-nota" id="serie-nota"></p>
+      </div>
+    </section>
+    <aside class="tarjeta panel-controles" aria-label="Controles de exploración">
+      <h2>Configuración del análisis</h2>
+      <p class="subayuda">Define hasta dos condiciones simultáneas. Las celdas que satisfacen ambas forman la región ambiental seleccionada.</p>
+      <div class="control"><label for="variable" class="titulo">Color del mapa</label><select class="selector" id="variable">
+        <option value="P">Profundidad · P (m)</option>
+        <option value="S" disabled>Pendiente · S (°) — requiere CSV</option>
+        <option value="R" disabled>Rugosidad · R (m) — requiere CSV</option>
+        <option value="T" disabled>Temperatura · T (°C) — requiere CSV</option>
+        <option value="Z" disabled>Salinidad · Z (10⁻³) — requiere CSV</option>
+        <option value="A" disabled>Productividad · A (mg C/m²/día) — requiere CSV</option>
+      </select></div>
+      <div class="control"><label for="mes" class="titulo">Mes de análisis</label><select class="selector" id="mes" disabled>
+        <option value="1">Enero 2024</option><option value="2">Febrero 2024</option><option value="3">Marzo 2024</option><option value="4">Abril 2024</option>
+        <option value="5">Mayo 2024</option><option value="6">Junio 2024</option><option value="7">Julio 2024</option><option value="8">Agosto 2024</option>
+        <option value="9">Septiembre 2024</option><option value="10">Octubre 2024</option><option value="11">Noviembre 2024</option><option value="12">Diciembre 2024</option>
+      </select></div>
+      <div class="control"><label for="criterio-1" class="titulo">Primera condición ambiental</label><select class="selector" id="criterio-1"><option value="P">Profundidad · P</option></select></div>
+      <div class="control rango-caja" id="grupo-1">
+        <label for="min-1">Desde <output id="min-1-valor">—</output></label><input type="range" id="min-1" min="0" max="5000" step="10" value="1400">
+        <label for="max-1">Hasta <output id="max-1-valor">—</output></label><input type="range" id="max-1" min="0" max="5000" step="10" value="2800">
+      </div>
+      <div class="control"><label for="criterio-2" class="titulo">Segunda condición (opcional)</label><select class="selector" id="criterio-2"><option value="">Sin segunda condición</option><option value="P" disabled>Profundidad · P</option></select></div>
+      <div class="control rango-caja" id="grupo-2" hidden>
+        <label for="min-2">Desde <output id="min-2-valor">—</output></label><input type="range" id="min-2" min="0" max="5000" step="10" value="1400">
+        <label for="max-2">Hasta <output id="max-2-valor">—</output></label><input type="range" id="max-2" min="0" max="5000" step="10" value="2800">
+      </div>
+      <p id="texto-condicion" class="seleccionado">Criterio exploratorio, sin calibración biológica.</p>
+      <p class="alerta"><strong>Interpretación:</strong> contar regiones conectadas no equivale a estimar corredores usados por tiburones. Para hablar de idoneidad o conectividad ecológica hará falta incorporar registros biológicos, hipótesis justificadas y validación independiente.</p>
+      <div class="importar">
+        <h3>Incorporar las seis variables</h3>
+        <p>Cuando tengas el archivo <code>malla_BIA_Copernicus_GEBCO.csv</code> generado por el cuaderno, puedes seleccionarlo aquí. Los datos se leen localmente en tu navegador; no se envían a ningún servidor.</p>
+        <input id="archivo" class="archivo" type="file" accept=".csv,text/csv" aria-label="Importar CSV integrado de Copernicus y GEBCO">
+        <p id="estado-datos" class="status" role="status">Vista inicial: profundidad GEBCO disponible. Las demás variables esperan el CSV.</p>
+        <p>En GitHub Pages también puedes colocar el CSV en <code>datos/malla_BIA_Copernicus_GEBCO.csv</code> para que se cargue automáticamente.</p>
+      </div>
+    </aside>
+  </div>
+  <section class="tarjeta matematica seccion" aria-labelledby="titulo-matematica">
+    <span class="etiqueta">Fundamento matemático</span>
+    <h2 id="titulo-matematica">Del campo ambiental a la geometría de sus regiones</h2>
+    <p>Partimos de una malla común de <strong>23 filas × 24 columnas</strong>. En cada celda geográfica \(c_{ij}\), se define el vector ambiental integrado:</p>
+    <div class="ecuacion">\[M_{ij}(t)=\big(P_{ij},S_{ij},R_{ij},T_{ij}(t),Z_{ij}(t),A_{ij}(t)\big).\]</div>
+    <p>Las tres primeras componentes describen el relieve del fondo marino; las tres últimas se consideran variables oceanográficas mensuales. Esta estructura permite combinar condiciones espaciales y temporales sobre la misma huella geográfica.</p>
+    <div class="pasos">
+      <article><strong>1. Seleccionar</strong><p>Escoge una o dos variables e intervalos admisibles. La selección se calcula celda por celda, sin interpolar resultados.</p></article>
+      <article><strong>2. Conectar</strong><p>Dos celdas seleccionadas se consideran vecinas si comparten un <em>lado</em>. No se unen regiones que solo se tocan en una esquina.</p></article>
+      <article><strong>3. Medir</strong><p>Se determina el número de componentes conexas, la superficie total aproximada y el área de la mayor región.</p></article>
+    </div>
+    <h3>1. Regiones definidas por umbrales</h3>
+    <p>Por ejemplo, una condición combinada de temperatura y profundidad define:</p>
+    <div class="ecuacion">\[\Omega_t=\{c_{ij}:T_{\min}\leq T_{ij}(t)\leq T_{\max}\;\land\;P_{\min}\leq P_{ij}\leq P_{\max}\}.\]</div>
+    <h3>2. Conectividad</h3>
+    <p>Asociamos un grafo \(G_t=(V_t,E_t)\), donde cada celda de \(\Omega_t\) representa un vértice. La arista \((c_{ij},c_{kl})\) existe únicamente cuando las celdas comparten uno de sus cuatro lados. El laboratorio calcula las componentes conexas de este grafo mediante búsqueda en anchura.</p>
+    <h3>3. Área sobre coordenadas geográficas</h3>
+    <p>Para cada celda usamos sus bordes de latitud y longitud. Su área aproximada, tomando la Tierra como una esfera de radio \(R_{\oplus}\), es:</p>
+    <div class="ecuacion">\[ A_{ij}\approx R_{\oplus}^{2}\big(\lambda_{j+1}-\lambda_j\big)\big(\sin\varphi_{i+1}-\sin\varphi_i\big), \qquad A(\Omega_t)=\sum_{c_{ij}\in\Omega_t} A_{ij}.\]</div>
+    <p class="texto-pequeno">Los ángulos se expresan en radianes. Los indicadores son geométricos y dependen de la resolución de la malla y de los umbrales escogidos; no miden rutas de desplazamiento de fauna marina.</p>
+    <h3>Datos y alcance</h3>
+    <p class="texto-pequeno">La vista inicial utiliza <strong>552 valores reales de profundidad media por celda</strong> recuperados de la salida interactiva guardada en el cuaderno <code>BIA_COPERNICUS_GEBCO.ipynb</code>. Es una agregación de GEBCO a la malla maestra de Copernicus, no una reconstrucción del raster batimétrico original. Los campos restantes se habilitan únicamente al cargar el CSV científico integrado. Fuente de origen: GEBCO y Copernicus Marine. Región: entorno de Malpelo; oceanografía mensual de 2024; batimetría de GEBCO 2026 en el cuaderno.</p>
+  </section>
+  <footer class="pie">BIA · Bioinspiración Aplicada · Semillero de Modelización Matemática y Diseño Biomimético · Pontificia Universidad Javeriana Cali</footer>
+</main>
+<script>
+const BASE = {"lat":[3.0833333,3.1666667,3.25,3.3333333,3.4166667,3.5,3.5833333,3.6666667,3.75,3.8333333,3.9166667,4.0,4.0833335,4.1666665,4.25,4.3333335,4.4166665,4.5,4.5833335,4.6666665,4.75,4.8333335,4.9166665],"lon":[-82.5833359,-82.5,-82.4166641,-82.3333359,-82.25,-82.1666641,-82.0833359,-82.0,-81.9166641,-81.8333359,-81.75,-81.6666641,-81.5833359,-81.5,-81.4166641,-81.3333359,-81.25,-81.1666641,-81.0833359,-81.0,-80.9166641,-80.8333359,-80.75,-80.6666641],"P":[2081.42,1511.2975,1943.12,2060.735,2265.4475,2383.91,2515.89,2640.36,2732.2875,2753.09,2747.07,2770.9875,2762.48,2722.3075,2702.3725,2656.925,2706.33,2504.845,2695.41,2836.7825,2969.315,3051.2575,3046.3125,2997.335,2283.2675,1375.8475,1895.39,1982.9475,1954.6775,2073.14,2265.5275,2524.2775,2643.73,2693.015,2683.1575,2673.6725,2633.53,2628.5225,2573.105,2444.635,2529.145,2515.06,2744.46,2902.4825,2976.785,3013.03,3007.1675,2943.045,2558.9725,1509.745,1706.655,1671.5425,1820.675,2092.8925,2274.615,2486.7425,2581.4825,2599.0275,2583.3875,2517.3225,2463.8175,2448.85,2400.9925,2264.4975,2222.5125,2420.3075,2751.1625,2840.86,2963.7475,2978.52,2966.5325,2861.575,2526.005,1614.335,1957.8925,1701.1675,1771.9775,1931.2,2106.965,2408.6825,2511.135,2419.6475,2276.77,2155.4975,2031.08,2087.8975,2133.9775,2012.1875,2052.065,2244.53,2441.6925,2725.38,2866.4775,2916.13,2918.0925,2838.3225,3096.9475,2031.9,2285.9275,1753.21,1795.1925,1909.4125,1972.75,2004.7225,2146.515,2251.795,2085.61,1895.3975,1764.55,1749.9,1744.625,1761.9,1878.215,2241.3525,2613.925,2804.255,2834.6025,2839.9325,2854.2325,2787.405,3412.8525,2566.5225,2515.7925,2229.915,1892.76,2004.2175,2089.5875,1767.4875,1752.485,1835.8625,1770.4275,1619.3075,1597.8075,1524.1875,1507.285,1528.5175,1640.2975,1796.475,2233.4875,2638.5375,2762.7075,2799.765,2790.475,2731.615,3462.4575,2668.0725,2742.1375,2786.8525,2703.34,2210.5875,2353.64,2291.9575,2034.4275,1898.12,1573.4225,1457.1175,1391.0325,1393.295,1418.04,1492.995,1650.0375,1846.9425,2124.84,2500.3875,2590.4025,2566.795,2606.38,2520.325,3730.485,2981.93,2862.055,2940.0025,3231.72,2996.535,2624.345,2721.43,2778.2825,2788.8025,2483.0775,1500.0425,1337.0575,1354.8925,1389.04,1425.36,1470.5625,1668.705,1926.15,2234.66,2368.6725,2316.4825,2338.765,2370.9775,3725.095,3007.805,2963.9825,3000.46,3208.8925,3024.0325,2456.33,2592.58,2228.96,2338.9075,2671.645,1998.175,1469.5925,1344.045,1356.6175,1351.7,1338.19,1481.17,1709.5175,2093.1875,2197.6375,2206.0375,2209.6825,2253.5325,3668.33,3066.5725,2909.7175,3123.73,3354.2,3215.835,2281.2025,2213.12,2047.6275,1711.3075,2203.81,2113.935,2159.2725,2036.405,1560.365,1314.9825,1351.1625,1391.4625,1478.5375,1781.1975,1975.39,2136.675,2173.025,2177.17,3733.9125,3188.9275,3235.1125,3378.9375,3242.6825,3170.23,2961.2375,2451.15,1866.1775,2078.4075,1958.0425,1158.0525,1859.715,2018.8975,1837.685,1446.0275,1483.6875,1482.15,1459.3475,1519.32,1721.44,1927.395,2065.9125,2160.8025,3705.33,3171.5625,3266.1675,3262.2775,2821.355,3093.99,3237.925,2962.8875,2063.0375,1934.9375,2177.2075,1059.195,699.07455,1647.04,1658.29,1748.44,1708.3625,1532.9775,1418.67,1466.5975,1711.9225,1894.28,1975.7625,2050.2375,3632.0775,3217.0775,3304.0675,3422.6525,3125.1525,3232.805,3277.9225,2975.28,2256.565,2016.3375,2245.1575,1962.8425,1483.6475,1378.89,1360.2625,1660.45,1684.88,1563.5175,1377.955,1412.745,1677.1175,1831.715,1835.445,1959.63,3374.8575,3052.405,3374.9775,3612.415,3218.14,3324.6625,3460.5625,3175.3525,2587.3125,1903.24,2342.2075,2134.7975,1821.195,1457.6475,770.51,614.7075,972.76,1484.5625,1416.57,1306.3175,1515.6525,1452.96,1384.255,1855.1075,3309.43,3138.0625,3509.615,3582.8925,3217.44,3383.0,3577.68,3475.265,2769.9675,1794.635,2226.1625,2258.415,1997.565,1646.035,1271.585,1009.73,1106.36,1428.2925,1597.8825,1482.775,1578.7625,1633.23,1639.91,1815.865,3261.0175,3281.0575,3617.05,3390.6375,3244.5125,3461.5475,3622.13,3417.3025,3078.5,2863.25,2970.535,2794.66,2423.8675,2028.38,1928.01,1795.9775,1700.34,1758.85,1890.265,1646.9625,1322.14,1467.91,1739.3325,1771.5275,3355.6375,3470.7725,3735.7425,3405.01,3234.3725,3590.955,3674.7,3573.2775,3121.3925,3514.1925,3491.21,3340.8875,2880.4825,2474.475,2025.3825,1861.0825,2021.7375,2062.3575,1773.455,1547.42,1249.48,1062.6075,1424.8925,1761.38,3255.1925,3309.735,3382.9875,3701.305,3421.2975,3739.0525,3790.625,3841.8725,3444.74,3509.21,3518.345,3411.0825,3229.6925,3126.125,3076.835,2692.0225,2002.435,2218.8525,1827.6275,2034.49,1861.2925,1122.86,766.2075,1103.91,2889.965,2965.1325,3170.1625,3676.6825,3687.2775,3866.955,3980.5875,3958.58,3729.1475,3746.96,3755.6275,3729.35,3530.795,3442.6525,3393.615,3408.2325,2670.975,2441.03,2073.43,1907.985,2145.475,1335.64,1124.3225,1923.94,2768.8975,3043.8425,3331.2125,3639.74,3639.5075,3806.425,3846.355,4008.035,4036.775,3941.25,3949.5975,3893.39,3762.9525,3642.4375,3594.095,3541.5175,3156.2675,2755.265,2459.145,2263.7875,1954.83,1295.4225,1319.2925,1545.9375,2775.3575,2982.4,3476.675,3741.49,3745.665,3877.21,3957.8025,4040.5675,3839.4125,2752.8,2604.0125,3147.475,3558.785,3702.2175,3765.9875,3829.8975,3533.1075,3182.4375,2905.96,2623.975,2309.18,2015.6625,2035.6675,1645.48,2734.12,3085.6225,3730.5075,3705.185,3900.2575,3513.0175,3617.065,2956.39,2612.0325,2281.62,2057.25,2442.6225,2817.9175,3061.505,3505.0125,3848.53,3871.3575,3550.895,3278.9075,3065.3675,2725.105,2497.735,2233.845,2168.6,3068.88,3632.1325,3688.735,3608.82,3541.235,2128.475,1706.8975,1442.6475,1955.5,1742.8075,1553.9525,1692.275,2337.5575,2298.565,2402.84,3062.065,3753.7025,3872.32,3559.825,3277.8175,3059.16,2999.6075,2881.625,2678.1475],"P_min":[1236.0,1196.0,1659.0,1730.0,2026.0,2203.0,2243.0,2501.0,2649.0,2702.0,2693.0,2696.0,2663.0,2656.0,2569.0,2452.0,2550.0,2377.0,2412.0,2740.0,2875.0,3020.0,2986.0,2909.0,1037.0,991.0,1568.0,1798.0,1668.0,1885.0,2030.0,2397.0,2574.0,2629.0,2628.0,2600.0,2559.0,2551.0,2469.0,2320.0,2341.0,2391.0,2415.0,2815.0,2921.0,2984.0,2984.0,2863.0,1262.0,1124.0,1441.0,1415.0,1658.0,1818.0,2059.0,2349.0,2537.0,2472.0,2402.0,2301.0,2245.0,2246.0,2232.0,2092.0,2076.0,2138.0,2427.0,2683.0,2923.0,2939.0,2919.0,2796.0,1129.0,1214.0,1662.0,1453.0,1642.0,1786.0,1869.0,2169.0,2392.0,2260.0,2127.0,1946.0,1813.0,1813.0,1908.0,1834.0,1920.0,2082.0,2275.0,2391.0,2785.0,2875.0,2850.0,2665.0,1465.0,1349.0,1886.0,1228.0,1258.0,1757.0,1807.0,1853.0,1859.0,1956.0,1879.0,1699.0,1638.0,1610.0,1577.0,1558.0,1610.0,1762.0,2215.0,2528.0,2744.0,2733.0,2804.0,2668.0,2370.0,2174.0,2400.0,1239.0,1223.0,1861.0,1907.0,1503.0,1512.0,1705.0,1518.0,1469.0,1448.0,1446.0,1417.0,1424.0,1564.0,1663.0,1914.0,2339.0,2681.0,2685.0,2661.0,2545.0,2474.0,2357.0,2495.0,2425.0,1855.0,1702.0,2195.0,1505.0,1460.0,1576.0,1398.0,1232.0,1221.0,1228.0,1357.0,1393.0,1542.0,1685.0,1852.0,2176.0,2419.0,2373.0,2455.0,2443.0,3264.0,2684.0,2814.0,2827.0,3074.0,2210.0,2309.0,2555.0,2479.0,2150.0,1468.0,1183.0,1050.0,1190.0,1359.0,1291.0,1302.0,1401.0,1791.0,2044.0,2227.0,2219.0,2219.0,2232.0,3308.0,2866.0,2875.0,2904.0,2993.0,2429.0,1804.0,1957.0,1315.0,1309.0,2192.0,1179.0,1002.0,1114.0,1252.0,1288.0,1286.0,1389.0,1410.0,1765.0,2123.0,2171.0,2180.0,2205.0,3270.0,2777.0,2768.0,2923.0,3106.0,2573.0,1842.0,1839.0,1192.0,1136.0,1748.0,1672.0,1885.0,1444.0,1271.0,1142.0,1292.0,1345.0,1393.0,1505.0,1736.0,1936.0,2105.0,2105.0,3339.0,2956.0,2952.0,3138.0,2797.0,2835.0,2044.0,1612.0,1143.0,1395.0,1319.0,268.0,586.0,1916.0,1429.0,1152.0,1292.0,1408.0,1440.0,1448.0,1528.0,1810.0,1963.0,2058.0,3317.0,2929.0,3015.0,2854.0,2668.0,2697.0,3017.0,2491.0,1180.0,1321.0,1324.0,151.0,8.0,1114.0,1326.0,1565.0,1558.0,1410.0,1340.0,1364.0,1555.0,1815.0,1924.0,1972.0,3103.0,3059.0,3077.0,3044.0,2873.0,2994.0,2841.0,2497.0,1478.0,1663.0,2152.0,893.0,467.0,1086.0,723.0,870.0,874.0,1160.0,1233.0,1231.0,1503.0,1532.0,1517.0,1812.0,2715.0,2884.0,3077.0,3400.0,3013.0,3056.0,2988.0,2891.0,1597.0,1325.0,2122.0,1934.0,1472.0,1178.0,390.0,342.0,349.0,865.0,1229.0,1209.0,1387.0,1209.0,1164.0,1582.0,2904.0,2912.0,3078.0,3422.0,3023.0,3089.0,3438.0,3252.0,1560.0,1349.0,1575.0,1876.0,1721.0,1235.0,749.0,422.0,389.0,945.0,1258.0,1350.0,1371.0,1398.0,1318.0,1678.0,3051.0,3069.0,3380.0,3088.0,3085.0,3210.0,3473.0,2810.0,2025.0,1921.0,2446.0,2159.0,1996.0,1623.0,1642.0,1491.0,1509.0,1545.0,1712.0,1259.0,1090.0,1097.0,1438.0,1694.0,2465.0,3095.0,3434.0,3057.0,2967.0,3303.0,3494.0,2699.0,2517.0,3382.0,3297.0,3026.0,2164.0,1972.0,1741.0,1649.0,1653.0,1947.0,1036.0,1175.0,997.0,846.0,863.0,1313.0,2465.0,2858.0,2858.0,3170.0,3109.0,3388.0,3508.0,3289.0,3108.0,3364.0,3376.0,3265.0,2860.0,2802.0,2024.0,1652.0,1649.0,1744.0,1398.0,1593.0,1145.0,818.0,590.0,702.0,2485.0,2687.0,2787.0,3416.0,3563.0,3668.0,3788.0,3556.0,3497.0,3548.0,3560.0,3494.0,3371.0,3181.0,3188.0,2886.0,2169.0,1952.0,1607.0,1372.0,1656.0,1016.0,638.0,1127.0,2346.0,2696.0,3083.0,3392.0,3511.0,3647.0,3727.0,3783.0,3896.0,3481.0,3687.0,3770.0,3639.0,3535.0,3467.0,3229.0,2773.0,2437.0,2129.0,2116.0,1470.0,830.0,865.0,666.0,2512.0,2718.0,2939.0,3568.0,3618.0,3709.0,3733.0,3160.0,2999.0,1506.0,1498.0,1941.0,2668.0,3230.0,3668.0,3464.0,3058.0,2722.0,2542.0,2327.0,1722.0,1683.0,1632.0,673.0,2455.0,2594.0,3416.0,3401.0,3718.0,1959.0,2189.0,1530.0,1654.0,1418.0,1311.0,1441.0,2026.0,1992.0,2128.0,3563.0,3501.0,3335.0,3122.0,2695.0,2421.0,2049.0,1627.0,1540.0,2558.0,2979.0,3378.0,3287.0,2069.0,1178.0,872.0,837.0,1214.0,1203.0,804.0,956.0,1750.0,1341.0,1739.0,1730.0,2752.0,3453.0,3248.0,3022.0,2842.0,2660.0,2598.0,2484.0],"P_max":[2994.0,1754.0,2145.0,2229.0,2413.0,2606.0,2701.0,2761.0,2793.0,2797.0,2820.0,2822.0,2823.0,2797.0,2772.0,2753.0,2796.0,2722.0,2844.0,2927.0,3028.0,3073.0,3073.0,3063.0,3174.0,1797.0,2139.0,2158.0,2295.0,2270.0,2485.0,2634.0,2719.0,2759.0,2731.0,2755.0,2713.0,2692.0,2676.0,2587.0,2774.0,2691.0,2888.0,2998.0,3028.0,3044.0,3044.0,2997.0,3528.0,1796.0,1929.0,1957.0,2019.0,2307.0,2404.0,2567.0,2625.0,2692.0,2682.0,2647.0,2593.0,2580.0,2545.0,2465.0,2420.0,2668.0,2858.0,2957.0,2999.0,3006.0,2999.0,2976.0,3552.0,2297.0,2283.0,1859.0,1926.0,2111.0,2320.0,2567.0,2569.0,2526.0,2452.0,2385.0,2280.0,2335.0,2337.0,2203.0,2153.0,2557.0,2694.0,2916.0,2941.0,2958.0,2947.0,2919.0,3734.0,2821.0,2536.0,2422.0,1955.0,2075.0,2142.0,2370.0,2430.0,2436.0,2235.0,2113.0,1924.0,1939.0,1951.0,2028.0,2188.0,2653.0,2743.0,2887.0,2880.0,2904.0,2906.0,2833.0,3800.0,4023.0,2663.0,2582.0,2454.0,2259.0,2315.0,2132.0,1923.0,2057.0,2055.0,1842.0,1684.0,1619.0,1595.0,1692.0,1761.0,2097.0,2688.0,2841.0,2824.0,2841.0,2853.0,2820.0,3799.0,3205.0,2917.0,3089.0,3238.0,3036.0,2586.0,2649.0,2927.0,2940.0,1951.0,1620.0,1534.0,1502.0,1500.0,1604.0,1774.0,2037.0,2351.0,2699.0,2726.0,2781.0,2760.0,2643.0,4040.0,3696.0,2947.0,3115.0,3393.0,3443.0,2775.0,2892.0,2920.0,2926.0,2914.0,2397.0,1628.0,1463.0,1443.0,1588.0,1656.0,1845.0,2150.0,2447.0,2498.0,2540.0,2541.0,2482.0,4083.0,3326.0,3033.0,3105.0,3386.0,3365.0,2836.0,3081.0,3089.0,2859.0,2898.0,2424.0,2256.0,1975.0,1413.0,1398.0,1401.0,1772.0,2023.0,2222.0,2269.0,2276.0,2242.0,2329.0,4057.0,3659.0,3248.0,3454.0,3478.0,3469.0,3046.0,2566.0,2578.0,2233.0,2485.0,2346.0,2285.0,2194.0,2065.0,1434.0,1407.0,1454.0,1715.0,2142.0,2189.0,2200.0,2228.0,2287.0,4024.0,3659.0,3481.0,3480.0,3518.0,3395.0,3220.0,3079.0,2435.0,2257.0,2250.0,2014.0,2168.0,2269.0,2150.0,1837.0,1655.0,1612.0,1490.0,1713.0,1917.0,2102.0,2188.0,2223.0,4132.0,3497.0,3476.0,3477.0,3097.0,3401.0,3503.0,3295.0,2938.0,2356.0,2379.0,2229.0,1960.0,1982.0,2034.0,1870.0,1822.0,1706.0,1484.0,1566.0,1833.0,1953.0,2044.0,2136.0,4122.0,3537.0,3584.0,3639.0,3396.0,3514.0,3595.0,3162.0,2935.0,2292.0,2358.0,2283.0,1947.0,1808.0,1845.0,1869.0,2025.0,1707.0,1559.0,1571.0,1838.0,1948.0,1969.0,2070.0,3818.0,3294.0,3608.0,3658.0,3637.0,3550.0,3580.0,3500.0,3259.0,2403.0,2605.0,2559.0,2122.0,1804.0,1313.0,1720.0,1900.0,1704.0,1601.0,1478.0,1685.0,1698.0,1759.0,1974.0,3714.0,3462.0,3679.0,3680.0,3628.0,3642.0,3666.0,3599.0,3598.0,2648.0,2697.0,2836.0,2274.0,2307.0,1666.0,1639.0,1582.0,1701.0,1774.0,1764.0,1684.0,1705.0,1773.0,1914.0,3509.0,3521.0,3833.0,3760.0,3595.0,3676.0,3719.0,3731.0,3595.0,3566.0,3479.0,3202.0,3019.0,2394.0,2155.0,2023.0,1965.0,2000.0,2135.0,2070.0,1554.0,1706.0,1857.0,1836.0,3728.0,3723.0,3912.0,3909.0,3613.0,3807.0,3887.0,4011.0,3512.0,3573.0,3585.0,3460.0,3326.0,2989.0,2864.0,2076.0,2210.0,2263.0,2090.0,2095.0,2057.0,1403.0,1851.0,1930.0,3547.0,3539.0,3827.0,3840.0,3705.0,3965.0,3959.0,4050.0,3572.0,3589.0,3609.0,3592.0,3530.0,3363.0,3374.0,3377.0,2735.0,2576.0,2177.0,2265.0,2176.0,1946.0,1212.0,1839.0,3242.0,3258.0,3546.0,3814.0,3808.0,3984.0,4091.0,4048.0,4034.0,3943.0,3924.0,3829.0,3807.0,3654.0,3525.0,3615.0,3445.0,2723.0,2403.0,2245.0,2358.0,2138.0,2027.0,2212.0,2989.0,3315.0,3513.0,3755.0,3736.0,3980.0,4030.0,4066.0,4175.0,4036.0,3993.0,3966.0,3884.0,3735.0,3767.0,3771.0,3438.0,3075.0,2667.0,2509.0,2328.0,1822.0,1892.0,2034.0,2987.0,3408.0,3777.0,3842.0,3911.0,4077.0,4087.0,4175.0,4206.0,3870.0,3884.0,3925.0,3873.0,3787.0,3854.0,3926.0,3943.0,3468.0,3304.0,3126.0,2659.0,2387.0,2303.0,2222.0,3033.0,3643.0,3884.0,3829.0,4047.0,4119.0,4094.0,4096.0,3079.0,2906.0,2543.0,2992.0,3143.0,3743.0,3851.0,3924.0,3962.0,3934.0,3454.0,3196.0,3013.0,2801.0,2630.0,2544.0,3574.0,3860.0,3828.0,3813.0,4018.0,3870.0,2942.0,2689.0,2465.0,2448.0,2702.0,2720.0,2590.0,2650.0,3392.0,3791.0,4002.0,4001.0,3769.0,3583.0,3392.0,3166.0,3171.0,2859.0],"f_mar":[1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.9725,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]};
+(() => {
+  'use strict';
+  const FILAS = BASE.lat.length, COLS = BASE.lon.length, N = FILAS * COLS;
+  const $ = id => document.getElementById(id);
+  const nombre = {P:'Profundidad', S:'Pendiente', R:'Rugosidad', T:'Temperatura',Z:'Salinidad',A:'Productividad primaria'};
+  const unidades = {P:'m',S:'°',R:'m',T:'°C',Z:'10⁻³',A:'mg C/m²/día'};
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const estaticas = ['P','S','R'], dinamicas=['T','Z','A'], todas=[...estaticas,...dinamicas];
+  const canvas = $('mapa'), ctx=canvas.getContext('2d',{alpha:false});
+  if (!ctx){$('estado-datos').textContent='No se puede visualizar el mapa: falta Canvas.';return;}
+  const MAR={l:54,t:39,r:18,b:52};
+  const ancho=(canvas.width-MAR.l-MAR.r)/COLS, alto=(canvas.height-MAR.t-MAR.b)/FILAS;
+  const crearNAN = () => Float64Array.from({length:N},()=>NaN);
+  let campos = {P:Float64Array.from(BASE.P),S:crearNAN(),R:crearNAN(),T:Array.from({length:12},crearNAN),Z:Array.from({length:12},crearNAN),A:Array.from({length:12},crearNAN)};
+  let cargado=false, variable='P', mes=1, condicion1='P', condicion2='', seleccion={i:11,j:12};
+  let rangos={},celdas=new Uint8Array(N),componentes=new Int16Array(N), numeroComponentes=0, areasComponentes=[], modoComponentes=false;
+  let mesesDisponibles=new Set();
+  const R_TIERRA=6371.0088, rad=Math.PI/180;
+  const latEdges = bordes(BASE.lat), lonEdges = bordes(BASE.lon);
+  const areas = Float64Array.from({length:N},(_,index)=>{
+    const i=Math.floor(index/COLS),j=index%COLS;
+    return R_TIERRA**2 * (lonEdges[j+1]-lonEdges[j])*rad * (Math.sin(latEdges[i+1]*rad)-Math.sin(latEdges[i]*rad));
+  });
+  function bordes(p){const a=[p[0]-(p[1]-p[0])/2];for(let k=1;k<p.length;k++)a.push((p[k-1]+p[k])/2);a.push(p.at(-1)+(p.at(-1)-p.at(-2))/2);return a;}
+  const form = (v,dec=1) => Number.isFinite(v)?v.toLocaleString('es-CO',{minimumFractionDigits:dec,maximumFractionDigits:dec}):'Sin dato';
+  const valor=(v,index,m=mes)=>estaticas.includes(v)?campos[v][index]:campos[v][m-1][index];
+  const disponible = v => {
+    if (estaticas.includes(v)) return campos[v].some(x=>Number.isFinite(x));
+    return campos[v].some(arr=>arr.some(x=>Number.isFinite(x)));
+  };
+  function rangoDatos(v){const arr=estaticas.includes(v)?[campos[v]]:[campos[v][mes-1]];let min=Infinity,max=-Infinity;
+    for(const lista of arr) for(const x of lista){if(Number.isFinite(x)){min=Math.min(min,x);max=Math.max(max,x);}}
+    return min===Infinity?null:{min,max};}
+  const pasos={P:10,S:.1,R:1,T:.05,Z:.05,A:10};
+  function getRango(v){const p=rangoDatos(v);if(!p)return null;const step=pasos[v];return {min:Math.floor(p.min/step)*step,max:Math.ceil(p.max/step)*step,step};}
+  function asignarRango(n,reset=true){const v=n===1?condicion1:condicion2;if(!v)return;const p=getRango(v);if(!p)return;
+    const mi=$(`min-${n}`),ma=$(`max-${n}`);for(const inp of [mi,ma]){inp.min=p.min;inp.max=p.max;inp.step=p.step;}
+    if(reset||!rangos[n]||rangos[n].v!==v){
+      const m = p.min+(p.max-p.min)*.20, M = p.min+(p.max-p.min)*.80;
+      mi.value=String(Math.round(m/p.step)*p.step);ma.value=String(Math.round(M/p.step)*p.step);
+      rangos[n]={v,min:Number(mi.value),max:Number(ma.value)};
+    }else{mi.value=String(Math.max(p.min,Math.min(p.max,rangos[n].min)));ma.value=String(Math.max(p.min,Math.min(p.max,rangos[n].max)));rangos[n].min=Number(mi.value);rangos[n].max=Number(ma.value);}
+    mostrarRangos(n);
+  }
+  function mostrarRangos(n){const p=rangos[n];if(!p)return;const dec=['T','Z','S'].includes(p.v)?2:(p.v==='R'?1:0);$(`min-${n}-valor`).textContent=form(p.min,dec)+' '+unidades[p.v];$(`max-${n}-valor`).textContent=form(p.max,dec)+' '+unidades[p.v];}
+  const colores={P:['#e1e5d4','#77c9cb','#3288ab','#1d5479','#091b38'],S:['#f3f0d7','#a9c5a0','#729a80','#346b63','#143f54'],R:['#f0efdb','#c6d0a3','#88a37b','#536b62','#273d4b'],T:['#344589','#508ab0','#f4de93','#f3a45f','#b84b45'],Z:['#d5e7e3','#92b9c4','#4e8ca0','#26556c','#0a2c43'],A:['#faf4dc','#d9e7a3','#88bd78','#398f72','#136066']};
+  const RGB=(s)=>[parseInt(s.slice(1,3),16),parseInt(s.slice(3,5),16),parseInt(s.slice(5,7),16)];
+  function color(v,x,min,max){if(!Number.isFinite(x))return '#b6c7c7';let q=Math.max(0,Math.min(1,(x-min)/(max-min||1)))*4,i=Math.min(3,Math.floor(q)),f=q-i;const a=RGB(colores[v][i]),b=RGB(colores[v][i+1]);return `rgb(${a.map((z,k)=>Math.round(z+(b[k]-z)*f)).join(',')})`;}
+  function pintar(){const W=canvas.width,H=canvas.height;ctx.fillStyle='#eef5f3';ctx.fillRect(0,0,W,H);const rango=rangoDatos(variable);
+    if(!rango)return;
+    for(let i=0;i<FILAS;i++)for(let j=0;j<COLS;j++){
+      const z=i*COLS+j, X=MAR.l+j*ancho, Y=MAR.t+(FILAS-1-i)*alto;
+      ctx.fillStyle=color(variable,valor(variable,z),rango.min,rango.max);ctx.fillRect(X+.12,Y+.12,ancho-.24,alto-.24);
+      if(modoComponentes){if(celdas[z]){const serie=['#42c5a3','#eeaa57','#8978c4','#d97092','#70aad8','#d0c767'];ctx.fillStyle=serie[(componentes[z]-1)%serie.length];ctx.globalAlpha=.82;ctx.fillRect(X+.12,Y+.12,ancho-.24,alto-.24);ctx.globalAlpha=1;}else{ctx.fillStyle='rgba(245,249,246,.87)';ctx.fillRect(X+.12,Y+.12,ancho-.24,alto-.24);}}
+      else if(!celdas[z]){ctx.fillStyle='rgba(244,248,247,.72)';ctx.fillRect(X+.12,Y+.12,ancho-.24,alto-.24);}
+    }
+    ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=.6;
+    for(let j=0;j<=COLS;j++){ctx.beginPath();ctx.moveTo(MAR.l+j*ancho,MAR.t);ctx.lineTo(MAR.l+j*ancho,MAR.t+FILAS*alto);ctx.stroke();}
+    for(let i=0;i<=FILAS;i++){ctx.beginPath();ctx.moveTo(MAR.l,MAR.t+i*alto);ctx.lineTo(MAR.l+COLS*ancho,MAR.t+i*alto);ctx.stroke();}
+    ctx.strokeStyle='#fdfdfd';ctx.lineWidth=2.2;
+    for(let i=0;i<FILAS;i++)for(let j=0;j<COLS;j++){
+      const z=i*COLS+j;if(!celdas[z])continue;
+      const x=MAR.l+j*ancho, y=MAR.t+(FILAS-1-i)*alto;
+      if(i===FILAS-1||!celdas[z+COLS])trazo(x,y,x+ancho,y);
+      if(i===0||!celdas[z-COLS])trazo(x,y+alto,x+ancho,y+alto);
+      if(j===0||!celdas[z-1])trazo(x,y,x,y+alto);
+      if(j===COLS-1||!celdas[z+1])trazo(x+ancho,y,x+ancho,y+alto);
+    }
+    // El marcador usa coordenadas geográficas, no un índice aproximado.
+    const px=MAR.l+( -81.6-lonEdges[0])/(lonEdges.at(-1)-lonEdges[0])*(COLS*ancho);
+    const py=MAR.t+(latEdges.at(-1)-4)/(latEdges.at(-1)-latEdges[0])*(FILAS*alto);
+    ctx.strokeStyle='#fff';ctx.fillStyle='#234b3e';ctx.lineWidth=2.2;
+    ctx.beginPath();ctx.arc(px,py,6.5,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.font='600 12px system-ui';ctx.textAlign='left';ctx.fillStyle='#10362e';ctx.fillText('Centro de estudio',Math.min(W-160,px+12),py-12);
+    // Coordenadas y marco cartográfico.
+    ctx.strokeStyle='#637e7c';ctx.lineWidth=1.2;ctx.strokeRect(MAR.l,MAR.t,ancho*COLS,alto*FILAS);
+    ctx.textAlign='center';ctx.fillStyle='#4a6063';ctx.font='13px system-ui';
+    const labsLon=[-82.5,-82,-81.5,-81,-80.7];for(const x of labsLon){const pos=MAR.l+(x-lonEdges[0])/(lonEdges.at(-1)-lonEdges[0])*COLS*ancho;if(pos>MAR.l&&pos<MAR.l+COLS*ancho)ctx.fillText(Math.abs(x).toFixed(1)+'° O',pos,H-18);}
+    ctx.textAlign='right';for(const y of [3.1,3.5,4,4.5,4.9]){const pos=MAR.t+(latEdges.at(-1)-y)/(latEdges.at(-1)-latEdges[0])*FILAS*alto;ctx.fillText(y.toFixed(1)+'° N',MAR.l-9,pos+4);}
+    const {i,j}=seleccion;if(i>=0&&j>=0){ctx.strokeStyle='#fffae7';ctx.lineWidth=3.6;ctx.strokeRect(MAR.l+j*ancho+1,MAR.t+(FILAS-1-i)*alto+1,ancho-2,alto-2);ctx.strokeStyle='#203e27';ctx.lineWidth=1;ctx.strokeRect(MAR.l+j*ancho+3,MAR.t+(FILAS-1-i)*alto+3,ancho-6,alto-6);}
+  }
+  function trazo(x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+  function crearComponentes(){componentes.fill(0);let numero=0;areasComponentes=[];
+    for(let z=0;z<N;z++){
+      if(!celdas[z]||componentes[z])continue;
+      ++numero;let area=0;const cola=[z];componentes[z]=numero;
+      for(let k=0;k<cola.length;k++){
+        const id=cola[k],i=Math.floor(id/COLS),j=id%COLS;area+=areas[id];
+        const vecinos=[];if(i>0)vecinos.push(id-COLS);if(i<FILAS-1)vecinos.push(id+COLS);if(j>0)vecinos.push(id-1);if(j<COLS-1)vecinos.push(id+1);
+        for(const w of vecinos)if(celdas[w]&&!componentes[w]){componentes[w]=numero;cola.push(w);}
+      }
+      areasComponentes.push(area);
+    }
+    numeroComponentes=numero;
+  }
+  function calcular(){let n=0,area=0;const r1=rangos[1],r2=condicion2?rangos[2]:null;
+    for(let z=0;z<N;z++){
+      const x=valor(condicion1,z),y=r2?valor(condicion2,z):0;
+      const ok=Number.isFinite(x)&&x>=r1.min-1e-8&&x<=r1.max+1e-8&&(!r2||(Number.isFinite(y)&&y>=r2.min-1e-8&&y<=r2.max+1e-8));
+      celdas[z]=ok?1:0;if(ok){n++;area+=areas[z];}
+    }
+    crearComponentes();$('n-celdas').textContent=form(n,0)+' / '+N;$('area').textContent=form(area,0)+' km²';$('n-componentes').textContent=form(numeroComponentes,0);
+    const mayor=areasComponentes.length?Math.max(...areasComponentes):0;$('mayor').textContent=form(mayor,0)+' km²';
+    const expr=r=>nombre[r.v]+': '+form(r.min,['T','Z','S'].includes(r.v)?2:0)+'–'+form(r.max,['T','Z','S'].includes(r.v)?2:0)+' '+unidades[r.v];
+    $('texto-condicion').textContent=expr(r1)+(r2?'  Y  '+expr(r2):'')+'. Conectividad por lados compartidos.';
+    actualizarVista();
+  }
+  function actualizarVista(){
+    const rango=rangoDatos(variable);
+    $('titulo-mapa').textContent=nombre[variable]+' · '+(dinamicas.includes(variable)?meses[mes-1]+' 2024':(variable==='P'?'GEBCO · profundidad media':'GEBCO'));
+    $('etiqueta-mes').textContent=dinamicas.includes(variable)?meses[mes-1]+' 2024':'Variable estática';
+    if(rango){$('escala-min').textContent=form(rango.min,['T','Z','S'].includes(variable)?2:0);$('escala-max').textContent=form(rango.max,['T','Z','S'].includes(variable)?2:0);}
+    $('escala-unidad').textContent=unidades[variable];
+    const stops=colores[variable];$('escala-barra').style.background=`linear-gradient(to right,${stops.join(',')})`;
+    $('vista-componentes').textContent=modoComponentes?'Ver mapa de la variable':'Ver componentes conectadas';
+    pintar();actualizarFicha();
+  }
+  function actualizarFicha(){const {i,j}=seleccion,index=i*COLS+j, comp=componentes[index];
+    $('celda-titulo').textContent=`Celda C_${String(i).padStart(3,'0')}_${String(j).padStart(3,'0')} · ${form(BASE.lat[i],4)}° N, ${form(BASE.lon[j],4)}° O · ${celdas[index]?'Dentro de la región':'Fuera de la región'}${comp?' · Componente '+comp:''}`;
+    $('detalle-batimetria').textContent=`GEBCO por celda: profundidad mínima ${form(BASE.P_min[index],0)} m · máxima ${form(BASE.P_max[index],0)} m · superficie marina ${form(BASE.f_mar[index]*100,1)} %. Estos extremos no son la profundidad promedio del píxel de visualización.`;
+    $('valores-celda').replaceChildren();
+    for(const v of todas){const box=document.createElement('div');box.className='valor-celda';const tit=document.createElement('span');tit.textContent=nombre[v];const value=document.createElement('strong');const x=valor(v,index);value.textContent=Number.isFinite(x)?form(x,['T','Z','S'].includes(v)?2:1)+' '+unidades[v]:'—';box.append(tit,value);$('valores-celda').append(box);}
+    if(cargado)dibujarSerie();
+  }
+  function dibujarSerie(){const cont=$('seccion-serie');if(!dinamicas.some(disponible)){cont.hidden=true;return;}cont.hidden=false;
+    for(const opt of $('serie-variable').options)opt.disabled=!disponible(opt.value);
+    if(!disponible($('serie-variable').value)){$('serie-variable').value=dinamicas.find(disponible);}
+    const v=$('serie-variable').value,index=seleccion.i*COLS+seleccion.j;
+    const pts=Array.from({length:12},(_,m)=>valor(v,index,m+1));const lim=pts.filter(Number.isFinite);
+    const svg=$('grafica');svg.replaceChildren();const ns='http://www.w3.org/2000/svg';
+    const el=(tag,attrs,text)=>{const n=document.createElementNS(ns,tag);for(const [k,x]of Object.entries(attrs))n.setAttribute(k,String(x));if(text!==undefined)n.textContent=text;svg.append(n);return n;};
+    if(!lim.length){$('serie-nota').textContent='No hay datos mensuales de esta variable en la celda seleccionada.';return;}
+    let lo=Math.min(...lim),hi=Math.max(...lim);const d=hi-lo||Math.max(1,Math.abs(hi)*.05);lo-=d*.18;hi+=d*.18;
+    const X=m=>58+m*(535/11),Y=x=>152-(x-lo)/(hi-lo)*123;
+    for(let k=0;k<=3;k++){const y=27+k*41.5;el('line',{x1:54,x2:597,y1:y,y2:y,stroke:'#dce8df','stroke-width':1});el('text',{x:47,y:y+4,'text-anchor':'end','font-size':12,fill:'#65766b'},form(hi-(hi-lo)*k/3,1));}
+    const tramos=[];let segmento=[];
+    pts.forEach((x,m)=>{if(Number.isFinite(x))segmento.push(`${X(m)},${Y(x)}`);else if(segmento.length){tramos.push(segmento);segmento=[];}});if(segmento.length)tramos.push(segmento);
+    tramos.forEach(t=>{if(t.length>1)el('polyline',{points:t.join(' '),fill:'none',stroke:'#225500','stroke-width':2.7,'stroke-linecap':'round','stroke-linejoin':'round'});});
+    pts.forEach((x,m)=>{if(Number.isFinite(x))el('circle',{cx:X(m),cy:Y(x),r:4.2,fill:'#225500',stroke:'#fff','stroke-width':1.5});el('text',{x:X(m),y:175,'text-anchor':'middle','font-size':11,fill:'#627363'},meses[m].slice(0,3));});
+    $('serie-nota').textContent=`${nombre[v]} en C_${String(seleccion.i).padStart(3,'0')}_${String(seleccion.j).padStart(3,'0')} · ${unidades[v]} · ${lim.length} meses disponibles.`;
+  }
+  function habilitarOpciones(){for(const select of [$('variable'),$('criterio-1'),$('criterio-2')]){
+      const current=select.value;select.replaceChildren();
+      if(select.id==='criterio-2')select.add(new Option('Sin segunda condición',''));
+      for(const v of todas){const op=new Option(nombre[v]+' · '+v+(disponible(v)?'':' — requiere CSV'),v);op.disabled=!disponible(v);select.add(op);}
+      select.value=(current===''&&select.id==='criterio-2')?'':(disponible(current)?current:(select.id==='criterio-2'?'':'P'));
+    }
+    variable=$('variable').value;condicion1=$('criterio-1').value;condicion2=$('criterio-2').value;
+    $('mes').disabled=!dinamicas.some(disponible);
+    $('seccion-serie').hidden=!dinamicas.some(disponible);
+    for(const n of [1,2]) if(n===1||condicion2)asignarRango(n,true);
+    $('grupo-2').hidden=!condicion2;
+    calcular();
+  }
+  function parseCSV(texto){const lineas=[];let fila=[],campo='',comillas=false;for(let i=0;i<texto.length;i++){
+      const ch=texto[i];if(ch==='"'){if(comillas&&texto[i+1]==='"'){campo+='"';i++;}else comillas=!comillas;}
+      else if(ch===','&&!comillas){fila.push(campo);campo='';}
+      else if((ch==='\n'||ch==='\r')&&!comillas){if(ch==='\r'&&texto[i+1]==='\n')i++;fila.push(campo);if(fila.some(s=>s.trim()!==''))lineas.push(fila);fila=[];campo='';}
+      else campo+=ch;
+    }if(comillas)throw new Error('CSV con comillas sin cerrar.');
+    if(campo||fila.length){fila.push(campo);lineas.push(fila);}return lineas;
+  }
+  function num(s){if(s==null||s.trim()==='')return NaN;const v=Number(s.trim());return Number.isFinite(v)?v:NaN;}
+  function importarCSV(texto,procedencia){const filas=parseCSV(texto.replace(/^\ufeff/,''));if(filas.length<2)throw new Error('CSV vacío.');if(filas.length>150000)throw new Error('CSV demasiado grande para este laboratorio.');
+    const heads=filas[0].map(s=>s.trim().toLowerCase());const col=n=>heads.indexOf(n.toLowerCase());
+    if(col('i')<0||col('j')<0)throw new Error('El CSV debe incluir las columnas i y j generadas por el cuaderno.');
+    const presentes=todas.filter(v=>col(v)>=0);if(!presentes.length)throw new Error('No se encontraron variables P, S, R, T, Z o A.');
+    const otros={P:Float64Array.from(BASE.P),S:crearNAN(),R:crearNAN(),T:Array.from({length:12},crearNAN),Z:Array.from({length:12},crearNAN),A:Array.from({length:12},crearNAN)};
+    let validas=0,rechazadas=0,registrosGeo=0;const mDisponibles=new Set();
+    for(let n=1;n<filas.length;n++){
+      const row=filas[n],i=num(row[col('i')]),j=num(row[col('j')]);
+      if(!Number.isInteger(i)||!Number.isInteger(j)||i<0||i>=FILAS||j<0||j>=COLS){rechazadas++;continue;}
+      const latcol=col('latitude'),loncol=col('longitude');
+      if(latcol>=0&&loncol>=0){const lat=num(row[latcol]),lon=num(row[loncol]);if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat-BASE.lat[i])>.004||Math.abs(lon-BASE.lon[j])>.004){rechazadas++;continue;}registrosGeo++;}
+      const z=i*COLS+j;let m=col('mes')>=0?num(row[col('mes')]):NaN;
+      if(!Number.isInteger(m)&&col('time')>=0){const iso=row[col('time')]?.trim()||'';const mat=iso.match(/^\d{4}-(\d{2})/);m=mat?Number(mat[1]):NaN;}
+      if(!Number.isInteger(m)||m<1||m>12) m=1;
+      for(const v of presentes){const x=num(row[col(v)]);if(!Number.isFinite(x))continue;
+        if(estaticas.includes(v))otros[v][z]=x;
+        else{otros[v][m-1][z]=x;mDisponibles.add(m);}
+      }
+      validas++;
+    }
+    if(!validas)throw new Error('No coinciden las coordenadas o los índices con la malla de Malpelo.');
+    if(rechazadas>0&&rechazadas>validas/20)throw new Error('Demasiadas filas no corresponden a la malla esperada.');
+    campos=otros;mesesDisponibles=mDisponibles;cargado=true;
+    $('estado-datos').textContent=`${procedencia}: ${form(validas,0)} registros válidos, ${presentes.join(', ')}. ${mDisponibles.size} meses dinámicos. ${rechazadas?rechazadas+' filas omitidas.':''}`;
+    $('fuente-titulo').textContent='Datos integrados cargados.';
+    $('fuente-texto').textContent='La malla y las variables disponibles proceden del CSV integrado. Los criterios siguen siendo exploratorios, no una estimación validada del hábitat de tiburones.';
+    habilitarOpciones();
+  }
+  function descargar(nombre,contenido,tipo){const blob=new Blob([contenido],{type:tipo}),link=document.createElement('a'),url=URL.createObjectURL(blob);link.href=url;link.download=nombre;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);}
+  $('archivo').addEventListener('change',async ev=>{const f=ev.target.files?.[0];if(!f)return;$('estado-datos').textContent='Leyendo CSV…';try{if(f.size>40_000_000)throw new Error('El CSV supera 40 MB.');importarCSV(await f.text(),'CSV local');}catch(e){$('estado-datos').textContent='No se pudo cargar el CSV: '+e.message;}});
+  $('variable').addEventListener('change',ev=>{variable=ev.target.value;actualizarVista();});
+  $('mes').addEventListener('change',ev=>{mes=Number(ev.target.value);if(condicion1&&dinamicas.includes(condicion1))asignarRango(1,false);if(condicion2&&dinamicas.includes(condicion2))asignarRango(2,false);calcular();});
+  $('criterio-1').addEventListener('change',ev=>{condicion1=ev.target.value;asignarRango(1,true);calcular();});
+  $('criterio-2').addEventListener('change',ev=>{condicion2=ev.target.value;$('grupo-2').hidden=!condicion2;if(condicion2)asignarRango(2,true);calcular();});
+  for(let n of [1,2])for(const cual of ['min','max'])$(`${cual}-${n}`).addEventListener('input',ev=>{
+    const r=rangos[n];if(!r)return;const a=$(`min-${n}`),b=$(`max-${n}`);
+    if(Number(a.value)>Number(b.value)){
+      if(cual==='min')b.value=a.value;else a.value=b.value;
+    }
+    r.min=Number(a.value);r.max=Number(b.value);mostrarRangos(n);calcular();
+  });
+  $('vista-componentes').addEventListener('click',()=>{modoComponentes=!modoComponentes;actualizarVista();});
+  $('todo').addEventListener('click',()=>{for(let n of [1,2]){if(n===2&&!condicion2)continue;const v=n===1?condicion1:condicion2;const r=getRango(v);if(!r)continue;$(`min-${n}`).value=r.min;$(`max-${n}`).value=r.max;rangos[n]={v,min:r.min,max:r.max};mostrarRangos(n);}calcular();});
+  $('png').addEventListener('click',()=>{canvas.toBlob(b=>{if(b)descargar(`bia-malpelo-${variable}-${mes}.png`,b,'image/png');},'image/png');});
+  $('exportar').addEventListener('click',()=>{const cols=['anio','mes','cell_id','i','j','latitude','longitude','P','S','R','T','Z','A','seleccionada','componente'];
+    const rows=[cols.join(',')];for(let i=0;i<FILAS;i++)for(let j=0;j<COLS;j++){const z=i*COLS+j;const cells=[2024,mes,`C_${String(i).padStart(3,'0')}_${String(j).padStart(3,'0')}`,i,j,BASE.lat[i],BASE.lon[j],...todas.map(v=>Number.isFinite(valor(v,z))?valor(v,z):''),celdas[z],componentes[z]];rows.push(cells.join(','));}
+    descargar(`bia-malpelo-celdas-${mes}.csv`,rows.join('\n'),'text/csv;charset=utf-8');
+  });
+  $('serie-variable').addEventListener('change',dibujarSerie);
+  function indiceDeEvento(event){const r=canvas.getBoundingClientRect(),xx=(event.clientX-r.left)/r.width*canvas.width,yy=(event.clientY-r.top)/r.height*canvas.height;
+    const j=Math.floor((xx-MAR.l)/ancho),i=FILAS-1-Math.floor((yy-MAR.t)/alto);
+    return (i>=0&&i<FILAS&&j>=0&&j<COLS)?{i,j}:null;
+  }
+  canvas.addEventListener('pointerdown',e=>{const sel=indiceDeEvento(e);if(sel){seleccion=sel;actualizarVista();}});
+  canvas.addEventListener('keydown',e=>{let {i,j}=seleccion;if(e.key==='ArrowLeft')j--;else if(e.key==='ArrowRight')j++;else if(e.key==='ArrowUp')i++;else if(e.key==='ArrowDown')i--;else return;e.preventDefault();seleccion={i:Math.min(FILAS-1,Math.max(0,i)),j:Math.min(COLS-1,Math.max(0,j))};actualizarVista();});
+  // No se descargan datos privados ni se necesitan credenciales en el sitio público.
+  habilitarOpciones();
+  if(location.protocol.startsWith('http')){
+    fetch('datos/malla_BIA_Copernicus_GEBCO.csv',{cache:'no-store'}).then(r=>r.ok?r.text():null).then(t=>{if(t&&!cargado)importarCSV(t,'CSV del repositorio');}).catch(err=>console.debug('CSV integrado no disponible todavía:',err));
+  }
+})();
+
+</script>
+</body>
+</html>

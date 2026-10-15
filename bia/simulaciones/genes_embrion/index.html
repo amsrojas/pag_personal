@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#225500">
+  <meta name="description" content="Laboratorio BIA de morfogénesis celular: señales, memoria, diferenciación y crecimiento en un modelo conceptual bidimensional.">
+  <title>Morfogénesis celular · Laboratorio BIA</title>
+
+  <style>
+    :root {
+      --verde: #225500; --verde-oscuro: #193f00; --tinta: #263026;
+      --gris: #596559; --linea: #dfe8d9; --fondo: #f8faf6;
+      --claro: #edf3e7; --blanco: #fff;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--fondo); color: var(--tinta); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: var(--verde); }
+    button, input, select { font: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, canvas:focus-visible { outline: 3px solid var(--verde); outline-offset: 3px; }
+    .pagina { width: min(1200px, calc(100% - 2.2rem)); margin: 0 auto; padding: 1.8rem 0 4rem; }
+    .barra { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+    .volver { text-decoration: none; font-size: .92rem; font-weight: 650; }
+    .marca { color: var(--verde); font-weight: 780; font-size: .85rem; letter-spacing: .11em; }
+    .etiqueta { display: block; text-transform: uppercase; font-size: .76rem; font-weight: 750; letter-spacing: .1em; color: var(--verde); margin-bottom: .5rem; }
+    h1, h2, h3 { line-height: 1.22; letter-spacing: -.02em; }
+    h1 { margin: .35rem 0 .65rem; font-size: clamp(2rem, 4.3vw, 3.05rem); }
+    h2 { font-size: clamp(1.4rem, 2.5vw, 1.8rem); margin: 0 0 .6rem; }
+    h3 { font-size: 1.04rem; margin: 1.25rem 0 .55rem; }
+    .introduccion { max-width: 80ch; margin: 0 0 2rem; color: var(--gris); }
+    .rejilla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 315px); align-items: start; gap: 1.1rem; }
+    .tarjeta { background: var(--blanco); border: 1px solid var(--linea); border-radius: 16px; min-width: 0; }
+    .panel-simulacion { padding: 1rem; }
+    .titulo-panel { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .5rem; margin-bottom: .8rem; }
+    .titulo-panel h2 { margin: 0; font-size: 1.08rem; letter-spacing: 0; }
+    .estado { font-size: .83rem; color: var(--gris); }
+    .lienzo-marco { overflow: hidden; border-radius: 10px; background: #0d1725; border: 1px solid #273b4c; }
+    #tejido { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; cursor: crosshair; touch-action: manipulation; }
+    .pista { color: var(--gris); margin: .65rem 0 .35rem; font-size: .88rem; }
+    .mensaje { min-height: 2.25rem; margin: .5rem 0; font-size: .86rem; color: #3d6334; }
+    .acciones { display: flex; flex-wrap: wrap; gap: .55rem; margin: .8rem 0 .4rem; }
+    .boton { border: 1px solid var(--linea); background: white; color: var(--verde-oscuro); border-radius: 9px; padding: .56rem .9rem; cursor: pointer; font-weight: 650; font-size: .91rem; min-height: 43px; }
+    .boton:hover { background: var(--claro); }
+    .boton-principal { background: var(--verde); color: white; border-color: var(--verde); }
+    .boton-principal:hover { background: var(--verde-oscuro); }
+    .boton:disabled { opacity: .55; cursor: wait; }
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; margin-top: 1rem; }
+    .stat { border: 1px solid #e9eee5; background: #fbfcfa; padding: .62rem .65rem; border-radius: 9px; min-width: 0; }
+    .stat span { display: block; font-size: .75rem; line-height: 1.25; color: var(--gris); }
+    .stat strong { display: block; font-size: 1.14rem; color: var(--tinta); font-variant-numeric: tabular-nums; }
+    .leyenda { display: flex; flex-wrap: wrap; gap: .4rem 1rem; margin: 1rem 0 0; padding: 0; list-style: none; font-size: .79rem; color: var(--gris); }
+    .leyenda li { display: inline-flex; align-items: center; gap: .32rem; }
+    .leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex: 0 0 10px; }
+    .panel-controles { padding: 1.3rem; }
+    .panel-controles h2 { font-size: 1.16rem; margin-bottom: .35rem; }
+    .controles-info { font-size: .87rem; color: var(--gris); margin: 0 0 1rem; }
+    .control { margin-bottom: 1.15rem; }
+    .control > label { display: flex; align-items: baseline; justify-content: space-between; gap: .7rem; margin-bottom: .3rem; font-size: .91rem; font-weight: 630; }
+    output { color: var(--verde); font-weight: 750; font-variant-numeric: tabular-nums; }
+    .control input[type=range] { width: 100%; accent-color: var(--verde); min-height: 24px; }
+    .selector { display: block; width: 100%; padding: .62rem .7rem; border: 1px solid #cfdac7; border-radius: 8px; background: #fff; color: var(--tinta); }
+    .detalle { margin: .1rem 0 0; color: var(--gris); font-size: .8rem; line-height: 1.45; }
+    .opciones { margin: .4rem 0 1.25rem; padding: 0; border: 0; }
+    .opciones legend { font-weight: 730; color: var(--tinta); font-size: .94rem; margin-bottom: .6rem; }
+    .casilla { display: flex; align-items: flex-start; gap: .6rem; font-size: .9rem; margin: .7rem 0; cursor: pointer; }
+    .casilla input { accent-color: var(--verde); flex: 0 0 auto; width: 18px; height: 18px; margin-top: .3rem; }
+    .nota { background: var(--claro); border-radius: 10px; padding: .85rem .95rem; color: #3d5136; font-size: .86rem; }
+    .seccion { margin-top: 2.7rem; }
+    .matematica { padding: clamp(1.1rem, 2.8vw, 1.8rem); }
+    .matematica p { max-width: 85ch; }
+    .ecuacion { max-width: 100%; overflow-x: auto; padding: .45rem 0; }
+    .texto-pequeno { font-size: .9rem; color: var(--gris); }
+    .etapas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .etapas p { margin: .25rem 0 0; }
+    .etapas article { padding: 1rem; background: var(--fondo); border: 1px solid var(--linea); border-radius: 10px; }
+    .etapas strong { color: var(--verde); }
+    .pie { border-top: 1px solid var(--linea); padding-top: 1.5rem; margin-top: 3rem; font-size: .88rem; color: var(--gris); }
+    @media (max-width: 880px) { .rejilla { grid-template-columns: 1fr; } .panel-controles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.2rem; } .panel-controles h2, .panel-controles .controles-info, .panel-controles .opciones, .panel-controles .nota { grid-column: 1 / -1; } }
+    @media (max-width: 560px) { .pagina { width: calc(100% - 1.25rem); padding-top: 1rem; } .panel-simulacion { padding: .6rem; } .panel-controles { display: block; padding: 1.1rem; } .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } .stat strong { font-size: 1rem; } .acciones .boton { flex: 1 1 auto; } .etapas { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+
+  <!-- MathJax es JavaScript (no requiere Java); interpreta notación LaTeX. -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] } };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+  <script defer src="simulacion.js"></script>
+</head>
+<body>
+  <main class="pagina">
+    <div class="barra">
+      <a class="volver" href="../../index.html">← Volver a los proyectos BIA</a>
+      <span class="marca">BIA · BIOINSPIRACIÓN APLICADA</span>
+    </div>
+
+    <header>
+      <span class="etiqueta">Laboratorio de modelización matemática · Sistemas celulares</span>
+      <h1>Desarrollo embrionario: señales, organización y forma</h1>
+      <p class="introduccion">Simulación conceptual de un tejido en dos dimensiones. Las células intercambian señales, acumulan memoria, cambian de estado y, bajo determinadas condiciones, se dividen e interactúan mecánicamente. Puedes crear varios centros de inducción sobre el <strong>mismo tejido</strong> y observar cómo evoluciona su organización.</p>
+    </header>
+
+    <div class="rejilla">
+      <section class="tarjeta panel-simulacion" aria-labelledby="titulo-lienzo">
+        <div class="titulo-panel">
+          <h2 id="titulo-lienzo">Organización del tejido</h2>
+          <span id="estado" class="estado" role="status">Preparando la simulación…</span>
+        </div>
+        <div class="lienzo-marco">
+          <canvas id="tejido" width="1280" height="800" tabindex="0" aria-label="Tejido celular simulado. Haz clic en un grupo de células para crear un nuevo foco. También puedes pulsar Intro para agregar un foco automático.">
+            Se requiere un navegador compatible con HTML Canvas.
+          </canvas>
+        </div>
+        <p class="pista">Pulsa sobre las células para crear un nuevo centro de señalización sin reiniciar el experimento. Los números identifican los focos.</p>
+        <p id="aviso" class="mensaje" role="status" aria-live="polite">Preparando el tejido inicial…</p>
+        <div class="acciones" role="group" aria-label="Acciones del laboratorio">
+          <button class="boton boton-principal" id="pausa" type="button" disabled>Pausar</button>
+          <button class="boton" id="reiniciar" type="button" disabled>Reiniciar</button>
+          <button class="boton" id="foco-auto" type="button" disabled>Añadir foco automático</button>
+          <button class="boton" id="imagen" type="button" disabled>Guardar imagen</button>
+          <button class="boton" id="datos" type="button" disabled>Exportar datos CSV</button>
+        </div>
+        <div class="stats" aria-label="Indicadores del experimento">
+          <div class="stat"><span>Paso</span><strong id="paso">0</strong></div>
+          <div class="stat"><span>Células</span><strong id="celulas">300</strong></div>
+          <div class="stat"><span>Focos</span><strong id="focos">1</strong></div>
+          <div class="stat"><span>Nacimientos</span><strong id="nacimientos">0</strong></div>
+          <div class="stat"><span>Diferenciadas</span><strong id="diferenciadas">0</strong></div>
+          <div class="stat"><span>Relevos de señal</span><strong id="transmisiones">0</strong></div>
+        </div>
+        <ul class="leyenda" aria-label="Estados celulares">
+          <li><i style="background:#8c9caf"></i>Sin inducir</li>
+          <li><i style="background:#fbcc66"></i>Inducida</li>
+          <li><i style="background:#55d0c8"></i>Progenitora</li>
+          <li><i style="background:#a68be6"></i>Diferenciada</li>
+          <li><i style="background:#f77268"></i>Emisora</li>
+        </ul>
+      </section>
+
+      <aside class="tarjeta panel-controles" aria-labelledby="titulo-controles">
+        <h2 id="titulo-controles">Configuración del experimento</h2>
+        <p class="controles-info">Los controles permiten comparar la contribución de distintos mecanismos. Al cambiar las reglas o la tasa de división, el experimento <strong>se reinicia</strong> con la misma semilla.</p>
+        <fieldset class="opciones">
+          <legend>Mecanismos activos</legend>
+          <label class="casilla"><input id="relevos" type="checkbox" checked> Transmisión local de señales</label>
+          <label class="casilla"><input id="proliferacion" type="checkbox" checked> Proliferación celular</label>
+          <label class="casilla"><input id="adhesion" type="checkbox" checked> Adhesión entre células</label>
+          <label class="casilla"><input id="diferenciacion" type="checkbox" checked> Diferenciación celular</label>
+          <label class="casilla"><input id="trazas" type="checkbox" checked> Mostrar trazas de señalización</label>
+        </fieldset>
+        <div class="control">
+          <label for="tasa">Tasa base de división <output id="tasa-valor" for="tasa">0.054</output></label>
+          <input id="tasa" type="range" min="0.001" max="0.180" step="0.001" value="0.054">
+          <p class="detalle">La división depende también de la señal, sensibilidad, edad y proximidad de otras células.</p>
+        </div>
+        <div class="control">
+          <label for="vista">Encuadre</label>
+          <select id="vista" class="selector">
+            <option value="detalle" selected>Seguir el tejido (acercamiento)</option>
+            <option value="completa">Plano completo (Processing)</option>
+          </select>
+          <p class="detalle">El acercamiento solo modifica la visualización, no el modelo.</p>
+        </div>
+        <div class="control">
+          <label for="consumo">Rendimiento del dispositivo</label>
+          <select id="consumo" class="selector">
+            <option value="auto" selected>Automático (recomendado)</option>
+            <option value="ahorro">Ahorro de batería</option>
+            <option value="maximo">Rendimiento máximo</option>
+          </select>
+          <p class="detalle">Ajusta los pasos por segundo; no cambia las reglas ni el paso discreto del modelo.</p>
+        </div>
+        <p class="nota"><strong>Alcance:</strong> este es un modelo conceptual de una yema de tejido, no una simulación validada de un embrión o un órgano. Las distancias se expresan en píxeles y el tiempo en pasos de cálculo.</p>
+      </aside>
+    </div>
+
+    <section class="tarjeta matematica seccion" aria-labelledby="titulo-modelo">
+      <span class="etiqueta">Fundamento matemático</span>
+      <h2 id="titulo-modelo">De las interacciones locales a la organización espacial</h2>
+      <p>La simulación utiliza un <strong>modelo basado en agentes</strong>: cada célula es una unidad con posición, velocidad, concentración de señal \(A_i\), memoria \(M_i\), sensibilidad \(s_i\) y estado discreto. La estructura inicial procede de una retícula triangular ligeramente perturbada, sin imponer la forma final de un órgano.</p>
+
+      <h3>1. Transmisión de señal</h3>
+      <p>Cada célula interactúa con las vecinas situadas a una distancia inferior a un radio de contacto. Su señal cambia por intercambio local, degradación y emisión sostenida desde las células organizadoras:</p>
+      <div class="ecuacion">
+      \[
+        A_i^{t+1}=\operatorname{clip}_{[0,1]}\!\left(
+        A_i^t + \chi D\big(\overline A_i^t-A_i^t\big)
+        -\lambda A_i^t + I_i\sigma(1-A_i^t)\right).
+      \]
+      </div>
+      <p class="texto-pequeno">\(\overline A_i^t\) es el promedio de señales vecinas; \(\chi\in\{0,1\}\) activa o desactiva la transmisión; \(I_i=1\) identifica a las emisoras. En el código: \(D=0.19\), \(\lambda=0.009\), \(\sigma=0.15\).</p>
+
+      <h3>2. Memoria y diferenciación</h3>
+      <p>Las células acumulan memoria cuando la señal supera un umbral:</p>
+      <div class="ecuacion">
+      \[
+        M_i^{t+1}=M_i^t+\alpha s_i\max(0,A_i^{t+1}-0.18),
+        \qquad \alpha=0.013.
+      \]
+      </div>
+      <p>Los estados celulares dependen de la memoria acumulada y de la intensidad de la señal. En la configuración original, una célula no emisora puede adquirir el estado progenitor cuando \(M_i>0.43\) y \(A_i>0.19\); se considera diferenciada cuando \(M_i>1.85\). Los umbrales forman parte del experimento computacional y no representan mediciones fisiológicas.</p>
+
+      <h3>3. Proliferación y forma</h3>
+      <p>Una célula progenitora puede dividirse cuando supera un período refractario. La probabilidad de división se calcula mediante:</p>
+      <div class="ecuacion">
+      \[
+        p_i = r\,s_i\,c_i\,\operatorname{clip}_{[0,1]}
+        \!\left(1.7(A_i-0.19)\right),
+        \qquad
+        c_i=\begin{cases}
+          0.22,&\text{si hay al menos 8 células muy próximas},\\
+          1,&\text{en otro caso}.
+        \end{cases}
+      \]
+      </div>
+      <p>La posición celular evoluciona por una regla mecánica discreta, con repulsión, adhesión opcional y un anclaje elástico en la región proximal:</p>
+      <div class="ecuacion">
+      \[
+        \mathbf v_i^{t+1}=0.76\,\mathbf v_i^t+0.17\,\mathbf F_i^t,
+        \qquad
+        \mathbf x_i^{t+1}=\mathbf x_i^t+
+        \operatorname{clip}_{[-1.9,1.9]}(\mathbf v_i^{t+1}).
+      \]
+      </div>
+      <p class="texto-pequeno">La saturación de la velocidad se aplica por componente y la posición se limita a los bordes del dominio. La fuerza \(\mathbf F_i\) combina interacciones locales entre células y, cuando corresponde, anclaje. El límite del modelo es de 1750 células y 12 focos.</p>
+
+      <h3>Cómo interpretar el experimento</h3>
+      <div class="etapas">
+        <article><strong>Observar</strong><p>Identifica las regiones inducidas cuando aparece un nuevo foco.</p></article>
+        <article><strong>Comparar</strong><p>Activa o desactiva un mecanismo y compara la evolución con la misma semilla inicial.</p></article>
+        <article><strong>Registrar</strong><p>Exporta una imagen o los indicadores temporales en CSV para analizarlos después.</p></article>
+      </div>
+      <p class="texto-pequeno">El CSV conserva los últimos 3000 pasos y registra los focos con su instante de creación. Cambiar el modo de rendimiento modifica el avance en tiempo real, no las reglas del modelo.</p>
+    </section>
+
+    <footer class="pie">Semillero BIA · Grupo de Estadística y Matemáticas Aplicadas (EMAP) · Pontificia Universidad Javeriana Cali</footer>
+  </main>
+</body>
+</html>
