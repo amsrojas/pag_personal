@@ -1,4 +1,4 @@
-# Página personal · Andrés M. Salazar — v8
+# Página personal · Andrés M. Salazar
 
 Esta versión conserva la portada y las exploraciones de v7 e incorpora la página
 **Matemáticas para las Artes**.
