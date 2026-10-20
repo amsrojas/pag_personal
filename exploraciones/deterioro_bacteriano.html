@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Exploración computacional del crecimiento de una población bacteriana bajo deterioro ambiental. Regla de la cadena, derivadas y cambios de signo.">
+  <title>Crecimiento bacteriano y deterioro ambiental | Andrés M. Salazar</title>
+
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="css/deterioro_bacteriano.css">
+  <link rel="stylesheet" href="css/adaptaciones.css">
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body class="pagina-exploracion pagina-deterioro">
+  <nav class="barra-exploracion" aria-label="Ruta de navegación">
+    <a href="../index.html">Andrés M. Salazar</a> /
+    <a href="index.html">Exploraciones computacionales</a>
+  </nav>
+
+  <main class="deterioro-wrap">
+    <header class="deterioro-header">
+      <h1>Crecimiento bacteriano y deterioro ambiental</h1>
+    </header>
+
+    <section class="deterioro-section" id="contexto">
+      <h2>Contexto biológico</h2>
+      <p>
+        Consideremos una población bacteriana en un medio de cultivo cerrado.
+        Al comienzo, las condiciones permiten que la población aumente.
+        Con el paso del tiempo, los nutrientes pueden escasear y los productos
+        del metabolismo pueden acumularse. Estas modificaciones pueden alterar
+        el comportamiento de la población.
+      </p>
+      <p>
+        Estudiaremos un modelo sencillo en el que un parámetro asociado al
+        crecimiento disminuye con el tiempo. Queremos observar si la población
+        puede continuar aumentando durante una etapa de deterioro ambiental
+        y determinar en qué momento cambia su comportamiento.
+      </p>
+    </section>
+
+    <section class="deterioro-section" id="modelo">
+      <h2>El modelo matemático</h2>
+      <p>Proponemos la siguiente función para describir la población:</p>
+      <div class="deterioro-formula">
+        \[
+          P(t)=P_0 e^{t r(t)}
+        \]
+      </div>
+      <p>Supondremos que el parámetro disminuye linealmente:</p>
+      <div class="deterioro-formula">
+        \[
+          r(t)=r_0-at,\qquad a\geq 0.
+        \]
+      </div>
+      <p>Al reunir ambas expresiones obtenemos:</p>
+      <div class="deterioro-formula deterioro-formula-principal">
+        \[
+          P(t)=P_0\exp\!\left[t(r_0-at)\right].
+        \]
+      </div>
+      <ul class="deterioro-variables">
+        <li><strong>\(P_0\)</strong> representa el tamaño inicial de la población.</li>
+        <li><strong>\(t\)</strong> es el tiempo, medido en horas.</li>
+        <li><strong>\(r_0\)</strong> es el valor inicial del parámetro, expresado en \(\mathrm{h}^{-1}\).</li>
+        <li><strong>\(a\)</strong> mide la rapidez del deterioro de ese parámetro y se expresa en \(\mathrm{h}^{-2}\).</li>
+      </ul>
+      <div class="deterioro-note">
+        <p>
+          En esta formulación, \(r(t)\) es un parámetro del exponente acumulado.
+          No representa directamente la tasa instantánea neta de crecimiento
+          de las bacterias. Esa tasa se relaciona con \(P'(t)\), que será objeto
+          de estudio en la actividad.
+        </p>
+      </div>
+    </section>
+
+    <section class="deterioro-card" aria-label="Aplicación interactiva de crecimiento bacteriano" id="simulacion">
+      <h2>Exploración interactiva</h2>
+      <p>
+        Modifica el tamaño inicial de la población, el parámetro de crecimiento y
+        la intensidad del deterioro. Observa cómo cambian las dos gráficas.
+        Selecciona un instante para consultar los valores del modelo.
+      </p>
+      <div id="deterioro-app">
+        <p>Preparando la exploración…</p>
+      </div>
+    </section>
+
+    <section class="deterioro-section" id="actividad">
+      <h2>Preguntas para explorar</h2>
+      <ol class="deterioro-preguntas">
+        <li>Si \(a>0\), ¿cómo cambia \(r(t)\) a medida que transcurre el tiempo? ¿Qué indica su gráfica?</li>
+        <li>Obtén \(r'(t)\) e interpreta el signo de esta derivada.</li>
+        <li>Calcula \(P'(t)\) utilizando la regla de la cadena y la regla del producto.</li>
+        <li>Con los valores iniciales de la simulación, estima gráficamente cuándo la población deja de aumentar. Después determina ese instante a partir de \(P'(t)\).</li>
+        <li>Determina los intervalos en los que \(P'(t)>0\) y \(P'(t)<0\). Comprueba tus conclusiones en la gráfica.</li>
+        <li>¿Puede ocurrir que \(r(t)>0\) y, sin embargo, la población disminuya? Busca un ejemplo con los controles y explícalo.</li>
+        <li>¿Qué cambia en la evolución de la población si elegimos \(a=0\)?</li>
+      </ol>
+    </section>
+
+    <section class="deterioro-section" id="alcance">
+      <h2>Interpretación y alcance</h2>
+      <p>
+        Este es un modelo fenomenológico que permite estudiar el cambio
+        poblacional con herramientas del cálculo diferencial. La disminución de
+        la población puede interpretarse, en determinadas circunstancias, como
+        el resultado de condiciones ambientales cada vez menos favorables.
+      </p>
+      <p>
+        El modelo no distingue entre reproducción, mortalidad y disponibilidad
+        de nutrientes. Tampoco se ha ajustado a mediciones experimentales.
+        Su propósito es explorar matemáticamente el crecimiento, el decrecimiento
+        y los cambios de signo de las derivadas.
+      </p>
+    </section>
+  </main>
+
+  <footer class="pie-exploracion">
+    <p><a href="index.html">← Volver a exploraciones</a></p>
+  </footer>
+
+  <script src="js/deterioro_bacteriano.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.DeterioroBacterianoApp &&
+          typeof window.DeterioroBacterianoApp.mount === 'function') {
+        window.DeterioroBacterianoApp.mount('#deterioro-app');
+      }
+    });
+  </script>
+</body>
+</html>

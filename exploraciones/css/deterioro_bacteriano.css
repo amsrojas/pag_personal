@@ -1,0 +1,251 @@
+/* Exploración: crecimiento bacteriano y deterioro ambiental.
+   Las clases se limitan a esta página para respetar estilos.css. */
+
+.pagina-deterioro {
+  --db-ink: #27343a;
+  --db-muted: #607179;
+  --db-line: #dce6e7;
+  --db-surface: #f6f9f9;
+  --db-accent: #236b76;
+  --db-curve: #227d86;
+  --db-curve-r: #b46a44;
+  --db-cursor: #24333e;
+  --db-white: #fff;
+}
+
+.pagina-deterioro .deterioro-wrap {
+  width: min(100% - 40px, 980px);
+  margin: 36px auto 64px;
+  color: var(--db-ink);
+}
+
+.pagina-deterioro .deterioro-header {
+  padding: 12px 0 22px;
+  border-bottom: 1px solid var(--db-line);
+}
+
+.pagina-deterioro .deterioro-kicker {
+  font-size: .79rem;
+  letter-spacing: .055em;
+  color: var(--db-accent);
+  margin-bottom: 14px;
+}
+
+.pagina-deterioro .deterioro-header h1 {
+  margin: 0;
+  font-weight: 650;
+  letter-spacing: -.025em;
+  line-height: 1.18;
+  font-size: clamp(1.85rem, 3.6vw, 2.8rem);
+}
+
+.pagina-deterioro .deterioro-lead {
+  font-size: clamp(1.03rem, 1.7vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--db-muted);
+  max-width: 730px;
+  margin: 16px 0 0;
+}
+
+.pagina-deterioro .deterioro-section,
+.pagina-deterioro .deterioro-card {
+  margin-top: 38px;
+}
+
+.pagina-deterioro .deterioro-section h2,
+.pagina-deterioro .deterioro-card h2 {
+  font-size: clamp(1.35rem, 2.3vw, 1.7rem);
+  font-weight: 650;
+  line-height: 1.28;
+  margin: 0 0 16px;
+}
+
+.pagina-deterioro .deterioro-section p,
+.pagina-deterioro .deterioro-card > p {
+  line-height: 1.7;
+  margin: 0 0 13px;
+  max-width: 830px;
+}
+
+.pagina-deterioro .deterioro-formula {
+  border: 1px solid var(--db-line);
+  border-radius: 9px;
+  background: var(--db-surface);
+  padding: 15px 18px;
+  margin: 15px 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.pagina-deterioro .deterioro-formula-principal {
+  border-left: 3px solid var(--db-accent);
+  background: #f1f6f6;
+}
+
+.pagina-deterioro .deterioro-variables {
+  padding-left: 22px;
+  line-height: 1.65;
+  margin: 18px 0;
+}
+.pagina-deterioro .deterioro-variables li { margin-bottom: 7px; }
+
+.pagina-deterioro .deterioro-note {
+  background: #f8f6f1;
+  border-left: 3px solid #b99b6d;
+  border-radius: 2px 8px 8px 2px;
+  padding: 14px 18px;
+  margin-top: 20px;
+  color: var(--db-ink);
+}
+.pagina-deterioro .deterioro-note p { margin: 0; }
+
+.pagina-deterioro .deterioro-card {
+  padding: clamp(18px, 3vw, 30px);
+  border: 1px solid var(--db-line);
+  border-radius: 14px;
+  background: var(--db-white);
+}
+
+.pagina-deterioro .deterioro-preguntas {
+  padding-left: 25px;
+  line-height: 1.7;
+  max-width: 830px;
+}
+.pagina-deterioro .deterioro-preguntas li { padding-left: 4px; margin-bottom: 12px; }
+
+/* Aplicación interactiva */
+.pagina-deterioro .db-app { margin-top: 25px; }
+.pagina-deterioro .db-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 22px;
+  background: var(--db-surface);
+  border-radius: 10px;
+  padding: 18px;
+}
+.pagina-deterioro .db-control { display: block; min-width: 0; }
+.pagina-deterioro .db-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: .93rem;
+  font-weight: 600;
+}
+.pagina-deterioro .db-label output { font-variant-numeric: tabular-nums; color: var(--db-accent); }
+.pagina-deterioro .db-control input {
+  width: 100%;
+  height: 34px;
+  display: block;
+  margin: 8px 0 3px;
+  accent-color: var(--db-accent);
+  cursor: pointer;
+}
+.pagina-deterioro .db-control small { display: block; font-size: .76rem; color: var(--db-muted); }
+
+.pagina-deterioro .db-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0 20px;
+}
+.pagina-deterioro .db-button {
+  border: 1px solid #bed1d3;
+  background: var(--db-white);
+  color: var(--db-ink);
+  font: inherit;
+  font-weight: 550;
+  font-size: .88rem;
+  padding: 11px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-height: 44px;
+  transition: border-color .15s, background-color .15s;
+}
+.pagina-deterioro .db-button:hover { background: var(--db-surface); border-color: var(--db-accent); }
+.pagina-deterioro .db-button-primary {
+  color: #fff;
+  background: var(--db-accent);
+  border-color: var(--db-accent);
+}
+.pagina-deterioro .db-button-primary:hover { background: #155561; }
+.pagina-deterioro .db-button:focus-visible,
+.pagina-deterioro .db-control input:focus-visible {
+  outline: 2px solid var(--db-accent);
+  outline-offset: 3px;
+}
+
+.pagina-deterioro .db-observation {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.pagina-deterioro .db-observation > div {
+  border: 1px solid var(--db-line);
+  padding: 12px 15px;
+  border-radius: 9px;
+  min-width: 0;
+}
+.pagina-deterioro .db-observation small { display: block; color: var(--db-muted); font-size: .78rem; }
+.pagina-deterioro .db-observation strong {
+  display: block; margin-top: 5px; font-size: clamp(1rem,2.2vw,1.35rem);
+  font-weight: 650; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+}
+
+.pagina-deterioro .db-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.pagina-deterioro .db-figure { margin: 0; min-width: 0; }
+.pagina-deterioro .db-figure figcaption {
+  font-size: .96rem;
+  font-weight: 650;
+  margin-bottom: 6px;
+}
+.pagina-deterioro .db-figure small {
+  display: block;
+  font-size: .78rem;
+  line-height: 1.45;
+  color: var(--db-muted);
+  margin-top: 8px;
+}
+.pagina-deterioro .db-plot-scroll { overflow-x: auto; }
+.pagina-deterioro .db-plot { display: block; width: 100%; min-width: 320px; height: auto; cursor: crosshair; }
+.pagina-deterioro .db-plot .db-grid { stroke: var(--db-line); stroke-width: 1; }
+.pagina-deterioro .db-plot .db-axis-text { fill: var(--db-muted); font: 12px Arial, sans-serif; }
+.pagina-deterioro .db-plot .db-cursor { stroke: var(--db-cursor); stroke-width: 1.5; stroke-dasharray: 4 5; }
+.pagina-deterioro .db-plot .db-line-p { fill: none; stroke: var(--db-curve); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.pagina-deterioro .db-plot .db-line-r { fill: none; stroke: var(--db-curve-r); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.pagina-deterioro .db-plot .db-dot-p { fill: var(--db-curve); stroke: #fff; stroke-width: 2.5; }
+.pagina-deterioro .db-plot .db-dot-r { fill: var(--db-curve-r); stroke: #fff; stroke-width: 2.5; }
+.pagina-deterioro .db-plot .db-zero { stroke: #829299; stroke-width: 1.5; }
+
+.pagina-deterioro .db-table-wrap { margin-top: 25px; }
+.pagina-deterioro .db-table-wrap h3 { font-size: 1.12rem; margin-bottom: 6px; font-weight: 650; }
+.pagina-deterioro .db-table-wrap p { margin: 0 0 12px; color: var(--db-muted); font-size: .86rem; }
+.pagina-deterioro .db-table-scroll { overflow-x: auto; }
+.pagina-deterioro .db-table { width: 100%; border-collapse: collapse; font-size: .92rem; font-variant-numeric: tabular-nums; }
+.pagina-deterioro .db-table th,
+.pagina-deterioro .db-table td { border-bottom: 1px solid var(--db-line); padding: 10px 12px; text-align: right; }
+.pagina-deterioro .db-table th { background: var(--db-surface); font-weight: 650; }
+.pagina-deterioro .db-table th:first-child,
+.pagina-deterioro .db-table td:first-child { text-align: left; }
+.pagina-deterioro .db-hint { color: var(--db-muted); font-size: .78rem; margin: 14px 0 0; line-height: 1.55; }
+
+@media (max-width: 760px) {
+  .pagina-deterioro .db-charts { grid-template-columns: 1fr; gap: 24px; }
+  .pagina-deterioro .db-observation { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .pagina-deterioro .deterioro-wrap { width: min(100% - 28px, 980px); margin-top: 22px; }
+  .pagina-deterioro .db-controls { grid-template-columns: 1fr; padding: 13px; }
+  .pagina-deterioro .db-observation { grid-template-columns: 1fr; }
+  .pagina-deterioro .deterioro-card { padding: 16px; }
+  .pagina-deterioro .db-actions .db-button { flex: 1 1 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pagina-deterioro .db-button { transition: none; }
+}
