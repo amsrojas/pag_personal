@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabla nutricional</title>
+<style>
+  :root {
+    --ink: #141414;
+    --muted: #6b6b6b;
+    --line: #dedede;
+    --bg: #ffffff;
+    --error: #a12a2a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 440px; margin: 0 auto; padding: 48px 16px 64px; }
+  h1 { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; font-size: .95rem; }
+
+  form { display: flex; gap: 8px; }
+  input {
+    flex: 1; min-width: 0;
+    font: inherit; font-size: 1.05rem; letter-spacing: .06em;
+    font-variant-numeric: tabular-nums;
+    padding: 10px 12px; border: 1px solid #bdbdbd; border-radius: 8px;
+    background: #fff; color: var(--ink);
+  }
+  input:focus { outline: 2px solid var(--ink); outline-offset: 1px; border-color: var(--ink); }
+  button {
+    font: inherit; padding: 10px 16px; border: 0; border-radius: 8px;
+    background: var(--ink); color: #fff; cursor: pointer;
+  }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .error { color: var(--error); font-size: .92rem; min-height: 1.4em; margin: 10px 0 0; }
+
+  #resultado { animation: aparecer .25s ease-out; }
+  @keyframes aparecer { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .nombre { margin: 28px 0 16px; font-size: 1.15rem; font-weight: 600; }
+
+  /* Etiqueta: Arial o Helvética, como exige el artículo 27 de la Res. 810 */
+  .etiqueta {
+    border: 2px solid #000; padding: 10px 12px 8px;
+    font-family: Arial, Helvetica, sans-serif; background: #fff; color: #000;
+  }
+  .etiqueta h2 { font-size: 1.55rem; font-weight: 900; line-height: 1.1; margin: 0; }
+  .porcion { font-size: .92rem; padding: 4px 0 6px; border-bottom: 8px solid #000; }
+  table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  th { text-align: left; font-size: .8rem; font-weight: 700; padding: 4px 0; border-bottom: 1px solid #000; }
+  td { padding: 4px 0; border-bottom: 1px solid #000; }
+  td.v { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; padding-left: 12px; }
+  tr.b td { font-weight: 700; font-size: 1.08rem; }
+  tr.i1 td:first-child { padding-left: 16px; }
+  tr.i2 td:first-child { padding-left: 32px; }
+  tr.fin td { border-bottom: 5px solid #000; }
+  tr:last-child td { border-bottom: 0; }
+  .nota { font-size: .74rem; padding-top: 6px; border-top: 1px solid #000; }
+
+  .meta { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .meta .lbl { color: var(--muted); font-size: .85rem; margin: 0; }
+  .meta .d { font-size: 2.1rem; font-weight: 600; letter-spacing: -0.02em; margin: 0; font-variant-numeric: tabular-nums; }
+  .meta .ayuda { color: var(--muted); font-size: .88rem; margin: 6px 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Lectura matemática de una tabla nutricional</h1>
+  <p class="sub">Escribe tu código para ver tu tabla.</p>
+
+  <form id="form" autocomplete="off">
+    <input id="codigo" inputmode="numeric" placeholder="Código estudiantil" aria-label="Código estudiantil">
+    <button type="submit">Ver mi tabla</button>
+  </form>
+  <p id="error" class="error" role="alert"></p>
+
+  <section id="resultado" hidden aria-live="polite">
+    <p class="nombre" id="nombre"></p>
+
+    <div class="etiqueta">
+      <h2>Información Nutricional</h2>
+      <div class="porcion" id="porcion"></div>
+      <table>
+        <thead><tr><th colspan="2">Cantidad por porción</th></tr></thead>
+        <tbody id="filas"></tbody>
+      </table>
+      <div class="nota">Alimento hipotético con fines pedagógicos.</div>
+    </div>
+
+    <div class="meta">
+      <p class="lbl">Valor al que debes llegar</p>
+      <p class="d" id="d"></p>
+    </div>
+  </section>
+      <footer class="pie-sitio">
+      <p>
+        <a href="../matematicas-salud.html">← Regresar</a>
+      </p>
+    </footer>
+</main>
+
+<script>
+const DATOS = {"05ab7a7b":{"n":"nzvdIKPTccIYZRqDZOjWPEpYVv0kksCc/fPk","p":60,"f":[["Calorías","234 kcal",1],["Grasa total","10 g",0],["Grasa saturada","2,7 g",1],["Carbohidratos totales","32 g",0],["Fibra dietaria","4,5 g",0],["Azúcares totales","3,8 g",0],["Azúcares añadidos","0 g",1],["Proteína","4,0 g",0],["Sodio","418 mg",1]],"m":[["Calcio","134 mg"],["Hierro","2,0 mg"]],"d":"0,1784"},"3a8f0278":{"n":"t2dqBD76Gi/2V95mH1roVusfkQ0VeTy/8CwLX/BoeQ==","p":55,"f":[["Calorías","159 kcal",1],["Grasa total","5,0 g",0],["Grasa saturada","1,2 g",1],["Carbohidratos totales","26 g",0],["Fibra dietaria","0,5 g",0],["Azúcares totales","7,7 g",0],["Azúcares añadidos","7,0 g",1],["Proteína","2,5 g",0],["Sodio","470 mg",1]],"m":[["Calcio","57 mg"],["Hierro","1,7 mg"]],"d":"0,4435"},"c66a0473":{"n":"Aq8E01ZmcRk0avGn5peX5SHKzDHtdgcmEgdv","p":55,"f":[["Calorías","181 kcal",1],["Grasa total","11 g",0],["Grasa saturada","0,7 g",1],["Carbohidratos totales","14 g",0],["Fibra dietaria","2,0 g",0],["Azúcares totales","3,9 g",0],["Azúcares añadidos","2,2 g",1],["Proteína","6,5 g",0],["Sodio","405 mg",1]],"m":[["Calcio","42 mg"],["Hierro","1,3 mg"]],"d":"0,3127"},"4c9aab47":{"n":"MWn/hTysiLUf/sInR/NsI/zl4yxrg/ytgA==","p":40,"f":[["Calorías","180 kcal",1],["Grasa total","12 g",0],["Grasa saturada","3,4 g",1],["Carbohidratos totales","13 g",0],["Fibra dietaria","1,8 g",0],["Azúcares totales","5,7 g",0],["Azúcares añadidos","4,4 g",1],["Proteína","5,0 g",0],["Sodio","221 mg",1]],"m":[["Calcio","30 mg"],["Hierro","2,2 mg"]],"d":"0,2495"},"8689ff24":{"n":"A6PKWmTH50RyDm3OafcXXdjIHLXJqw==","p":50,"f":[["Calorías","185 kcal",1],["Grasa total","5,0 g",0],["Grasa saturada","1,8 g",1],["Carbohidratos totales","28 g",0],["Fibra dietaria","2,1 g",0],["Azúcares totales","6,2 g",0],["Azúcares añadidos","5,2 g",1],["Proteína","7,0 g",0],["Sodio","504 mg",1]],"m":[["Calcio","47 mg"],["Hierro","2,3 mg"]],"d":"0,3680"},"93f693d6":{"n":"sQr0I2E5AZdI2avQfsQd/EtMJwQNZw==","p":30,"f":[["Calorías","145 kcal",1],["Grasa total","9,0 g",0],["Grasa saturada","1,6 g",1],["Carbohidratos totales","14 g",0],["Fibra dietaria","1,6 g",0],["Azúcares totales","9,2 g",0],["Azúcares añadidos","5,6 g",1],["Proteína","2,0 g",0],["Sodio","294 mg",1]],"m":[["Calcio","20 mg"],["Hierro","1,4 mg"]],"d":"0,3146"},"f110dbea":{"n":"+Zw7oq6/4I9IY7mjumfwilw6o+LDSW5E","p":60,"f":[["Calorías","234 kcal",1],["Grasa total","12 g",0],["Grasa saturada","2,8 g",1],["Carbohidratos totales","23 g",0],["Fibra dietaria","1,2 g",0],["Azúcares totales","9,9 g",0],["Azúcares añadidos","7,7 g",1],["Proteína","8,5 g",0],["Sodio","515 mg",1]],"m":[["Calcio","88 mg"],["Hierro","2,0 mg"]],"d":"0,3178"},"15ccced7":{"n":"vP5bSnuBXkLHsp/cfsB7PXsCge6jphRcDA==","p":50,"f":[["Calorías","167 kcal",1],["Grasa total","5,0 g",0],["Grasa saturada","0,6 g",1],["Carbohidratos totales","26 g",0],["Fibra dietaria","0,6 g",0],["Azúcares totales","2,7 g",0],["Azúcares añadidos","1,7 g",1],["Proteína","4,5 g",0],["Sodio","202 mg",1]],"m":[["Calcio","51 mg"],["Hierro","1,2 mg"]],"d":"0,1722"},"55d73180":{"n":"EjbO4Ia8oquH574RuWvHNaLRVtKM4z62","p":50,"f":[["Calorías","152 kcal",1],["Grasa total","6,0 g",0],["Grasa saturada","2,6 g",1],["Carbohidratos totales","23 g",0],["Fibra dietaria","1,0 g",0],["Azúcares totales","3,4 g",0],["Azúcares añadidos","0,5 g",1],["Proteína","1,5 g",0],["Sodio","175 mg",1]],"m":[["Calcio","63 mg"],["Hierro","1,2 mg"]],"d":"0,2119"},"ebdce536":{"n":"OK0tmE8lbzkfjBxXyZm3slEsnM7YYCsl3SNRmT2CwsA=","p":50,"f":[["Calorías","231 kcal",1],["Grasa total","13 g",0],["Grasa saturada","4,1 g",1],["Carbohidratos totales","21 g",0],["Fibra dietaria","1,7 g",0],["Azúcares totales","12 g",0],["Azúcares añadidos","8,8 g",1],["Proteína","7,5 g",0],["Sodio","163 mg",1]],"m":[["Calcio","136 mg"],["Hierro","1,3 mg"]],"d":"0,2179"},"7850589e":{"n":"/BJdbjWZtD47zb2cWco7cdG29lrU4A1rUwc=","p":35,"f":[["Calorías","164 kcal",1],["Grasa total","10 g",0],["Grasa saturada","0,6 g",1],["Carbohidratos totales","16 g",0],["Fibra dietaria","1,2 g",0],["Azúcares totales","5,4 g",0],["Azúcares añadidos","2,4 g",1],["Proteína","2,5 g",0],["Sodio","237 mg",1]],"m":[["Calcio","92 mg"],["Hierro","0,32 mg"]],"d":"0,2142"},"bc98c97a":{"n":"MGDIf8MI5hVuF4bc4Wof4d9axU3kwpveycE=","p":40,"f":[["Calorías","147 kcal",1],["Grasa total","5,0 g",0],["Grasa saturada","1,7 g",1],["Carbohidratos totales","21 g",0],["Fibra dietaria","0,7 g",0],["Azúcares totales","4,5 g",0],["Azúcares añadidos","2,3 g",1],["Proteína","4,5 g",0],["Sodio","354 mg",1]],"m":[["Calcio","69 mg"],["Hierro","0,49 mg"]],"d":"0,3775"},"6e4e0a49":{"n":"m9h3XcpQ18hrMDK1AXul+ySUxehzEQPm","p":60,"f":[["Calorías","266 kcal",1],["Grasa total","14 g",0],["Grasa saturada","2,6 g",1],["Carbohidratos totales","30 g",0],["Fibra dietaria","2,4 g",0],["Azúcares totales","7,7 g",0],["Azúcares añadidos","3,9 g",1],["Proteína","5,0 g",0],["Sodio","732 mg",1]],"m":[["Calcio","161 mg"],["Hierro","1,0 mg"]],"d":"0,3838"},"7f1dabba":{"n":"HY7N40ORK8sy7L7U7kCb1UO+Dyk=","p":60,"f":[["Calorías","246 kcal",1],["Grasa total","12 g",0],["Grasa saturada","3,7 g",1],["Carbohidratos totales","31 g",0],["Fibra dietaria","1,8 g",0],["Azúcares totales","12 g",0],["Azúcares añadidos","8,3 g",1],["Proteína","3,5 g",0],["Sodio","329 mg",1]],"m":[["Calcio","56 mg"],["Hierro","1,0 mg"]],"d":"0,2068"},"e1244a72":{"n":"1mucL5vj9VWUvlWuCI39KYLxLQY=","p":35,"f":[["Calorías","181 kcal",1],["Grasa total","13 g",0],["Grasa saturada","2,3 g",1],["Carbohidratos totales","12 g",0],["Fibra dietaria","0,8 g",0],["Azúcares totales","5,6 g",0],["Azúcares añadidos","1,6 g",1],["Proteína","4,0 g",0],["Sodio","237 mg",1]],"m":[["Calcio","21 mg"],["Hierro","0,71 mg"]],"d":"0,2528"},"04ab78e8":{"n":"sk1iw9rWM9+KQ9HtFn0zS6pj9mDGk4mH","p":45,"f":[["Calorías","160 kcal",1],["Grasa total","10 g",0],["Grasa saturada","2,8 g",1],["Carbohidratos totales","14 g",0],["Fibra dietaria","1,8 g",0],["Azúcares totales","5,5 g",0],["Azúcares añadidos","2,4 g",1],["Proteína","3,5 g",0],["Sodio","204 mg",1]],"m":[["Calcio","28 mg"],["Hierro","2,2 mg"]],"d":"0,2107"},"bcf35e7e":{"n":"q7wU54EZKGJRQADYwsLPG3WqnUg0YIc=","p":50,"f":[["Calorías","194 kcal",1],["Grasa total","10 g",0],["Grasa saturada","3,4 g",1],["Carbohidratos totales","19 g",0],["Fibra dietaria","3,2 g",0],["Azúcares totales","1,8 g",0],["Azúcares añadidos","0 g",1],["Proteína","7,0 g",0],["Sodio","139 mg",1]],"m":[["Calcio","74 mg"],["Hierro","1,8 mg"]],"d":"0,1648"},"c0bbf35a":{"n":"JGi8mS+QBvishdI9tbuEVYTbbQMK9uY=","p":60,"f":[["Calorías","232 kcal",1],["Grasa total","8,0 g",0],["Grasa saturada","3,6 g",1],["Carbohidratos totales","36 g",0],["Fibra dietaria","0,6 g",0],["Azúcares totales","5,6 g",0],["Azúcares añadidos","4,3 g",1],["Proteína","4,0 g",0],["Sodio","429 mg",1]],"m":[["Calcio","68 mg"],["Hierro","1,6 mg"]],"d":"0,2952"},"83e5cbb9":{"n":"4hkZBRbfticOGSJKRUefQpiS5rU/nYDXIuZiDA==","p":55,"f":[["Calorías","161 kcal",1],["Grasa total","5,0 g",0],["Grasa saturada","2,4 g",1],["Carbohidratos totales","25 g",0],["Fibra dietaria","0,5 g",0],["Azúcares totales","5,4 g",0],["Azúcares añadidos","5,3 g",1],["Proteína","4,0 g",0],["Sodio","379 mg",1]],"m":[["Calcio","56 mg"],["Hierro","0,33 mg"]],"d":"0,4131"},"d0128183":{"n":"haDg8JDaGb1te/kUXxL4Hb9BcBzZcw==","p":60,"f":[["Calorías","264 kcal",1],["Grasa total","14 g",0],["Grasa saturada","2,4 g",1],["Carbohidratos totales","32 g",0],["Fibra dietaria","4,3 g",0],["Azúcares totales","13 g",0],["Azúcares añadidos","11 g",1],["Proteína","2,5 g",0],["Sodio","767 mg",1]],"m":[["Calcio","110 mg"],["Hierro","0,86 mg"]],"d":"0,4331"},"ab7c1bbe":{"n":"D3Lt3Dudo5YkuJT/0EnD5smoDFBHpKRX","p":45,"f":[["Calorías","209 kcal",1],["Grasa total","13 g",0],["Grasa saturada","3,7 g",1],["Carbohidratos totales","18 g",0],["Fibra dietaria","0,8 g",0],["Azúcares totales","8,4 g",0],["Azúcares añadidos","4,4 g",1],["Proteína","5,0 g",0],["Sodio","172 mg",1]],"m":[["Calcio","60 mg"],["Hierro","0,76 mg"]],"d":"0,2691"},"27858f72":{"n":"7zddfD5aevh3kxC1xF/WCaq3awGeG70/hQ==","p":60,"f":[["Calorías","212 kcal",1],["Grasa total","8,0 g",0],["Grasa saturada","1,8 g",1],["Carbohidratos totales","31 g",0],["Fibra dietaria","2,0 g",0],["Azúcares totales","11 g",0],["Azúcares añadidos","9,1 g",1],["Proteína","4,0 g",0],["Sodio","239 mg",1]],"m":[["Calcio","17 mg"],["Hierro","1,9 mg"]],"d":"0,2483"},"99a0891e":{"n":"3ZEtrva5tZUEgSOfqFr9xQjYAImP6n3bT0GwuIfZ","p":45,"f":[["Calorías","119 kcal",1],["Grasa total","7,0 g",0],["Grasa saturada","1,4 g",1],["Carbohidratos totales","12 g",0],["Fibra dietaria","0,7 g",0],["Azúcares totales","6,5 g",0],["Azúcares añadidos","5,8 g",1],["Proteína","2,0 g",0],["Sodio","284 mg",1]],"m":[["Calcio","65 mg"],["Hierro","0,60 mg"]],"d":"0,4179"},"32c2ace6":{"n":"4eChnoCxv4dmum5ckMTwXqcIY52RzJKJ3TSLhntM","p":35,"f":[["Calorías","163 kcal",1],["Grasa total","9,0 g",0],["Grasa saturada","0,6 g",1],["Carbohidratos totales","17 g",0],["Fibra dietaria","1,0 g",0],["Azúcares totales","8,0 g",0],["Azúcares añadidos","6,8 g",1],["Proteína","3,5 g",0],["Sodio","159 mg",1]],"m":[["Calcio","54 mg"],["Hierro","0,63 mg"]],"d":"0,2117"},"2d5ac037":{"n":"H/F2GJ6yqUxA3CpuCknFUhUDyINPebPEz6dxsg==","p":55,"f":[["Calorías","216 kcal",1],["Grasa total","8,0 g",0],["Grasa saturada","3,0 g",1],["Carbohidratos totales","32 g",0],["Fibra dietaria","2,2 g",0],["Azúcares totales","11 g",0],["Azúcares añadidos","10 g",1],["Proteína","4,0 g",0],["Sodio","545 mg",1]],"m":[["Calcio","125 mg"],["Hierro","1,9 mg"]],"d":"0,3980"}};
+
+const SANGRIA = { "Grasa saturada": 1, "Fibra dietaria": 1, "Azúcares totales": 1, "Azúcares añadidos": 2 };
+
+function fnv1a(texto) {
+  let h = 0x811c9dc5;
+  for (const b of new TextEncoder().encode(texto)) {
+    h ^= b;
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h >>> 0;
+}
+
+function mulberry32(a) {
+  return function () {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return (t ^ (t >>> 14)) >>> 0;
+  };
+}
+
+function descifrar(b64, codigo) {
+  const sig = mulberry32(fnv1a("nombre:" + codigo));
+  const crudo = atob(b64);
+  const bytes = new Uint8Array(crudo.length);
+  for (let i = 0; i < crudo.length; i++) bytes[i] = crudo.charCodeAt(i) ^ (sig() & 0xff);
+  return new TextDecoder("utf-8").decode(bytes);
+}
+
+function fila(nombre, valor, clases) {
+  const tr = document.createElement("tr");
+  if (clases) tr.className = clases;
+  const a = document.createElement("td");
+  const b = document.createElement("td");
+  a.textContent = nombre;
+  b.textContent = valor;
+  b.className = "v";
+  tr.append(a, b);
+  return tr;
+}
+
+function mostrar(codigo) {
+  const reg = DATOS[fnv1a("radix-tabla:" + codigo).toString(16).padStart(8, "0")];
+  const error = document.getElementById("error");
+  const resultado = document.getElementById("resultado");
+  if (!reg) {
+    resultado.hidden = true;
+    error.textContent = codigo ? "No encontramos ese código. Revísalo e inténtalo de nuevo." : "Escribe tu código.";
+    return;
+  }
+  error.textContent = "";
+  document.getElementById("nombre").textContent = descifrar(reg.n, codigo);
+  document.getElementById("porcion").textContent = "Tamaño de porción: 1 unidad (" + reg.p + " g)";
+  const cuerpo = document.getElementById("filas");
+  cuerpo.replaceChildren();
+  reg.f.forEach(([nombre, valor, negrilla], i) => {
+    const clases = [negrilla ? "b" : "", SANGRIA[nombre] ? "i" + SANGRIA[nombre] : "", i === reg.f.length - 1 ? "fin" : ""]
+      .filter(Boolean).join(" ");
+    cuerpo.append(fila(nombre, valor, clases));
+  });
+  reg.m.forEach(([nombre, valor]) => cuerpo.append(fila(nombre, valor, "")));
+  document.getElementById("d").textContent = "d ≈ " + reg.d;
+  resultado.hidden = false;
+  resultado.style.animation = "none";
+  void resultado.offsetWidth;
+  resultado.style.animation = "";
+}
+
+document.getElementById("form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  mostrar(document.getElementById("codigo").value.replace(/\D/g, ""));
+});
+</script>
+</body>
+</html>
