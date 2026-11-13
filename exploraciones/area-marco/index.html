@@ -356,7 +356,13 @@ function ocupado(texto) {
   $("ocupadoTexto").textContent = texto;
   mostrar("vistaOcupado");
   // Deja que el navegador pinte el aviso antes del cálculo.
-  return new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
+  // El temporizador garantiza que siga aunque la página no esté en primer plano.
+  return new Promise((r) => {
+    let hecho = false;
+    const seguir = () => { if (!hecho) { hecho = true; r(); } };
+    requestAnimationFrame(() => setTimeout(seguir, 30));
+    setTimeout(seguir, 150);
+  });
 }
 
 function errorFormulario(texto) {
@@ -417,9 +423,14 @@ document.querySelectorAll(".verTrazos").forEach((boton) => {
 async function prepararFoto(archivo) {
   const url = URL.createObjectURL(archivo);
   try {
-    const img = new Image();
-    img.src = url;
-    await img.decode();
+    // Se espera el evento load: img.decode() puede quedarse esperando
+    // cuando la página no está en primer plano.
+    const img = await new Promise((ok, falla) => {
+      const im = new Image();
+      im.onload = () => ok(im);
+      im.onerror = () => falla(new DOMException("Imagen ilegible", "EncodingError"));
+      im.src = url;
+    });
     // naturalWidth y naturalHeight ya incluyen la rotación guardada por el celular.
     let fuente = img;
     let w = img.naturalWidth;

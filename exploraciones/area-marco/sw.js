@@ -6,7 +6,7 @@
 // para no borrar las de otras apps publicadas en el mismo sitio.
 
 const PREFIJO = "area-marco:";
-const CACHE_APP = PREFIJO + "app-v1";
+const CACHE_APP = PREFIJO + "app-v2";
 const CACHE_PYTHON = PREFIJO + "pyodide-314.0.7";
 const PROPIOS = [
   "./",
