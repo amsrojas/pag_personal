@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Área con marco rectangular</title>
+<meta name="description" content="Estima el área de una figura dibujada dentro de un marco rectangular a partir de una fotografía.">
+<meta name="theme-color" content="#1d2433">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icono-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icono-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Área">
+<style>
+  :root {
+    --papel: #f5f3ee;
+    --tarjeta: #ffffff;
+    --tinta: #1d2433;
+    --tenue: #5b6475;
+    --linea: #e2ded5;
+    --azul: #1f5eff;
+    --verde: #138a4a;
+    --rojo: #d0312d;
+    --radio: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 20px 16px 48px; }
+  header { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; }
+  header svg { flex: none; }
+  h1 { font-size: 1.35rem; line-height: 1.2; margin: 0; letter-spacing: -0.01em; }
+  header p { margin: 2px 0 0; color: var(--tenue); font-size: 0.92rem; }
+  h2 { font-size: 1.05rem; margin: 0 0 10px; }
+  .tarjeta {
+    background: var(--tarjeta);
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  details > summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::after { content: "+"; font-weight: 400; font-size: 1.3rem; color: var(--tenue); }
+  details[open] > summary::after { content: "−"; }
+  ol { padding-left: 1.25rem; margin: 12px 0 0; }
+  ol li { margin-bottom: 8px; }
+  .nota { color: var(--tenue); font-size: 0.9rem; margin: 10px 0 0; }
+  .campos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  label { display: block; font-size: 0.9rem; color: var(--tenue); margin-bottom: 4px; }
+  input[type=text] {
+    width: 100%;
+    font: inherit;
+    font-size: 1.15rem;
+    padding: 10px 12px;
+    border: 1px solid #cfcabf;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--tinta);
+  }
+  input[type=text]:focus { outline: 2px solid var(--azul); outline-offset: 1px; border-color: transparent; }
+  .unidad { position: relative; }
+  .unidad::after { content: "mm"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--tenue); pointer-events: none; }
+  .unidad input { padding-right: 44px; }
+  button, .boton {
+    font: inherit;
+    font-weight: 600;
+    border: 0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    min-height: 50px;
+    cursor: pointer;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .primario { background: var(--tinta); color: #fff; }
+  .secundario { background: #ebe7de; color: var(--tinta); }
+  .si { background: var(--azul); color: #fff; }
+  button:disabled { opacity: 0.45; cursor: default; }
+  .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  #elegirFoto { margin-top: 2px; }
+  #miniatura { display: block; width: 100%; max-height: 260px; object-fit: contain; margin-top: 12px; border-radius: 10px; background: #eee; }
+  .imagen { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--linea); background: #fafafa; }
+  .pregunta { font-size: 1.05rem; font-weight: 600; margin: 0 0 4px; }
+  .contador { color: var(--tenue); font-size: 0.88rem; margin: 0 0 10px; }
+  .estado { display: flex; align-items: center; gap: 10px; color: var(--tenue); font-size: 0.9rem; margin: 0 0 14px; }
+  .estado .punto { width: 10px; height: 10px; border-radius: 50%; background: #c9a227; flex: none; animation: latido 1.2s ease-in-out infinite; }
+  .estado.listo .punto { background: var(--verde); animation: none; }
+  .estado.fallo .punto { background: var(--rojo); animation: none; }
+  @keyframes latido { 50% { opacity: 0.3; } }
+  .ocupado { text-align: center; color: var(--tenue); padding: 28px 8px; }
+  .giro { width: 28px; height: 28px; border: 3px solid #d8d3c8; border-top-color: var(--tinta); border-radius: 50%; margin: 0 auto 12px; animation: giro 0.9s linear infinite; }
+  @keyframes giro { to { transform: rotate(360deg); } }
+  .error { border-color: #f0c4c2; background: #fff7f6; }
+  .error p { margin: 0 0 12px; }
+  .area { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 2px 0; }
+  .area small { font-size: 1.1rem; font-weight: 600; }
+  .datos { width: 100%; border-collapse: collapse; margin: 14px 0 4px; font-size: 0.95rem; }
+  .datos td { padding: 7px 0; border-top: 1px solid var(--linea); }
+  .datos td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.85rem; color: var(--tenue); margin: 8px 0 14px; }
+  .leyenda span::before { content: ""; display: inline-block; width: 12px; height: 4px; border-radius: 2px; margin-right: 6px; vertical-align: middle; background: currentColor; }
+  .l-azul { color: var(--azul); } .l-verde { color: var(--verde); } .l-rojo { color: var(--rojo); }
+  .leyenda span { color: var(--tenue); }
+  .leyenda .l-azul::before { background: var(--azul); } .leyenda .l-verde::before { background: var(--verde); } .leyenda .l-rojo::before { background: var(--rojo); }
+  figure { margin: 0 0 14px; }
+  figcaption { font-size: 0.85rem; color: var(--tenue); margin-top: 6px; }
+  .ayuda { font-size: 0.9rem; color: var(--tenue); margin: 10px 0 0; }
+  .sutil { background: none; color: var(--tenue); font-weight: 500; min-height: 0; padding: 10px 0 0; width: auto; text-decoration: underline; }
+  #instalarTarjeta p { margin: 0 0 10px; color: var(--tenue); font-size: 0.92rem; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+
+  <header>
+    <svg width="46" height="46" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="2" y="2" width="60" height="60" rx="14" fill="#1d2433"/>
+      <path d="M10 14 H54 M14 10 V54 M10 50 H54 M50 10 V54" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <path d="M24 27 C27 19 39 20 40 27 C41 33 46 35 42 41 C38 47 28 45 24 40 C20 35 22 31 24 27 Z" fill="#2fbf71" fill-opacity="0.35" stroke="#2fbf71" stroke-width="3"/>
+    </svg>
+    <div>
+      <h1>Área con marco rectangular</h1>
+      <p>Estimación del área de una figura a partir de una foto</p>
+    </div>
+  </header>
+
+  <div id="estadoMotor" class="estado"><span class="punto"></span><span id="estadoTexto">Preparando el motor de cálculo…</span></div>
+
+  <section id="instalarTarjeta" class="tarjeta" hidden>
+    <p id="instalarTexto">Instala la aplicación para abrirla desde la pantalla de inicio, también sin conexión.</p>
+    <button id="instalar" class="secundario" type="button" hidden>Instalar en este celular</button>
+  </section>
+
+  <!-- ============ FORMULARIO ============ -->
+  <section id="vistaFormulario">
+    <details class="tarjeta" id="instrucciones">
+      <summary>Cómo preparar la hoja</summary>
+      <ol>
+        <li><strong>Traza sobre una hoja el contorno del objeto</strong> cuya área plana quieres estimar. Apoya el objeto sobre el papel y recorre su borde con un lápiz. Comprueba que el trazo sea delgado, oscuro, cerrado y sin cruces. La región interior debe quedar libre de marcas.</li>
+        <li><strong>Encierra el contorno en un rectángulo</strong> dibujado con regla y escuadra. Deja espacio entre la figura y el marco para que no se toquen. Cruza las líneas del rectángulo en sus cuatro esquinas.</li>
+        <li><strong>Mide dos lados adyacentes del rectángulo</strong> en milímetros, tomando como referencia los centros de las líneas. Comprueba que los lados opuestos midan lo mismo y que los ángulos sean rectos.</li>
+        <li><strong>Alisa la hoja y toma una foto nítida</strong> con todo el marco visible. Evita sombras y una inclinación excesiva.</li>
+      </ol>
+      <p class="nota">Las medidas pueden escribirse en cualquier orden. La vista corregida asigna el lado 1 a la horizontal y el lado 2 a la vertical. Si esa correspondencia queda invertida, la figura se verá deformada, pero el área calculada es la misma.</p>
+    </details>
+
+    <div class="tarjeta">
+      <h2>Medidas del marco</h2>
+      <div class="campos">
+        <div>
+          <label for="lado1">Lado 1</label>
+          <div class="unidad"><input id="lado1" type="text" inputmode="decimal" autocomplete="off"></div>
+        </div>
+        <div>
+          <label for="lado2">Lado 2</label>
+          <div class="unidad"><input id="lado2" type="text" inputmode="decimal" autocomplete="off"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tarjeta">
+      <h2>Fotografía de la hoja</h2>
+      <input id="foto" type="file" accept="image/*" hidden>
+      <button id="elegirFoto" class="secundario" type="button">Tomar o elegir foto</button>
+      <img id="miniatura" alt="Fotografía elegida" hidden>
+    </div>
+
+    <div id="errorFormulario" class="tarjeta error" hidden><p id="errorFormularioTexto"></p></div>
+
+    <button id="medir" class="primario" type="button">Medir área</button>
+  </section>
+
+  <!-- ============ PROCESANDO ============ -->
+  <section id="vistaOcupado" class="tarjeta ocupado" hidden>
+    <div class="giro"></div>
+    <div id="ocupadoTexto">Procesando…</div>
+  </section>
+
+  <!-- ============ SELECCIÓN ============ -->
+  <section id="vistaSeleccion" class="tarjeta" hidden>
+    <p id="pregunta" class="pregunta"></p>
+    <p id="contador" class="contador"></p>
+    <img id="imagenOpcion" class="imagen" alt="Opción detectada, marcada con una línea azul">
+    <div class="fila">
+      <button id="no" class="secundario" type="button">No</button>
+      <button id="si" class="si" type="button">Sí</button>
+    </div>
+    <p id="ayudaSeleccion" class="ayuda"></p>
+    <button class="sutil verTrazos" type="button">Ver trazos detectados</button>
+    <img class="imagen imagenTrazos" alt="Trazos detectados" hidden style="margin-top:10px">
+  </section>
+
+  <!-- ============ ERROR ============ -->
+  <section id="vistaError" class="tarjeta error" hidden>
+    <h2>No se pudo completar la medición</h2>
+    <p id="errorTexto"></p>
+    <button id="volverError" class="primario" type="button">Volver</button>
+    <button class="sutil verTrazos" type="button">Ver trazos detectados</button>
+    <img class="imagen imagenTrazos" alt="Trazos detectados" hidden style="margin-top:10px">
+    <p class="ayuda imagenTrazosNota" hidden>En los trazos detectados, el marco y la figura deben verse como líneas blancas continuas y separadas.</p>
+  </section>
+
+  <!-- ============ RESULTADO ============ -->
+  <section id="vistaResultado" hidden>
+    <div class="tarjeta">
+      <h2>Área estimada</h2>
+      <p class="area" id="areaCm2"></p>
+      <p class="nota" id="areaMm2" style="margin-top:0"></p>
+      <table class="datos">
+        <tr><td>Área del borde interior</td><td id="areaInt"></td></tr>
+        <tr><td>Área del borde exterior</td><td id="areaExt"></td></tr>
+        <tr><td id="celdasEtiqueta">Equivalencia</td><td id="celdas"></td></tr>
+      </table>
+      <p class="nota">El promedio de bordes aproxima el área encerrada por un trazo delgado y simple. Los decimales no garantizan precisión experimental.</p>
+    </div>
+    <div class="tarjeta">
+      <figure>
+        <img id="imagenVista" class="imagen" alt="Vista corregida del marco y la figura">
+        <figcaption>Vista corregida: lado 1 horizontal y lado 2 vertical.</figcaption>
+      </figure>
+      <figure style="margin-bottom:0">
+        <img id="imagenResultado" class="imagen" alt="Selección final sobre la fotografía">
+        <figcaption>Selección final sobre la fotografía.</figcaption>
+      </figure>
+      <div class="leyenda"><span class="l-azul">marco</span><span class="l-verde">borde exterior</span><span class="l-rojo">borde interior</span></div>
+      <button id="compartir" class="secundario" type="button" hidden>Compartir resultado</button>
+    </div>
+    <button id="otra" class="primario" type="button">Medir otra figura</button>
+  </section>
+
+</main>
+
+<script>
+"use strict";
+
+// ==============================
+// PARÁMETROS — editar aquí
+// ==============================
+
+const PYODIDE_VERSION = "314.0.7";
+const PYODIDE_URL = window.PYODIDE_URL || `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
+const LADO_MAXIMO_FOTO = 2000;   // px. Solo se reduce una foto más grande. Reducir más resta precisión
+
+const PREGUNTAS = {
+  marco: "¿La línea azul corresponde al marco que dibujaste y mediste?",
+  figura: "¿La línea azul corresponde al contorno completo del objeto que quieres medir?",
+};
+const AYUDAS = {
+  marco: "Si la línea azul rodea el borde de la hoja, responde No.",
+  figura: "Si no aparece la figura correcta, responde No hasta agotar las opciones.",
+};
+
+// ==============================
+// ESTADO
+// ==============================
+
+const $ = (id) => document.getElementById(id);
+let py = null;
+let core = null;
+let med = null;
+let foto = null;
+let urlMiniatura = null;
+let urlsMedicion = [];
+let paso = { tipo: "marco", indice: 0, total: 0 };
+let lados = { A: null, B: null };
+let resultadoActual = null;
+
+// ==============================
+// MOTOR DE CÁLCULO (Python en el navegador)
+// ==============================
+
+function estadoMotor(texto, clase) {
+  $("estadoTexto").textContent = texto;
+  $("estadoMotor").className = "estado" + (clase ? " " + clase : "");
+}
+
+function cargarScript(src) {
+  return new Promise((ok, falla) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.crossOrigin = "anonymous";
+    s.onload = ok;
+    s.onerror = () => falla(new Error("No se pudo descargar " + src));
+    document.head.appendChild(s);
+  });
+}
+
+/** Espera a que el service worker controle la página, para que guarde Python desde la primera visita. */
+function esperarServiceWorker() {
+  return new Promise((listo) => {
+    try {
+      if (!("serviceWorker" in navigator)) return listo();
+      const sw = navigator.serviceWorker;
+      sw.register("sw.js").catch(() => listo());
+      if (sw.controller) return listo();
+      sw.addEventListener("controllerchange", () => listo(), { once: true });
+      setTimeout(listo, 5000);
+    } catch (_) {
+      listo();
+    }
+  });
+}
+
+const motor = (async () => {
+  await esperarServiceWorker();
+  estadoMotor("Descargando Python… La primera vez puede tardar un minuto.");
+  await cargarScript(PYODIDE_URL + "pyodide.js");
+  py = await loadPyodide({ indexURL: PYODIDE_URL });
+  estadoMotor("Cargando OpenCV…");
+  await py.loadPackage(["numpy", "opencv-python"], { messageCallback: () => {} });
+  // El código Python viene de area_core.py, o incrustado en la página si existe #codigoPython.
+  const incrustado = document.getElementById("codigoPython");
+  let codigo;
+  if (incrustado) {
+    codigo = incrustado.textContent;
+  } else {
+    const respuesta = await fetch("area_core.py");
+    if (!respuesta.ok) throw new Error("No se encontró area_core.py");
+    codigo = await respuesta.text();
+  }
+  py.FS.writeFile("/home/pyodide/area_core.py", codigo);
+  py.runPython("import sys\nif '/home/pyodide' not in sys.path: sys.path.insert(0, '/home/pyodide')");
+  core = py.pyimport("area_core");
+  estadoMotor("Listo para medir", "listo");
+})();
+
+motor.catch((e) => {
+  console.error(e);
+  estadoMotor("No se pudo cargar el motor de cálculo. Revisa la conexión y recarga la página.", "fallo");
+});
+
+// ==============================
+// VISTAS
+// ==============================
+
+const VISTAS = ["vistaFormulario", "vistaOcupado", "vistaSeleccion", "vistaError", "vistaResultado"];
+
+function mostrar(id) {
+  for (const v of VISTAS) $(v).hidden = v !== id;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function ocupado(texto) {
+  $("ocupadoTexto").textContent = texto;
+  mostrar("vistaOcupado");
+  // Deja que el navegador pinte el aviso antes del cálculo.
+  return new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
+}
+
+function errorFormulario(texto) {
+  $("errorFormularioTexto").textContent = texto;
+  $("errorFormulario").hidden = false;
+  mostrar("vistaFormulario");
+}
+
+function fallo(e) {
+  let texto = "Ocurrió un error inesperado. Repite la fotografía o recarga la página.";
+  if (e && e.type === "ValueError") {
+    const lineas = String(e.message).trim().split("\n");
+    const ultima = lineas.reverse().find((l) => l.startsWith("ValueError:"));
+    if (ultima) texto = ultima.replace("ValueError:", "").trim();
+  } else if (typeof e === "string") {
+    texto = e;
+  } else {
+    console.error(e);
+  }
+  $("errorTexto").textContent = texto;
+  prepararTrazos();
+  mostrar("vistaError");
+}
+
+// ==============================
+// IMÁGENES
+// ==============================
+
+function aURL(bytesPython) {
+  const datos = bytesPython.toJs();
+  bytesPython.destroy();
+  const url = URL.createObjectURL(new Blob([datos], { type: "image/jpeg" }));
+  urlsMedicion.push(url);
+  return url;
+}
+
+let urlTrazos = null;
+
+function prepararTrazos() {
+  const hay = Boolean(urlTrazos);
+  document.querySelectorAll(".verTrazos").forEach((b) => { b.hidden = !hay; b.textContent = "Ver trazos detectados"; });
+  document.querySelectorAll(".imagenTrazos").forEach((img) => { img.hidden = true; if (hay) img.src = urlTrazos; });
+  document.querySelectorAll(".imagenTrazosNota").forEach((p) => { p.hidden = true; });
+}
+
+document.querySelectorAll(".verTrazos").forEach((boton) => {
+  boton.addEventListener("click", () => {
+    const seccion = boton.closest("section");
+    const img = seccion.querySelector(".imagenTrazos");
+    const nota = seccion.querySelector(".imagenTrazosNota");
+    img.hidden = !img.hidden;
+    if (nota) nota.hidden = img.hidden;
+    boton.textContent = img.hidden ? "Ver trazos detectados" : "Ocultar trazos detectados";
+  });
+});
+
+/** Orienta, reduce y aplana la foto sobre fondo blanco. Devuelve sus píxeles RGBA. */
+async function prepararFoto(archivo) {
+  const url = URL.createObjectURL(archivo);
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    // naturalWidth y naturalHeight ya incluyen la rotación guardada por el celular.
+    let fuente = img;
+    let w = img.naturalWidth;
+    let h = img.naturalHeight;
+    const factor = Math.min(1, LADO_MAXIMO_FOTO / Math.max(w, h));
+    const W = Math.max(1, Math.round(w * factor));
+    const H = Math.max(1, Math.round(h * factor));
+
+    // Reducción por mitades para conservar la nitidez de los trazos.
+    while (w / 2 >= W * 1.25) {
+      const c = document.createElement("canvas");
+      c.width = Math.round(w / 2);
+      c.height = Math.round(h / 2);
+      const cx = c.getContext("2d");
+      cx.imageSmoothingQuality = "high";
+      cx.drawImage(fuente, 0, 0, c.width, c.height);
+      fuente = c; w = c.width; h = c.height;
+    }
+
+    const lienzo = document.createElement("canvas");
+    lienzo.width = W;
+    lienzo.height = H;
+    const ctx = lienzo.getContext("2d", { willReadFrequently: true });
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, W, H);
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(fuente, 0, 0, W, H);
+    return { datos: ctx.getImageData(0, 0, W, H).data, ancho: W, alto: H };
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+// ==============================
+// FORMULARIO
+// ==============================
+
+function leerLado(id) {
+  const texto = $(id).value.trim().replace(",", ".");
+  if (!/^\d+(\.\d+)?$|^\.\d+$/.test(texto)) return null;
+  const v = Number(texto);
+  return Number.isFinite(v) && v > 0 ? v : null;
+}
+
+try {
+  $("lado1").value = localStorage.getItem("area.lado1") || "";
+  $("lado2").value = localStorage.getItem("area.lado2") || "";
+} catch (_) {}
+
+for (const id of ["lado1", "lado2"]) {
+  $(id).addEventListener("input", () => {
+    $("errorFormulario").hidden = true;
+    try { localStorage.setItem("area." + id, $(id).value); } catch (_) {}
+  });
+}
+
+$("elegirFoto").addEventListener("click", () => $("foto").click());
+
+$("foto").addEventListener("change", () => {
+  const archivo = $("foto").files[0];
+  if (!archivo) return;
+  if (archivo.type && !archivo.type.startsWith("image/")) {
+    errorFormulario(`El archivo «${archivo.name}» no es una imagen.`);
+    return;
+  }
+  foto = archivo;
+  if (urlMiniatura) URL.revokeObjectURL(urlMiniatura);
+  urlMiniatura = URL.createObjectURL(archivo);
+  $("miniatura").src = urlMiniatura;
+  $("miniatura").hidden = false;
+  $("elegirFoto").textContent = "Cambiar foto";
+  $("errorFormulario").hidden = true;
+});
+
+function liberarMedicion() {
+  if (med) { med.destroy(); med = null; }
+  for (const u of urlsMedicion) URL.revokeObjectURL(u);
+  urlsMedicion = [];
+  urlTrazos = null;
+  resultadoActual = null;
+}
+
+$("medir").addEventListener("click", async () => {
+  $("errorFormulario").hidden = true;
+  const A = leerLado("lado1");
+  const B = leerLado("lado2");
+  if (A === null) return errorFormulario("Lado 1: escribe un número positivo en milímetros.");
+  if (B === null) return errorFormulario("Lado 2: escribe un número positivo en milímetros.");
+  if (!foto) return errorFormulario("Toma o elige la fotografía de la hoja.");
+  lados = { A, B };
+
+  liberarMedicion();
+  try {
+    await ocupado("Preparando la fotografía…");
+    const { datos, ancho, alto } = await prepararFoto(foto);
+    if (!core) {
+      await ocupado("Esperando el motor de cálculo…");
+      try { await motor; } catch (_) {
+        return fallo("El motor de cálculo no está disponible. Revisa la conexión y recarga la página.");
+      }
+    }
+    await ocupado("Detectando trazos…");
+    med = core.Medicion.desde_rgba(datos, ancho, alto);
+    urlTrazos = aURL(med.imagen_binaria());
+    const total = med.detectar();
+    mostrarOpcion("marco", 0, total);
+  } catch (e) {
+    if (e instanceof DOMException || (e && e.name === "EncodingError")) {
+      fallo("No se pudo abrir la fotografía. Prueba con otra imagen en formato JPG o PNG.");
+    } else {
+      fallo(e);
+    }
+  }
+});
+
+// ==============================
+// CONFIRMACIÓN: SÍ / NO
+// ==============================
+
+function mostrarOpcion(tipo, indice, total) {
+  paso = { tipo, indice, total };
+  const bytes = tipo === "marco" ? med.opcion_marco(indice) : med.opcion_figura(indice);
+  $("imagenOpcion").src = aURL(bytes);
+  $("pregunta").textContent = PREGUNTAS[tipo];
+  $("contador").textContent = total > 1 ? `Opción ${indice + 1} de ${total}` : "Única opción encontrada";
+  $("ayudaSeleccion").textContent = AYUDAS[tipo];
+  $("no").textContent = indice + 1 < total ? "No, ver otra" : "No";
+  prepararTrazos();
+  mostrar("vistaSeleccion");
+}
+
+$("no").addEventListener("click", () => {
+  const { tipo, indice, total } = paso;
+  if (indice + 1 < total) {
+    mostrarOpcion(tipo, indice + 1, total);
+  } else {
+    fallo("No se confirmó ninguna opción. Revisa el dibujo o la fotografía y vuelve a intentarlo.");
+  }
+});
+
+$("si").addEventListener("click", async () => {
+  const { tipo, indice } = paso;
+  try {
+    if (tipo === "marco") {
+      await ocupado("Ajustando las esquinas del marco…");
+      const total = med.confirmar_marco(indice);
+      mostrarOpcion("figura", 0, total);
+    } else {
+      await ocupado("Calculando el área…");
+      const r = med.calcular(indice, lados.A, lados.B);
+      const datos = r.toJs({ dict_converter: Object.fromEntries });
+      r.destroy();
+      mostrarResultado(datos);
+    }
+  } catch (e) {
+    fallo(e);
+  }
+});
+
+// ==============================
+// RESULTADO
+// ==============================
+
+const num = (x, d) => x.toLocaleString("es-CO", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+function urlDeBytes(u8) {
+  const url = URL.createObjectURL(new Blob([u8], { type: "image/jpeg" }));
+  urlsMedicion.push(url);
+  return url;
+}
+
+function mostrarResultado(r) {
+  resultadoActual = r;
+  $("areaCm2").innerHTML = `${num(r.area_cm2, 2)} <small>cm²</small>`;
+  $("areaMm2").textContent = `${num(r.area_mm2, 1)} mm², promedio de los bordes interior y exterior`;
+  $("areaInt").textContent = `${num(r.interior_cm2, 2)} cm²`;
+  $("areaExt").textContent = `${num(r.exterior_cm2, 2)} cm²`;
+  $("celdasEtiqueta").textContent = `Celdas de ${num(r.celda_mm, 0)} × ${num(r.celda_mm, 0)} mm`;
+  $("celdas").textContent = num(r.celdas, 1);
+  $("imagenVista").src = urlDeBytes(r.img_vista);
+  $("imagenResultado").src = urlDeBytes(r.img_resultado);
+  $("compartir").hidden = !puedeCompartir(r);
+  mostrar("vistaResultado");
+}
+
+function textoResultado(r) {
+  return `Área estimada: ${num(r.area_cm2, 2)} cm² (${num(r.area_mm2, 1)} mm²). ` +
+    `Marco de ${num(lados.A, 1)} × ${num(lados.B, 1)} mm.`;
+}
+
+function archivoVista(r) {
+  return new File([r.img_vista], "vista_corregida.jpg", { type: "image/jpeg" });
+}
+
+function puedeCompartir(r) {
+  try {
+    return Boolean(navigator.canShare && navigator.canShare({ files: [archivoVista(r)] }));
+  } catch (_) {
+    return false;
+  }
+}
+
+$("compartir").addEventListener("click", async () => {
+  if (!resultadoActual) return;
+  try {
+    await navigator.share({
+      title: "Área con marco rectangular",
+      text: textoResultado(resultadoActual),
+      files: [archivoVista(resultadoActual)],
+    });
+  } catch (_) {}
+});
+
+$("otra").addEventListener("click", () => {
+  liberarMedicion();
+  foto = null;
+  $("foto").value = "";
+  $("miniatura").hidden = true;
+  $("elegirFoto").textContent = "Tomar o elegir foto";
+  mostrar("vistaFormulario");
+});
+
+$("volverError").addEventListener("click", () => mostrar("vistaFormulario"));
+
+// ==============================
+// INSTALACIÓN EN EL CELULAR
+// ==============================
+
+let avisoInstalar = null;
+const instalada = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  avisoInstalar = e;
+  $("instalar").hidden = false;
+  $("instalarTarjeta").hidden = false;
+});
+
+$("instalar").addEventListener("click", async () => {
+  if (!avisoInstalar) return;
+  avisoInstalar.prompt();
+  await avisoInstalar.userChoice;
+  avisoInstalar = null;
+  $("instalarTarjeta").hidden = true;
+});
+
+const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+if (esIOS && !instalada) {
+  $("instalarTexto").textContent =
+    "Para instalarla en el iPhone, abre esta página en Safari, toca Compartir y elige «Agregar a pantalla de inicio».";
+  $("instalarTarjeta").hidden = false;
+}
+</script>
+</body>
+</html>
