@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Índice de correlación de Pearson mediante vectores de dispersión. Ingreso de datos, cálculo paso a paso y gráfica. Recurso docente de Andrés M. Salazar.">
+<title>Correlación de Pearson | Andrés M. Salazar</title>
+<style>
+
+:root{--ink:#242b25;--muted:#657064;--green:#225500;--rule:#dce3d7;--wash:#f8faf6;--red:#b44936;--blue:#32658a}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:1080px;margin:0 auto;padding:38px 32px 28px}header{padding-bottom:22px;border-bottom:1px solid var(--rule)}.author{font-size:13px;color:var(--green);letter-spacing:.025em;margin:0 0 12px}h1{font-size:clamp(28px,4vw,38px);letter-spacing:-.04em;line-height:1.2;font-weight:650;margin:0 0 12px;color:#20261f}h2{font-size:20px;letter-spacing:-.02em;margin:0 0 10px}h3{font-size:16px;margin:18px 0 8px}.intro{max-width:740px;margin:0;color:var(--muted)}.workspace{display:grid;grid-template-columns:290px minmax(0,1fr);gap:36px;margin-top:26px}.small{font-size:13px;color:var(--muted)}p{margin:0 0 12px}label{display:block;font-size:14px;font-weight:550;margin-bottom:6px}textarea,input,select,button{font:inherit}textarea,input,select{border:1px solid #bac6b3;border-radius:4px;background:#fff;color:var(--ink)}textarea{display:block;width:100%;resize:vertical;min-height:260px;max-height:600px;padding:11px 13px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px;line-height:1.5;tab-size:12}input{width:100%;padding:7px 9px}select{padding:5px 8px}input:focus,textarea:focus,select:focus,button:focus-visible,summary:focus-visible{outline:2px solid #71924b;outline-offset:3px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}button{cursor:pointer;border:1px solid var(--rule);border-radius:4px;padding:8px 12px;background:#fff;color:var(--green);font-size:14px;font-weight:550}button:hover{background:var(--wash);border-color:#91a380}button.primary{background:var(--green);border-color:var(--green);color:white}.primary:hover{background:#173c00}button:disabled{opacity:.4;cursor:default}.linkbutton{padding:3px 0;border:0;text-decoration:underline;text-underline-offset:3px;font-weight:400}.field{margin:12px 0}.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pair input{max-width:100%}.result{min-width:0}.eyebrow{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.11em}.equation{padding:12px 0 8px;font-size:1.35rem;overflow-x:auto;min-height:68px;color:var(--green)}.named{font-size:15px;overflow-x:auto}.metrics{display:flex;gap:20px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding:14px 0;font-size:14px}.metrics strong{font-weight:600}.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--muted);margin:15px 0 0}.key{display:inline-block;width:10px;height:10px;background:var(--blue);border-radius:50%;margin-right:5px}.key.line{width:19px;height:2px;background:var(--red);vertical-align:middle}.key.mean{background:var(--green);border-radius:0;transform:rotate(45deg)}#chart{width:100%;min-height:320px}#chart svg{width:100%;height:auto;display:block}.chart-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.check{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:400;margin:0}.check input{width:auto;accent-color:var(--green)}.error{color:#92351c;font-size:14px;background:#fff5f1;padding:10px;border-left:3px solid #b44936;margin:12px 0}.status{min-height:24px;font-size:13px;color:var(--muted);margin:6px 0 0}.empty{min-height:350px;display:flex;align-items:center;justify-content:center;padding:24px;color:var(--muted);border-bottom:1px solid var(--rule)}[hidden]{display:none!important}details{border-top:1px solid var(--rule);padding:16px 0}summary{cursor:pointer;color:var(--green);font-weight:550}.options{font-size:14px;margin-top:14px}.options summary{font-size:14px}.method{margin-top:30px}.method p{max-width:800px}.formula{padding:6px 0;overflow-x:auto}.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.scroll{overflow-x:auto;margin:16px 0;max-height:420px}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}th,td{text-align:right;padding:8px 12px;border-bottom:1px solid var(--rule);white-space:nowrap}th{background:var(--wash);font-weight:600;position:sticky;top:0}th:first-child,td:first-child{text-align:left}.verification{font-size:14px;border-left:2px solid #a7bb98;padding-left:16px;margin-top:18px}.note{margin-top:16px;font-size:13px;color:var(--muted)}footer{margin-top:28px;border-top:1px solid var(--rule);padding-top:15px;font-size:12px;color:var(--muted)}mjx-container{max-width:100%}mjx-container[jax="SVG"]{display:inline-block!important}.no-js{color:#92351c}
+.entry-scroll{max-height:405px;overflow:auto;border:1px solid var(--rule);border-radius:4px;margin:12px 0}.entry-table{table-layout:fixed;width:100%}.entry-table th{text-align:center}.entry-table th:first-child{width:38px;text-align:center}.entry-table td{padding:0;border-right:1px solid var(--rule)}.entry-table td:first-child{padding:0 5px;text-align:center;color:var(--muted);background:var(--wash)}.entry-table input{border:0;border-radius:0;font-family:ui-monospace,Consolas,monospace;font-size:15px;min-width:0;padding:9px 10px}.entry-table input:focus{outline:2px solid #71924b;outline-offset:-2px;background:#f3f8ed}.row-tools{display:flex;gap:12px;margin:8px 0 14px}.row-tools button{font-size:12px}kbd{font-family:inherit;font-size:12px;border:1px solid var(--rule);border-radius:3px;padding:0 4px;background:var(--wash)}
+mjx-assistive-mml{position:absolute!important;width:1px!important;height:1px!important;padding:1px 0 0!important;border:0!important;clip:rect(1px,1px,1px,1px)!important;overflow:hidden!important;white-space:nowrap!important}mjx-container[jax="SVG"]>svg{overflow:visible;min-width:1px;min-height:1px}
+@media(max-width:760px){main{padding:24px 18px}.workspace{grid-template-columns:1fr;gap:26px}textarea{min-height:190px;height:210px}.method-grid{grid-template-columns:1fr}.equation{font-size:1.15rem}.metrics{gap:14px}.intro{font-size:15px}}
+@media print{main{padding:0;max-width:none}header{padding-bottom:12px}.workspace{display:block}.inputs,.chart-actions,.options,footer,.status{display:none}.equation{color:#111}.method{margin-top:15px}.scroll{max-height:none;overflow:visible}details>*{display:block}summary{list-style:none}#chart{break-inside:avoid}button{display:none}}
+
+
+main{max-width:1160px}.workspace{grid-template-columns:300px minmax(0,1fr);gap:36px}.empty{text-align:center;min-height:470px;background:linear-gradient(#fff,#f8faf6)}.empty strong{display:block;font-size:20px;font-weight:550;color:var(--ink);margin-bottom:10px}.pearson-value{display:flex;align-items:baseline;gap:12px 20px;flex-wrap:wrap;padding-top:9px}#r-result{font-size:clamp(30px,4vw,44px);line-height:1.3;letter-spacing:-.035em;color:var(--green);font-weight:600;font-variant-numeric:tabular-nums}.direction{font-size:13px;color:var(--muted)}.main-formula{font-size:18px;color:var(--green);padding:8px 0}.correlation-scale{max-width:390px;margin:18px 2px 10px}.scale-track{height:4px;position:relative;background:#dce3d7;border-radius:4px}.scale-track i{position:absolute;width:1px;height:10px;left:50%;top:-3px;background:#a5b49c}#scale-marker{position:absolute;top:-4px;transform:translateX(-50%);width:12px;height:12px;border-radius:50%;background:var(--green);z-index:1}.scale-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:7px}.interpretation{font-size:14px;max-width:640px;margin:10px 0 0}.chart-options{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 12px}.chart-actions{justify-content:flex-start}.plot-info{min-height:22px;margin-bottom:0}.method-intro{margin-top:18px}.method-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.method-grid>section{min-width:0}.formula{max-width:100%;scrollbar-width:thin}.inline-math{display:inline-block;vertical-align:middle;max-width:100%;overflow:visible}.entry-table tbody th{position:static;font-size:12px;font-weight:400;text-align:center;padding:0 5px;color:var(--muted)}.entry-table input[aria-invalid=true]{background:#fff3ee;box-shadow:inset 0 0 0 1px var(--red)}.entry-table td{padding:0}.calculations tbody th,.calculations tfoot th{position:static;font-weight:400;background:#fff}.calculations tfoot td,.calculations tfoot th{font-weight:600;background:var(--wash);border-top:2px solid var(--rule)}select{max-width:100%}footer{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}footer p{margin:0}a{color:var(--green);text-underline-offset:3px}.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}#chart circle{cursor:crosshair}#chart circle:hover{fill:var(--green);stroke-width:2}
+@media(max-width:790px){main{padding:24px 18px}.workspace{grid-template-columns:1fr;gap:28px}.method-grid{grid-template-columns:1fr;gap:0}.empty{min-height:240px}.entry-scroll{max-height:330px}.pearson-value{gap:6px 16px}.metrics{gap:12px}.legend{gap:10px 16px}.method{margin-top:20px}}
+@media print{.chart-options,#point-info,#math-status{display:none}.workspace{display:block}.result{width:100%}.correlation-scale{display:none}.method-grid{display:block}#method{break-before:auto}.scroll{max-height:none}.method{display:block}}
+
+</style>
+<script>
+window.MathJax={tex:{packages:['base','ams'],inlineMath:[['\\(','\\)']]},svg:{fontCache:'local'},options:{enableMenu:false},startup: {
+    typeset: false,
+    ready() {
+      MathJax.startup.defaultReady();
+      MathJax.startup.promise.then(() => {
+        window.dispatchEvent(new Event('mathjax-ready'));
+      });
+    }
+  }};
+</script>
+<!-- MathJax 3.2.2, Apache-2.0. https://www.mathjax.org/ -->
+<script id="mathjax-loader" defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+
+</head>
+<body>
+<main>
+<header><p class="author">Andrés M. Salazar</p><h1>Correlación de Pearson</h1><p class="intro">Ingresa los pares de datos y examina su relación lineal mediante los vectores de dispersión.</p></header>
+<noscript><p class="error">Activa JavaScript para calcular y dibujar los puntos.</p></noscript>
+<div class="workspace">
+<section class="inputs" aria-labelledby="data-title">
+<h2 id="data-title">Datos</h2>
+<p class="small" id="data-help">Escribe un valor por casilla. Avanza con <kbd>Tab</kbd> o <kbd>Enter</kbd>. También puedes pegar dos columnas desde Excel en una casilla de <i>x</i>.</p>
+<div class="entry-scroll"><table class="entry-table" aria-label="Pares de datos"><thead><tr><th scope="col">Fila</th><th scope="col">x</th><th scope="col">y</th></tr></thead><tbody id="data-rows"></tbody></table></div>
+<div class="row-tools"><button type="button" id="add-row">Añadir fila</button><button type="button" id="remove-row">Quitar última fila</button></div>
+<p class="small">Se admite punto o coma decimal. Pega sin encabezados, con columnas separadas por tabulación, punto y coma o espacio. Las filas completamente vacías se omiten.</p>
+<div class="actions"><button type="button" class="primary" id="calculate">Calcular Pearson</button><button type="button" id="clear">Limpiar</button></div>
+<p class="status" id="status" role="status" aria-live="polite"></p><p class="error" id="error" role="alert" hidden></p>
+<div class="field"><label for="example">Explorar un ejemplo</label><select id="example"><option value="">Selecciona un ejemplo</option><option value="positive">Relación creciente</option><option value="negative">Relación decreciente</option><option value="curve">Relación curva con r = 0</option><option value="constant">Una variable constante</option></select></div>
+<details class="options"><summary>Presentación</summary>
+<div class="field"><label for="xlabel">Nombre del eje horizontal</label><input id="xlabel" value="x" maxlength="65"></div>
+<div class="field"><label for="ylabel">Nombre del eje vertical</label><input id="ylabel" value="y" maxlength="65"></div>
+<div class="field"><label for="precision">Decimales en los resultados</label><select id="precision"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
+<p class="small">El redondeo solo modifica la presentación. Puedes incluir las unidades en los nombres de los ejes.</p>
+</details>
+</section>
+<section class="result" aria-label="Correlación y gráfica">
+<div id="empty" class="empty"><div><strong>Ingresa tus datos</strong><p>Necesitas al menos dos pares completos.<br>La gráfica y el cálculo aparecerán aquí.</p></div></div>
+<div id="results" hidden>
+<div class="eyebrow">Índice de correlación de Pearson</div>
+<div class="pearson-value"><span id="r-result"></span><span id="direction" class="direction"></span></div>
+<div class="formula main-formula" data-tex="r=\frac{D_x\cdot D_y}{\|D_x\|\,\|D_y\|}">r = (Dₓ · Dᵧ) / (‖Dₓ‖ ‖Dᵧ‖)</div>
+<div id="scale" class="correlation-scale" aria-label="Escala de menos uno a uno"><div class="scale-track"><span id="scale-marker"></span><i></i></div><div class="scale-labels"><span>−1</span><span>0</span><span>1</span></div></div>
+<p id="interpretation" class="interpretation"></p>
+<div class="metrics"><span><strong id="count"></strong> pares</span><span id="center"></span><span id="angle"></span></div>
+<div class="legend"><span><i class="key"></i>Datos</span><span><i class="key mean"></i>Punto de promedios</span><span id="line-key" hidden><i class="key line"></i>Recta de ajuste</span></div>
+<div id="chart"></div><p id="point-info" class="small plot-info" aria-live="polite">Pasa el cursor por un punto para ver sus coordenadas.</p>
+<div class="chart-options"><label class="check"><input type="checkbox" id="show-line">Mostrar recta de ajuste</label><label class="check"><input type="checkbox" id="show-origin">Incluir el origen</label></div>
+<div id="line-equation" class="formula" hidden></div>
+<div class="actions chart-actions"><button type="button" id="download-svg">Descargar gráfica SVG</button><button type="button" id="download-data">Guardar datos CSV</button></div>
+<p class="note" id="two-note" hidden>Con dos pares y ambas variables no constantes, el valor de r es 1 o −1. Se necesitan más datos para examinar un patrón más amplio.</p>
+<p class="note">Pearson describe la asociación lineal. Un valor próximo a cero puede coexistir con una relación curva. La correlación, por sí sola, no establece causalidad.</p>
+</div>
+</section>
+</div>
+<details class="method" id="method" open><summary>El cálculo con vectores de dispersión</summary>
+<div class="method-intro"><p>Los datos forman los vectores <span class="inline-math" data-tex="X=(x_1,\ldots,x_n),\quad Y=(y_1,\ldots,y_n)">X = (x₁, …, xₙ), Y = (y₁, …, yₙ)</span>. Al restar el promedio correspondiente a cada componente obtenemos</p>
+<div class="formula" data-tex="D_x=(x_1-\bar{x},\ldots,x_n-\bar{x}),\qquad D_y=(y_1-\bar{y},\ldots,y_n-\bar{y}).">Dₓ = (x₁ − x̄, …, xₙ − x̄), Dᵧ = (y₁ − ȳ, …, yₙ − ȳ).</div>
+<p>El índice de Pearson es el coseno del ángulo entre estos vectores. Está definido cuando ambos tienen norma distinta de cero.</p>
+<div class="formula" data-tex="r=\frac{D_x\cdot D_y}{\sqrt{D_x\cdot D_x}\,\sqrt{D_y\cdot D_y}}=\cos\theta,\qquad -1\leq r\leq 1.">r = (Dₓ · Dᵧ) / (√(Dₓ · Dₓ) √(Dᵧ · Dᵧ)) = cos θ, con −1 ≤ r ≤ 1.</div>
+<p class="small">El ángulo pertenece al espacio de los vectores de dispersión, de dimensión n. La gráfica de puntos representa los pares (x, y) en el plano.</p></div>
+<div id="method-values" hidden>
+<div class="method-grid"><section><h3>1. Promedios</h3><div class="formula" id="means"></div></section><section><h3>2. Vectores de dispersión</h3><div class="formula" id="dx-vector"></div><div class="formula" id="dy-vector"></div><p class="small" id="vector-note" hidden>Se muestran las primeras componentes y la última. La tabla contiene todos los datos.</p></section></div>
+<div class="method-grid"><section><h3>3. Producto escalar y normas</h3><div class="formula" id="dot-values"></div><div class="formula" id="norm-values"></div></section><section><h3>4. Índice de Pearson</h3><div class="formula" id="substitution"></div><p class="small" id="undefined-note" hidden></p></section></div>
+<h3>Componentes y operaciones</h3><p class="small">Cada fila corresponde al mismo par de observaciones. Las sumas de las tres últimas columnas dan los productos escalares.</p>
+<div class="scroll"><table class="calculations"><caption class="sr-only">Tabla de cálculo del índice de Pearson</caption><thead><tr><th scope="col">Dato</th><th scope="col">x</th><th scope="col">y</th><th scope="col">x − x̄</th><th scope="col">y − ȳ</th><th scope="col">(x − x̄)(y − ȳ)</th><th scope="col">(x − x̄)²</th><th scope="col">(y − ȳ)²</th></tr></thead><tbody id="calculation-rows"></tbody><tfoot id="totals"></tfoot></table></div>
+<p class="small">Los cálculos usan la precisión completa disponible en el navegador. Las cifras mostradas están redondeadas.</p>
+</div></details>
+<footer><a href="https://amsrojas.com/exploraciones/">Volver a exploraciones</a></footer>
+<p id="math-status" class="note" role="status" hidden>No se pudo cargar MathJax. Las fórmulas se muestran en texto y los cálculos y la gráfica siguen disponibles. Para ver la notación matemática, abre la página con conexión a internet.</p>
+</main>
+
+<script id="app-code">
+'use strict';
+// El núcleo es independiente de la interfaz para comprobar los cálculos.
+const MAX_POINTS=3000;
+function compensatedSum(a){let s=0,c=0;for(const v of a){const y=v-c,t=s+y;c=(t-s)-y;s=t;}return s;}
+function numeric(value){const s=String(value).trim().replace(/−/g,'-').replace(',','.');return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(s)?Number(s):NaN;}
+function pearson(data){
+ if(!Array.isArray(data)||data.length<2)throw Error('Ingresa al menos dos pares completos.');
+ if(data.length>MAX_POINTS)throw Error(`Usa como máximo ${MAX_POINTS} pares.`);
+ if(data.some(p=>!Array.isArray(p)||p.length!==2||!p.every(Number.isFinite)))throw Error('Cada fila debe contener dos números válidos.');
+ const X=data.map(p=>p[0]),Y=data.map(p=>p[1]),n=data.length;
+ const centered=A=>{const anchor=Math.min(...A)/2+Math.max(...A)/2,off=A.map(v=>v-anchor),meanOff=compensatedSum(off.map(v=>v/n));return {mean:anchor+meanOff,d:off.map(v=>v-meanOff)};};
+ const xc=centered(X),yc=centered(Y),xb=xc.mean,yb=yc.mean,dx=xc.d,dy=yc.d;
+ const xx=compensatedSum(dx.map(v=>v*v)),yy=compensatedSum(dy.map(v=>v*v)),xy=compensatedSum(dx.map((v,i)=>v*dy[i]));
+ if(![xb,yb,xx,yy,xy].every(Number.isFinite))throw Error('La escala de los números es demasiado grande. Cambia las unidades de los datos.');
+ const constantX=X.every(v=>v===X[0]),constantY=Y.every(v=>v===Y[0]);
+ if((xx===0&&!constantX)||(yy===0&&!constantY))throw Error('La escala de los números es demasiado pequeña. Cambia las unidades de los datos.');
+ const normX=Math.sqrt(xx),normY=Math.sqrt(yy);
+ let r=null,theta=null;
+ if(!constantX&&!constantY){
+  // Normalizar por separado evita formar el producto xx*yy.
+  r=compensatedSum(dx.map((v,i)=>(v/normX)*(dy[i]/normY)));
+  if(!Number.isFinite(r)||Math.abs(r)>1+128*Number.EPSILON)throw Error('No se pudo resolver esta escala numérica. Cambia las unidades.');
+  r=Math.max(-1,Math.min(1,r));
+  if(Math.abs(r)<32*Number.EPSILON)r=0;
+  if(1-Math.abs(r)<32*Number.EPSILON)r=Math.sign(r);
+  theta=Math.acos(r)*180/Math.PI;
+ }
+ const slope=constantX?null:xy/xx;
+ const intercept=slope===null?null:yb-slope*xb;
+ return {data,X,Y,n,xb,yb,dx,dy,xx,yy,xy,normX,normY,r,theta,constantX,constantY,slope,intercept};
+}
+function parsePasted(raw,column){
+ const text=raw.replace(/\r/g,'').replace(/\n+$/,'');
+ if(!text.trim())throw Error('El contenido pegado está vacío.');
+ const rows=text.split('\n').filter(line=>line.trim()).map(line=>{
+  if(line.includes('\t'))return line.split('\t');
+  if(line.includes(';'))return line.split(';');
+  return line.trim().split(/\s+/);
+ });
+ if(rows.some(row=>row.length<1||row.length>2-column))throw Error('Pega dos columnas en una casilla de x, separadas por tabulación, punto y coma o espacio.');
+ if(rows.length>MAX_POINTS)throw Error(`Usa como máximo ${MAX_POINTS} filas.`);
+ return rows.map((row,i)=>row.map(v=>{if(!String(v).trim())return '';const x=numeric(v);if(!Number.isFinite(x))throw Error(`Fila pegada ${i+1}: revisa los números y omite los encabezados.`);return String(x);}));
+}
+if(typeof document!=='undefined'){
+const $=id=>document.getElementById(id);
+let current=null,mathReady=false;
+const precision=()=>Number($('precision').value);
+function fmt(v,d=precision()){if(Object.is(v,-0)||v===0)return (0).toFixed(d);const a=Math.abs(v);return a>=1e8||a<10**(-d)?v.toExponential(Math.min(d,6)):v.toFixed(d);}
+function texnum(v){return fmt(v).replace(/e([+-]?\d+)/,'\\times10^{$1}');}
+function math(el,tex,fallback){el.dataset.tex=tex;el.dataset.fallback=fallback||tex;el.textContent=el.dataset.fallback;if(mathReady){try{el.replaceChildren(MathJax.tex2svg(tex,{display:false}));}catch{el.textContent=el.dataset.fallback;}}}
+function refreshMath(){document.querySelectorAll('[data-tex]').forEach(el=>math(el,el.dataset.tex,el.dataset.fallback||el.textContent));}
+window.addEventListener('mathjax-ready',()=>{mathReady=true;refreshMath();});
+$('mathjax-loader').addEventListener('error',()=>{$('math-status').hidden=false;});
+function clearError(){$('error').hidden=true;document.querySelectorAll('[aria-invalid=true]').forEach(el=>el.removeAttribute('aria-invalid'));}
+function invalidate(message=''){current=null;$('results').hidden=true;$('empty').hidden=false;$('method-values').hidden=true;$('status').textContent=message;clearError();}
+function cell(row,col){return $('data-rows').children[row]?.querySelectorAll('input')[col];}
+function addRow(values=['','']){const i=$('data-rows').children.length;if(i>=MAX_POINTS)return false;const tr=document.createElement('tr'),th=document.createElement('th');th.scope='row';th.textContent=i+1;tr.append(th);values.forEach((v,j)=>{const td=document.createElement('td'),input=document.createElement('input');input.type='text';input.inputMode='decimal';input.autocomplete='off';input.spellcheck=false;input.value=v;input.dataset.row=i;input.dataset.col=j;input.setAttribute('aria-label',`${j===0?'x':'y'}, fila ${i+1}`);td.append(input);tr.append(td);});$('data-rows').append(tr);return true;}
+function resetRows(data=[]){$('data-rows').replaceChildren();for(let i=0;i<Math.max(8,data.length);i++)addRow(data[i]||['','']);}
+function readGrid(){const data=[];Array.from($('data-rows').children).forEach((tr,i)=>{const els=Array.from(tr.querySelectorAll('input')),v=els.map(el=>el.value.trim());if(v.every(x=>!x))return;if(v.some(x=>!x)){els.forEach((el,j)=>{if(!v[j])el.setAttribute('aria-invalid','true');});throw Error(`Fila ${i+1}: completa x e y.`);}const pair=v.map(numeric);if(!pair.every(Number.isFinite)){els.forEach((el,j)=>{if(!Number.isFinite(pair[j]))el.setAttribute('aria-invalid','true');});throw Error(`Fila ${i+1}: escribe números válidos.`);}data.push(pair);});return data;}
+function run(){invalidate();try{current=pearson(readGrid());$('results').hidden=false;$('empty').hidden=true;$('method-values').hidden=false;$('status').textContent=`Cálculo realizado con ${current.n} pares.`;render();}catch(err){$('error').textContent=err.message;$('error').hidden=false;}}
+function vectorText(values,tex=false){const format=tex?texnum:fmt;if(values.length<=10)return values.map(v=>format(v)).join(tex?',\\;':', ');return values.slice(0,5).map(v=>format(v)).join(tex?',\\;':', ')+(tex?',\\ldots,':', …, ')+format(values.at(-1));}
+function render(){if(!current)return;const q=current;
+ $('r-result').textContent=q.r===null?'r no definido':`r = ${fmt(q.r)}`;
+ $('direction').textContent=q.r===null?'':q.r>0?'Asociación positiva':q.r<0?'Asociación negativa':'Correlación lineal nula';
+ $('scale').hidden=q.r===null;if(q.r!==null)$('scale-marker').style.left=`${(q.r+1)*50}%`;
+ const undefinedMessage=q.constantX&&q.constantY?'Ambas variables son constantes. Los dos vectores de dispersión son nulos.':q.constantX?'Todos los valores de x son iguales. El vector Dₓ es nulo.':'Todos los valores de y son iguales. El vector Dᵧ es nulo.';
+ $('interpretation').textContent=q.r===null?`${undefinedMessage} El denominador es cero.`:q.r===1?'Los pares están alineados sobre una recta creciente.':q.r===-1?'Los pares están alineados sobre una recta decreciente.':q.r===0?'El producto escalar de los vectores de dispersión es cero. Revisa la gráfica para explorar otras formas de relación.':q.r>0?'Los datos presentan una asociación lineal creciente. Cuanto más próximo esté r a 1, mayor es su alineación creciente.':'Los datos presentan una asociación lineal decreciente. Cuanto más próximo esté r a −1, mayor es su alineación decreciente.';
+ $('count').textContent=q.n;
+ math($('center'),`(\\bar{x},\\bar{y})=(${texnum(q.xb)},${texnum(q.yb)})`,`Promedios (${fmt(q.xb)}, ${fmt(q.yb)})`);
+ $('angle').hidden=q.theta===null;if(q.theta!==null)math($('angle'),`\\theta=${texnum(q.theta)}^\\circ`,`Ángulo ${fmt(q.theta)}°`);
+ $('two-note').hidden=q.n!==2||q.r===null;
+ math($('means'),`\\bar{x}=\\frac{\\sum x_i}{${q.n}}=${texnum(q.xb)},\\qquad\\bar{y}=\\frac{\\sum y_i}{${q.n}}=${texnum(q.yb)}`,`x̄ = ${fmt(q.xb)}, ȳ = ${fmt(q.yb)}`);
+ math($('dx-vector'),`D_x=(${vectorText(q.dx,true)})`,`Dₓ = (${vectorText(q.dx)})`);
+ math($('dy-vector'),`D_y=(${vectorText(q.dy,true)})`,`Dᵧ = (${vectorText(q.dy)})`);
+ $('vector-note').hidden=q.n<=10;
+ math($('dot-values'),`\\begin{aligned}D_x\\cdot D_y&=${texnum(q.xy)}\\\\D_x\\cdot D_x&=${texnum(q.xx)}\\\\D_y\\cdot D_y&=${texnum(q.yy)}\\end{aligned}`,`Dₓ · Dᵧ = ${fmt(q.xy)}. Dₓ · Dₓ = ${fmt(q.xx)}. Dᵧ · Dᵧ = ${fmt(q.yy)}.`);
+ math($('norm-values'),`\\|D_x\\|=\\sqrt{${texnum(q.xx)}}=${texnum(q.normX)},\\quad\\|D_y\\|=\\sqrt{${texnum(q.yy)}}=${texnum(q.normY)}`,`‖Dₓ‖ = ${fmt(q.normX)}, ‖Dᵧ‖ = ${fmt(q.normY)}`);
+ if(q.r===null)math($('substitution'),'r\\;\\text{no definido}','r no definido');
+ else math($('substitution'),`r=\\frac{${texnum(q.xy)}}{\\sqrt{${texnum(q.xx)}}\\,\\sqrt{${texnum(q.yy)}}}=${texnum(q.r)}`,`r = ${fmt(q.xy)} / (√${fmt(q.xx)} × √${fmt(q.yy)}) = ${fmt(q.r)}`);
+ $('undefined-note').hidden=q.r!==null;$('undefined-note').textContent=undefinedMessage+' No se puede dividir entre cero.';
+ const fragment=document.createDocumentFragment();q.data.forEach((p,i)=>{const tr=document.createElement('tr');[i+1,p[0],p[1],q.dx[i],q.dy[i],q.dx[i]*q.dy[i],q.dx[i]**2,q.dy[i]**2].forEach((v,j)=>{const td=document.createElement(j===0?'th':'td');if(j===0)td.scope='row';td.textContent=j===0?v:fmt(v);tr.append(td);});fragment.append(tr);});$('calculation-rows').replaceChildren(fragment);
+ const totals=document.createElement('tr'),label=document.createElement('th');label.scope='row';label.colSpan=3;label.textContent='Sumas';totals.append(label);[compensatedSum(q.dx),compensatedSum(q.dy),q.xy,q.xx,q.yy].forEach(v=>{const td=document.createElement('td');td.textContent=fmt(v);totals.append(td);});$('totals').replaceChildren(totals);
+ $('show-line').disabled=q.slope===null||!Number.isFinite(q.slope)||!Number.isFinite(q.intercept);draw();
+}
+function draw(){if(!current)return;const q=current,container=$('chart'),W=Math.max(310,Math.round(container.clientWidth||650)),H=W<480?355:415,M={l:74,r:24,t:24,b:66};
+ const withLine=$('show-line').checked&&!$('show-line').disabled;
+ $('line-key').hidden=!withLine;$('line-equation').hidden=!withLine;
+ if(withLine)math($('line-equation'),`\\widehat y=${texnum(q.slope)}x${q.intercept<0?'-':'+'}${texnum(Math.abs(q.intercept))}`,`ŷ = ${fmt(q.slope)}x ${q.intercept<0?'−':'+'} ${fmt(Math.abs(q.intercept))}`);
+ const X=q.X,Y=q.Y.slice(),xmin=Math.min(...X),xmax=Math.max(...X);if(withLine)Y.push(q.yb+q.slope*(xmin-q.xb),q.yb+q.slope*(xmax-q.xb));
+ function limits(values){let lo=Math.min(...values),hi=Math.max(...values);if($('show-origin').checked){lo=Math.min(lo,0);hi=Math.max(hi,0);}const pad=(hi-lo)*.12||Math.max(Math.abs(lo)*.08,1);return [lo-pad,hi+pad];}
+ const [lx,hx]=limits(X),[ly,hy]=limits(Y),px=x=>M.l+(x-lx)/(hx-lx)*(W-M.l-M.r),py=y=>H-M.b-(y-ly)/(hy-ly)*(H-M.t-M.b);
+ const ns='http://www.w3.org/2000/svg';function el(tag,attrs={},text){const item=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))item.setAttribute(k,v);if(text!==undefined)item.textContent=text;return item;}
+ const svg=el('svg',{xmlns:ns,viewBox:`0 0 ${W} ${H}`,role:'img','aria-labelledby':'plot-title plot-desc'});
+ svg.append(el('title',{id:'plot-title'},'Diagrama de dispersión'),el('desc',{id:'plot-desc'},`${q.n} pares. ${$('r-result').textContent}. El rombo verde señala los promedios. Los valores exactos se encuentran en la tabla de cálculo.`),el('rect',{width:W,height:H,fill:'white'}));
+ const ta={'font-family':'system-ui, sans-serif','font-size':12,fill:'#586054'};
+ function ticks(lo,hi,n){const raw=(hi-lo)/n,p=10**Math.floor(Math.log10(raw)),f=raw/p,step=(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p;const arr=[];if(!Number.isFinite(step)||step<=0)return arr;const start=Math.ceil(lo/step)*step;for(let i=0;i<24;i++){const v=start+i*step;if(v>hi+step*1e-8)break;arr.push(Math.abs(v)<step*1e-10?0:v);}return arr;}
+ // En escalas muy desplazadas, mostrar una coordenada trasladada evita etiquetas idénticas.
+ const ox=Math.abs(q.xb)>1e5*(hx-lx)?q.xb:0,oy=Math.abs(q.yb)>1e5*(hy-ly)?q.yb:0;
+ function tick(v,span){if(!v)return '0';if(Math.abs(v)>=1e6||Math.abs(v)<1e-4)return v.toExponential(2);return String(Number(v.toFixed(Math.max(0,Math.min(12,2-Math.floor(Math.log10(span)))))));}
+ for(const t of ticks(lx-ox,hx-ox,W<480?4:6)){const x=t+ox;svg.append(el('line',{x1:px(x),x2:px(x),y1:M.t,y2:H-M.b,stroke:'#e7ebe3'}),el('text',{...ta,x:px(x),y:H-M.b+24,'text-anchor':'middle'},tick(t,hx-lx)));}
+ for(const t of ticks(ly-oy,hy-oy,5)){const y=t+oy;svg.append(el('line',{x1:M.l,x2:W-M.r,y1:py(y),y2:py(y),stroke:'#e7ebe3'}),el('text',{...ta,x:M.l-10,y:py(y)+4,'text-anchor':'end'},tick(t,hy-ly)));}
+ svg.append(el('path',{d:`M ${M.l} ${M.t} V ${H-M.b} H ${W-M.r}`,stroke:'#99a292',fill:'none'}));
+ if(lx<0&&hx>0)svg.append(el('line',{x1:px(0),x2:px(0),y1:M.t,y2:H-M.b,stroke:'#b3bdaa'}));
+ if(ly<0&&hy>0)svg.append(el('line',{x1:M.l,x2:W-M.r,y1:py(0),y2:py(0),stroke:'#b3bdaa'}));
+ if(withLine)svg.append(el('line',{x1:px(xmin),x2:px(xmax),y1:py(q.yb+q.slope*(xmin-q.xb)),y2:py(q.yb+q.slope*(xmax-q.xb)),stroke:'#b44936','stroke-width':2}));
+ q.data.forEach(([x,y],i)=>{const c=el('circle',{cx:px(x),cy:py(y),r:4.8,fill:'#32658a','fill-opacity':.83,stroke:'white','stroke-width':1});const label=`Dato ${i+1}: (${x}, ${y})`;c.append(el('title',{},label));c.addEventListener('mouseenter',()=>{$('point-info').textContent=label;});c.addEventListener('click',()=>{$('point-info').textContent=label;});svg.append(c);});
+ const cx=px(q.xb),cy=py(q.yb),mean=el('path',{d:`M ${cx} ${cy-6} L ${cx+6} ${cy} L ${cx} ${cy+6} L ${cx-6} ${cy} Z`,fill:'#225500',stroke:'white','stroke-width':1.5});mean.append(el('title',{},`Promedios: (${q.xb}, ${q.yb})`));svg.append(mean);
+ function label(value,limit){return value.length>limit?value.slice(0,limit-1)+'…':value;}
+ const xlabel=($('xlabel').value||'x')+(ox?` − (${fmt(ox)})`:''),ylabel=($('ylabel').value||'y')+(oy?` − (${fmt(oy)})`:'');
+ svg.append(el('text',{...ta,x:(M.l+W-M.r)/2,y:H-16,'text-anchor':'middle','font-size':13},label(xlabel,Math.floor((W-M.l-M.r)/7))),el('text',{...ta,transform:`translate(17 ${(M.t+H-M.b)/2}) rotate(-90)`,'text-anchor':'middle','font-size':13},label(ylabel,43)));
+ container.replaceChildren(svg);$('point-info').textContent='Pasa el cursor por un punto para ver sus coordenadas.';
+}
+function download(content,type,name){const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
+$('calculate').onclick=run;$('data-rows').oninput=()=>invalidate('Datos modificados. Pulsa Calcular Pearson.');
+$('data-rows').onkeydown=e=>{const t=e.target;if(t.tagName!=='INPUT')return;const r=Number(t.dataset.row),c=Number(t.dataset.col);if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();return;}if(e.key==='Enter'||e.key==='Tab'&&!e.shiftKey&&r===$('data-rows').children.length-1&&c===1){const pos=r*2+c+(e.shiftKey?-1:1);if(pos<0)return;e.preventDefault();const rr=Math.floor(pos/2),cc=pos%2;if(rr>=$('data-rows').children.length&&!addRow())return;cell(rr,cc).focus();}else if(e.key==='ArrowUp'||e.key==='ArrowDown'){const next=r+(e.key==='ArrowDown'?1:-1);if(cell(next,c)){e.preventDefault();cell(next,c).focus();}}};
+$('data-rows').onpaste=e=>{const t=e.target;if(t.tagName!=='INPUT')return;const raw=e.clipboardData.getData('text');if(!/[\t\r\n;\s].*\S/.test(raw))return;e.preventDefault();try{const r=Number(t.dataset.row),c=Number(t.dataset.col),matrix=parsePasted(raw,c);if(r+matrix.length>MAX_POINTS)throw Error(`Usa como máximo ${MAX_POINTS} filas.`);while($('data-rows').children.length<r+matrix.length)addRow();matrix.forEach((row,i)=>row.forEach((v,j)=>{cell(r+i,c+j).value=v;}));invalidate('Datos pegados. Pulsa Calcular Pearson.');cell(r+matrix.length-1,c+matrix.at(-1).length-1).focus();}catch(err){$('error').textContent=err.message;$('error').hidden=false;}};
+$('add-row').onclick=()=>{if(addRow())cell($('data-rows').children.length-1,0).focus();else{$('error').textContent=`Se alcanzó el límite de ${MAX_POINTS} filas.`;$('error').hidden=false;}};
+$('remove-row').onclick=()=>{if($('data-rows').children.length>2){const last=$('data-rows').lastElementChild,changed=Array.from(last.querySelectorAll('input')).some(el=>el.value.trim());last.remove();if(changed)invalidate('Fila eliminada. Pulsa Calcular Pearson.');}};
+$('clear').onclick=()=>{resetRows();invalidate('Listo para ingresar datos.');$('example').value='';cell(0,0).focus();};
+const examples={positive:[[1,2],[2,2.8],[3,4.1],[4,3.8],[5,5.2],[6,5.7],[7,7.3],[8,7.5]],negative:[[1,8],[2,7.5],[3,6],[4,6.2],[5,4.8],[6,4],[7,2.5],[8,2]],curve:[[-3,9],[-2,4],[-1,1],[0,0],[1,1],[2,4],[3,9]],constant:[[1,4],[2,4],[3,4],[4,4],[5,4]]};
+$('example').onchange=()=>{const data=examples[$('example').value];if(data){resetRows(data);run();}};
+['xlabel','ylabel'].forEach(id=>$(id).addEventListener('input',draw));$('precision').onchange=render;
+$('show-line').onchange=draw;$('show-origin').onchange=draw;
+$('download-svg').onclick=()=>{if(current)download(new XMLSerializer().serializeToString($('chart').firstChild),'image/svg+xml;charset=utf-8','correlacion_pearson.svg');};
+$('download-data').onclick=()=>{if(current)download('\uFEFFx;y\r\n'+current.data.map(p=>p.join(';')).join('\r\n'),'text/csv;charset=utf-8','datos_pearson.csv');};
+if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>draw()).observe($('chart'));else window.addEventListener('resize',draw);
+resetRows();invalidate();
+}
+if(typeof module!=='undefined'&&module.exports)module.exports={pearson,numeric,parsePasted};
+</script>
+</body>
+</html>
