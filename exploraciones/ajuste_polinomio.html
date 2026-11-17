@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Ajuste polinómico de grado dos o tres. Puntos, fórmula, gráfica y error."><title>Ajuste polinómico</title><style>
+:root{--ink:#242b25;--muted:#657064;--green:#225500;--rule:#dce3d7;--wash:#f8faf6;--red:#b44936;--blue:#32658a}*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:1160px;margin:auto;padding:38px 32px 28px}header{padding-bottom:22px;border-bottom:1px solid var(--rule)}h1{font-size:clamp(28px,4vw,38px);letter-spacing:-.04em;line-height:1.2;font-weight:650;margin:0 0 12px;color:#20261f}h2{font-size:20px;letter-spacing:-.02em;margin:0 0 10px}.intro{max-width:760px;margin:0;color:var(--muted)}p{margin:0 0 12px}.workspace{display:grid;grid-template-columns:300px minmax(0,1fr);gap:36px;margin-top:26px}.small{font-size:13px;color:var(--muted)}label{display:block;font-size:14px;font-weight:550;margin-bottom:6px}input,select,button{font:inherit}input,select{border:1px solid #bac6b3;border-radius:4px;background:white;color:var(--ink);max-width:100%}input{width:100%;padding:7px 9px}select{padding:6px 8px}input:focus,select:focus,button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid #71924b;outline-offset:3px}button{cursor:pointer;border:1px solid var(--rule);border-radius:4px;padding:8px 12px;background:#fff;color:var(--green);font-size:14px;font-weight:550}button:hover{background:var(--wash);border-color:#91a380}button.primary{background:var(--green);border-color:var(--green);color:white}.primary:hover{background:#173c00}button:disabled{opacity:.45;cursor:default}a{color:var(--green);text-underline-offset:3px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.field{margin:12px 0}.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}.options{border-top:1px solid var(--rule);padding-top:14px;margin-top:20px;font-size:14px}summary{cursor:pointer;color:var(--green);font-weight:550}.degree{border:0;padding:0;margin:0 0 18px}.degree legend{font-size:14px;font-weight:550;margin-bottom:7px}.degree-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}.degree label{position:relative;margin:0;font-weight:500;cursor:pointer}.degree input{position:absolute;opacity:0;width:1px;height:1px}.degree span{display:block;border:1px solid var(--rule);border-radius:4px;text-align:center;padding:8px}.degree input:checked+span{background:var(--wash);border-color:var(--green);color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}.degree input:focus-visible+span{outline:2px solid #71924b;outline-offset:3px}.entry-scroll{max-height:370px;overflow:auto;border:1px solid var(--rule);border-radius:4px;margin:12px 0}table{border-collapse:collapse;width:100%;font-size:14px;table-layout:fixed;font-variant-numeric:tabular-nums}th,td{text-align:center;border-bottom:1px solid var(--rule)}th{position:sticky;top:0;background:var(--wash);font-weight:600;padding:8px;z-index:1}th:first-child{width:42px;font-size:12px}td{padding:0;border-right:1px solid var(--rule)}td:first-child{padding:0 5px;color:var(--muted);background:var(--wash);font-size:12px}.entry-table input{border:0;border-radius:0;font-family:ui-monospace,Consolas,monospace;font-size:16px;min-width:0;padding:9px 10px}.entry-table input:focus{outline:2px solid #71924b;outline-offset:-2px;background:#f3f8ed}.entry-table input[aria-invalid=true]{background:#fff3ee;box-shadow:inset 0 0 0 1px var(--red)}.row-tools{display:flex;gap:14px;margin:8px 0 12px}.row-tools button{padding:2px 0;border:0;text-decoration:underline;text-underline-offset:3px;font-size:12px}.error{color:#92351c;font-size:14px;background:#fff5f1;padding:10px;border-left:3px solid var(--red);margin:12px 0}.status{min-height:22px;font-size:13px;color:var(--muted);margin:6px 0 0}.result{min-width:0}.empty{min-height:480px;display:flex;align-items:center;justify-content:center;padding:30px;color:var(--muted);border-bottom:1px solid var(--rule);text-align:center;background:linear-gradient(#fff,#f8faf6)}.empty strong{display:block;color:var(--ink);font-size:18px;font-weight:550;margin-bottom:8px}.eyebrow{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}.equation{padding:18px 0 16px;font:24px/1.65 Cambria,"Times New Roman",serif;overflow-x:auto;min-height:82px;color:var(--green);white-space:nowrap}.equation sup{font-size:.66em;line-height:0}.metrics{display:flex;align-items:center;gap:10px 24px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding:8px 0 14px;font-size:14px}.metrics strong{font-weight:600}.hint{font-size:12px;color:var(--muted);margin:10px 0 0}.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--muted);margin:18px 0 0}.key{display:inline-block;width:9px;height:9px;background:var(--blue);border-radius:50%;margin-right:6px}.key.line{width:20px;height:2px;background:var(--red);vertical-align:middle}.chart{width:100%;min-height:320px}.chart svg{width:100%;height:auto;display:block}.chart-actions{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 0}.note{margin-top:14px;font-size:13px;color:var(--muted)}.plot-info{min-height:22px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}.notice{border-left:2px solid #a7bb98;padding-left:12px}.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}footer{margin-top:30px;border-top:1px solid var(--rule);padding-top:15px;font-size:12px;color:var(--muted);display:flex;gap:16px;justify-content:space-between;align-items:center;flex-wrap:wrap}footer p{margin:0}footer button{border:0;padding:2px 0;font-size:12px;text-decoration:underline;text-underline-offset:3px}kbd{font-family:inherit;font-size:12px;border:1px solid var(--rule);border-radius:3px;padding:0 4px;background:var(--wash)}[hidden]{display:none!important}
+@media(max-width:790px){main{padding:24px 18px}.workspace{grid-template-columns:1fr;gap:28px}.entry-scroll{max-height:330px}.empty{min-height:220px}.equation{font-size:22px}.intro{font-size:15px}.options{margin-top:12px}}
+@media print{main{padding:0;max-width:none}.workspace{display:block}.inputs,.chart-actions,.options,.status,footer{display:none}.chart{break-inside:avoid}.equation{color:#111}.hint{color:#444}}
+</style></head>
+<body>
+<main id="ajuste-polinomico">
+<header><h1>Ajuste polinómico</h1><p class="intro">Escribe tus puntos y elige un polinomio de grado dos o tres. Compara la curva con la forma que imaginaste.</p></header>
+<noscript><p class="error">Activa JavaScript en el navegador para utilizar esta herramienta.</p></noscript>
+<div class="workspace">
+<section class="inputs" aria-labelledby="data-title">
+<h2 id="data-title">Puntos</h2>
+<fieldset class="degree"><legend>Grado del polinomio</legend><div class="degree-options"><label><input type="radio" name="degree" value="2"><span>Grado 2</span></label><label><input type="radio" name="degree" value="3" checked><span>Grado 3</span></label></div></fieldset>
+<p class="small" id="data-help">Un valor por casilla. Avanza con <kbd>Tab</kbd> o <kbd>Enter</kbd>, o pega dos columnas desde tu hoja de cálculo.</p>
+<div class="entry-scroll"><table class="entry-table" aria-label="Puntos para ajustar el polinomio"><thead><tr><th scope="col">Fila</th><th scope="col" id="head-x">t</th><th scope="col" id="head-y">N</th></tr></thead><tbody id="data-rows"></tbody></table></div>
+<div class="row-tools"><button id="add-row" type="button">Añadir fila</button><button id="remove-row" type="button">Quitar última fila</button></div>
+<p class="small">Se admite punto o coma decimal. Pega sin encabezados. Las filas completamente vacías se omiten.</p>
+<div class="actions"><button type="button" class="primary" id="calculate">Ajustar polinomio</button><button type="button" id="clear">Limpiar</button></div>
+<p class="status" id="status" role="status" aria-live="polite"></p><p class="error" id="error" role="alert" hidden></p>
+<details class="options"><summary>Variables y presentación</summary>
+<div class="pair"><div class="field"><label for="sx">Variable horizontal</label><input id="sx" value="t" maxlength="1" aria-label="Símbolo horizontal, una letra"></div><div class="field"><label for="sy">Nombre de la función</label><input id="sy" value="N" maxlength="1" aria-label="Nombre de la función, una letra"></div></div>
+<div class="field"><label for="xlabel">Etiqueta del eje horizontal</label><input id="xlabel" value="Tiempo (t)" maxlength="65"></div><div class="field"><label for="ylabel">Etiqueta del eje vertical</label><input id="ylabel" value="Población (N)" maxlength="65"></div>
+<div class="field"><label for="precision">Cifras significativas de la fórmula</label><select id="precision"><option>6</option><option selected>8</option><option>10</option><option>12</option></select></div>
+<p class="small">Puedes incluir las unidades en las etiquetas de los ejes.</p></details>
+</section>
+<section class="result" aria-label="Resultado del ajuste">
+<div id="empty" class="empty"><div><strong>Ingresa tus puntos</strong><span id="empty-help">Para grado 3 necesitas al menos 4 valores de t distintos.</span></div></div>
+<div id="results" hidden>
+<div class="eyebrow" id="model-label">Polinomio de grado 3</div><div class="equation" id="equation" aria-label="Fórmula del polinomio ajustado"></div>
+<div class="metrics"><span><strong id="count">0</strong> puntos</span><span>Error de ajuste (RMSE): <strong id="rmse">—</strong></span></div>
+<p class="hint">El error resume la separación vertical entre los puntos y la curva. Tiene las mismas unidades del eje vertical.</p>
+<div class="legend"><span><i class="key"></i>Puntos ingresados</span><span><i class="key line"></i>Polinomio ajustado</span></div>
+<div id="chart" class="chart"></div><div class="plot-info" id="point-info"></div>
+<div class="chart-actions"><button type="button" id="copy">Copiar fórmula</button><button type="button" id="download">Descargar gráfica SVG</button><button type="button" id="download-data">Guardar puntos</button></div>
+<p class="status" id="action-status" role="status"></p><p class="note" id="interval-note"></p><p class="note notice" id="model-note" hidden></p>
+</div></section></div>
+<footer><p><a href="index.html">← Volver a exploraciones</a></p></footer>
+</main>
+<script id="app-code">'use strict';
+
+function numeric(v){const s=String(v).trim().replace(/\u2212/g,'-').replace(',','.');return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(s)?Number(s):NaN;}
+function ksum(a){let s=0,c=0;for(const x of a){const y=x-c,t=s+y;c=(t-s)-y;s=t;}return s;}
+function horner(c,x){let y=0;for(let i=c.length-1;i>=0;i--)y=y*x+c[i];return y;}
+function fitPolynomial(data,degree){
+ if(![2,3].includes(degree))throw Error('Elige grado dos o tres.');
+ if(!Array.isArray(data)||data.length<degree+1)throw Error('Para grado '+degree+' necesitas al menos '+(degree+1)+' puntos completos.');
+ if(data.length>2000)throw Error('Usa como máximo 2000 puntos.');
+ if(data.some(p=>!Array.isArray(p)||p.length!==2||!p.every(Number.isFinite)))throw Error('Revisa los valores numéricos.');
+ const X=data.map(p=>p[0]),Y=data.map(p=>p[1]),n=data.length,m=degree+1;
+ if(new Set(X).size<m)throw Error('Para grado '+degree+' necesitas al menos '+m+' valores horizontales distintos.');
+ const lo=Math.min(...X),hi=Math.max(...X),center=lo/2+hi/2,scale=Math.max(...X.map(x=>Math.abs(x-center))),yScale=Math.max(...Y.map(Math.abs))||1;
+ if(!Number.isFinite(scale)||scale===0)throw Error('Cambia las unidades de los datos para ajustar esta escala.');
+ const z=X.map(x=>(x-center)/scale),ys=Y.map(y=>y/yScale),mean=ksum(ys)/n;
+ const b=ys.map(y=>y-mean),A=z.map(x=>Array.from({length:m},(_,j)=>x**j));
+ for(let k=0;k<m;k++){
+  let norm=0;for(let i=k;i<n;i++)norm=Math.hypot(norm,A[i][k]);
+  if(norm<1e-12*Math.sqrt(n))throw Error('Los valores horizontales están demasiado concentrados. Revisa los puntos o cambia las unidades.');
+  const v=Array.from({length:n-k},(_,j)=>A[k+j][k]);v[0]+=(v[0]>=0?1:-1)*norm;
+  const vv=ksum(v.map(x=>x*x)),beta=2/vv;
+  for(let j=k;j<m;j++){const f=beta*ksum(v.map((x,i)=>x*A[k+i][j]));for(let i=0;i<v.length;i++)A[k+i][j]-=f*v[i];}
+  const f=beta*ksum(v.map((x,i)=>x*b[k+i]));for(let i=0;i<v.length;i++)b[k+i]-=f*v[i];
+ }
+ const c=Array(m).fill(0);
+ for(let i=m-1;i>=0;i--){let r=b[i];for(let j=i+1;j<m;j++)r-=A[i][j]*c[j];c[i]=r/A[i][i];}
+ const noise=128*Number.EPSILON*Math.max(...c.map(Math.abs),1e-300);
+ for(let i=0;i<c.length;i++)if(Math.abs(c[i])<noise)c[i]=0;
+ c[0]+=mean;
+ const coeff=c.map(v=>v*yScale);
+ if(!coeff.every(Number.isFinite))throw Error('Cambia las unidades de los datos para ajustar esta escala.');
+ const predict=x=>horner(c,(x-center)/scale)*yScale;
+ const pred=X.map(predict),rmse=Math.sqrt(ksum(ys.map((v,i)=>(v-horner(c,z[i]))**2))/n)*yScale;
+ let expanded=[0],basis=[1];
+ for(let k=0;k<=degree;k++){
+  while(expanded.length<basis.length)expanded.push(0);
+  basis.forEach((v,j)=>expanded[j]+=coeff[k]*v);
+  const next=Array(basis.length+1).fill(0);
+  basis.forEach((v,j)=>{next[j]+=v*(-center/scale);next[j+1]+=v/scale;});basis=next;
+ }
+ const centered=coeff.map((v,k)=>v/(scale**k));
+ const eps=256*Number.EPSILON*Math.max(yScale,1e-300);
+ const expandedOK=expanded.every(Number.isFinite)&&X.every((x,i)=>Math.abs(horner(expanded,x)-pred[i])<=Math.max(eps,1e-9*Math.max(...Y)-1e-9*Math.min(...Y)));
+ const shifted=Math.abs(center/scale)>20||!expandedOK;
+ const display=shifted?centered:expanded;
+ if(!display.every(Number.isFinite)||!pred.every(Number.isFinite)||!Number.isFinite(rmse))throw Error('Cambia las unidades de los datos para ajustar esta escala.');
+ const effective=(()=>{for(let k=degree;k>0;k--)if(coeff[k]!==0)return k;return 0;})();
+ return {data:data.map(p=>p.slice()),degree,effective,n,lo,hi,center,scale,yScale,coeff,display,shifted,rmse,pred,predict};
+}
+function parsePasted(raw,column){
+ let rows;
+ const text=raw.trim();
+ if(text.startsWith('[')){try{rows=JSON.parse(text);}catch{throw Error('Revisa la lista de pares.');}}
+ else rows=text.split(/\r?\n/).filter(s=>s.trim()).map(line=>{
+  if(line.includes('\t'))return line.split('\t');
+  if(line.includes(';'))return line.split(';');
+  if(/\s/.test(line.trim()))return line.trim().split(/\s+/);
+  if(column===0&&line.includes(','))return line.split(',');
+  return [line];
+ });
+ if(!Array.isArray(rows)||rows.length===0||rows.some(r=>!Array.isArray(r)||r.length<1||r.length>2-column))throw Error('Para pegar dos columnas, selecciona una casilla de la primera columna.');
+ const parsed=rows.map(r=>r.map(v=>{if(String(v).trim()==='')throw Error('La tabla pegada contiene casillas vacías.');const n=numeric(v);if(!Number.isFinite(n))throw Error('Pega solo números, sin encabezados.');return n;}));
+ return parsed;
+}
+
+
+if(typeof document!=='undefined'){
+ const $=id=>document.getElementById(id);
+ let current=null,plainFormula='';
+ const degree=()=>Number(document.querySelector('input[name="degree"]:checked').value);
+ const symbols=()=>({x:/^[A-Za-z]$/.test($('sx').value)?$('sx').value:'t',y:/^[A-Za-z]$/.test($('sy').value)?$('sy').value:'N'});
+ function fmt(v,p=Number($('precision').value)){if(v===0)return '0';return Number(v.toPrecision(p)).toString();}
+ function numberHTML(s){const a=s.split('e');return a.length===2?a[0]+' × 10<sup>'+Number(a[1])+'</sup>':s;}
+ function numHTML(v){return numberHTML(fmt(v));}
+ function updateHeads(){const s=symbols();$('head-x').textContent=s.x;$('head-y').textContent=s.y;$('empty-help').textContent='Para grado '+degree()+' necesitas al menos '+(degree()+1)+' valores de '+s.x+' distintos.';}
+ function clearErrors(){$('error').hidden=true;document.querySelectorAll('[aria-invalid]').forEach(el=>el.removeAttribute('aria-invalid'));}
+ function invalidate(message){current=null;$('results').hidden=true;$('empty').hidden=false;$('status').textContent=message||'';$('action-status').textContent='';clearErrors();updateHeads();}
+ function error(message){$('error').textContent=message;$('error').hidden=false;}
+ function addRow(values=['','']){
+  const row=$('data-rows').children.length;if(row>=2000){error('Usa como máximo 2000 filas.');return false;}
+  const tr=document.createElement('tr'),num=document.createElement('td');num.textContent=row+1;tr.append(num);
+  values.forEach((v,col)=>{const td=document.createElement('td'),input=document.createElement('input');input.type='text';input.inputMode='decimal';input.autocomplete='off';input.spellcheck=false;input.value=v;input.dataset.row=row;input.dataset.col=col;input.setAttribute('aria-label',(col===0?'Coordenada horizontal':'Coordenada vertical')+', fila '+(row+1));td.append(input);tr.append(td);});$('data-rows').append(tr);return true;
+ }
+ function cell(row,col){return $('data-rows').children[row]?.querySelectorAll('input')[col];}
+ function reset(){$('data-rows').replaceChildren();for(let i=0;i<10;i++)addRow();}
+ function read(){
+  clearErrors();const data=[];
+  Array.from($('data-rows').children).forEach((tr,i)=>{
+   const inputs=Array.from(tr.querySelectorAll('input')),v=inputs.map(el=>el.value.trim());
+   if(!v[0]&&!v[1])return;
+   if(!v[0]||!v[1]){inputs.forEach((el,j)=>{if(!v[j])el.setAttribute('aria-invalid','true');});throw Error('Fila '+(i+1)+': completa las dos coordenadas.');}
+   const p=v.map(numeric);
+   if(!p.every(Number.isFinite)){inputs.forEach((el,j)=>{if(!Number.isFinite(p[j]))el.setAttribute('aria-invalid','true');});throw Error('Fila '+(i+1)+': escribe dos números válidos.');}
+   data.push(p);
+  });return data;
+ }
+ function run(){
+  try{const fit=fitPolynomial(read(),degree());current=fit;$('error').hidden=true;$('results').hidden=false;$('empty').hidden=true;$('status').textContent='Ajuste calculado con '+fit.n+' puntos.';render();}
+  catch(e){current=null;$('results').hidden=true;$('empty').hidden=false;$('status').textContent='';error(e.message||'Revisa los puntos.');}
+ }
+ function formula(q){
+  const s=symbols(),centerText=String(Math.abs(q.center)),base=q.shifted?'(<i>'+s.x+'</i>'+(q.center<0?' + ':' − ')+numberHTML(centerText)+')':'<i>'+s.x+'</i>';
+  const baseText=q.shifted?'('+s.x+(q.center<0?' + ':' - ')+centerText+')':s.x;
+  const terms=[],texts=[],extent=q.shifted?q.scale:Math.max(Math.abs(q.lo),Math.abs(q.hi));
+  for(let k=q.degree;k>=0;k--){
+   let c=q.display[k];if(Math.abs(c)<=64*Number.EPSILON*q.yScale/(Math.pow(extent,k)||1))c=0;
+   if(c===0)continue;
+   const sign=c<0?(terms.length?' − ':'−'):(terms.length?' + ':'');
+   const signText=c<0?(terms.length?' - ':'-'):(terms.length?' + ':'');
+   terms.push(sign+numHTML(Math.abs(c))+(k?' '+base+(k>1?'<sup>'+k+'</sup>':''):''));
+   texts.push(signText+fmt(Math.abs(c))+(k?'*'+baseText+(k>1?'^'+k:''):''));
+  }
+  plainFormula=s.y+'('+s.x+') = '+(texts.join('')||'0');
+  $('equation').innerHTML='<i>'+s.y+'</i>(<i>'+s.x+'</i>) = '+(terms.join('')||'0');
+  $('equation').setAttribute('aria-label',plainFormula);
+ }
+ function render(){
+  updateHeads();if(!current)return;const q=current;formula(q);
+  $('model-label').textContent='Ajuste de grado '+q.degree;
+  $('count').textContent=q.n;
+  $('rmse').textContent=q.rmse>0&&q.rmse<=64*Number.EPSILON*q.yScale?'≈ 0':fmt(q.rmse,5);
+  $('interval-note').textContent='Intervalo mostrado: '+String(q.lo)+' a '+String(q.hi)+'. Fórmula con '+$('precision').value+' cifras significativas. La gráfica utiliza la precisión completa del ajuste.';
+  let note='';
+  if(q.effective<q.degree)note=q.effective===0?'Con estos puntos, el ajuste se reduce a una función constante.':q.effective===1?'Con estos puntos, el ajuste se reduce a una función lineal.':'Con estos puntos, el término cúbico es nulo y el ajuste se reduce a grado dos.';
+  if(q.shifted)note+=(note?' ':'')+'La fórmula usa una variable desplazada para conservar la precisión con estos valores horizontales. El desplazamiento se muestra sin redondear.';
+  $('model-note').textContent=note;$('model-note').hidden=!note;draw();
+ }
+ function svgEl(tag,attrs={},value){const el=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));if(value!==undefined)el.textContent=value;return el;}
+ function ticks(lo,hi,count){
+  const span=hi-lo,raw=span/count,pow=10**Math.floor(Math.log10(raw)),f=raw/pow,step=(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*pow;
+  if(!Number.isFinite(step)||step<=0)return [];
+  const start=Math.ceil(lo/step)*step,out=[];
+  for(let i=0;i<25;i++){const v=start+i*step;if(v>hi+step*1e-8)break;out.push(Math.abs(v)<step*1e-10?0:v);}
+  return out;
+ }
+ function tickText(v,range){const digits=Math.max(0,Math.min(12,2-Math.floor(Math.log10(range))));if(v!==0&&(Math.abs(v)>=1e12||Math.abs(v)<1e-5))return v.toExponential(3);return Number(v.toFixed(digits)).toString();}
+ function draw(){
+  if(!current)return;const q=current,host=$('chart'),W=Math.max(280,Math.round(host.clientWidth||640)),H=W<450?350:420,M={l:82,r:20,t:20,b:64};
+  const samples=Array.from({length:321},(_,i)=>{const x=q.lo+(q.hi-q.lo)*i/320;return[x,q.predict(x)];});
+  const allY=q.data.map(p=>p[1]).concat(samples.map(p=>p[1])),minY=Math.min(...allY),maxY=Math.max(...allY),xp=(q.hi-q.lo)*.04,yp=(maxY-minY)*.1||Math.max(Math.abs(minY)*.1,1);
+  const x0=q.lo-xp,x1=q.hi+xp,y0=minY-yp,y1=maxY+yp;
+  if(![x0,x1,y0,y1,x1-x0,y1-y0].every(Number.isFinite)||x0===x1||y0===y1){host.textContent='Esta escala es demasiado extrema para la gráfica. Cambia las unidades.';return;}
+  const px=x=>M.l+(x-x0)/(x1-x0)*(W-M.l-M.r),py=y=>H-M.b-(y-y0)/(y1-y0)*(H-M.t-M.b);
+  const svg=svgEl('svg',{xmlns:'http://www.w3.org/2000/svg',viewBox:'0 0 '+W+' '+H,role:'img','aria-labelledby':'plot-title plot-desc'});
+  svg.append(svgEl('title',{id:'plot-title'},'Puntos y polinomio de grado '+q.degree),svgEl('desc',{id:'plot-desc'},q.n+' puntos y curva de ajuste dentro del intervalo de los datos. '+plainFormula),svgEl('rect',{width:W,height:H,fill:'#ffffff'}));
+  const style={'font-family':'system-ui, sans-serif','font-size':12,fill:'#586054'};
+  let xt=ticks(x0,x1,W<450?3:5);
+  const widthEstimate=Math.max(...xt.map(v=>tickText(v,x1-x0).length*7),1);
+  if(xt.length>1&&widthEstimate+12>(W-M.l-M.r)/(xt.length-1))xt=xt.filter((_,i)=>i%2===0);
+  for(const x of xt)svg.append(svgEl('line',{x1:px(x),x2:px(x),y1:M.t,y2:H-M.b,stroke:'#e7ebe3'}),svgEl('text',{...style,x:px(x),y:H-M.b+23,'text-anchor':'middle'},tickText(x,x1-x0)));
+  for(const y of ticks(y0,y1,5))svg.append(svgEl('line',{x1:M.l,x2:W-M.r,y1:py(y),y2:py(y),stroke:'#e7ebe3'}),svgEl('text',{...style,x:M.l-10,y:py(y)+4,'text-anchor':'end'},tickText(y,y1-y0)));
+  svg.append(svgEl('path',{d:'M '+M.l+' '+M.t+' V '+(H-M.b)+' H '+(W-M.r),stroke:'#99a292',fill:'none'}));
+  const defs=svgEl('defs'),clip=svgEl('clipPath',{id:'plot-clip'});clip.append(svgEl('rect',{x:M.l,y:M.t,width:W-M.l-M.r,height:H-M.t-M.b}));defs.append(clip);svg.append(defs);
+  const marks=svgEl('g',{'clip-path':'url(#plot-clip)'});
+  const path=samples.map((p,i)=>(i?'L':'M')+px(p[0]).toFixed(3)+' '+py(p[1]).toFixed(3)).join(' ');
+  marks.append(svgEl('path',{d:path,stroke:'#b44936','stroke-width':2.5,fill:'none','stroke-linejoin':'round','stroke-linecap':'round'}));
+  q.data.forEach((p,i)=>{const c=svgEl('circle',{cx:px(p[0]),cy:py(p[1]),r:4.5,fill:'#32658a',stroke:'white','stroke-width':1.2});c.append(svgEl('title',{},'Punto '+(i+1)+': ('+p[0]+', '+p[1]+')'));marks.append(c);});svg.append(marks);
+  function label(value,limit){return value.length>limit?value.slice(0,limit-1)+'…':value;}
+  svg.append(svgEl('text',{...style,x:(M.l+W-M.r)/2,y:H-12,'text-anchor':'middle','font-size':13},label($('xlabel').value||symbols().x,Math.floor((W-M.l-M.r)/7))),svgEl('text',{...style,transform:'translate(17 '+((M.t+H-M.b)/2)+') rotate(-90)','text-anchor':'middle','font-size':13},label($('ylabel').value||symbols().y,40)));
+  const overlay=svgEl('rect',{x:M.l,y:M.t,width:W-M.l-M.r,height:H-M.t-M.b,fill:'transparent'});
+  function pointInfo(e){const r=svg.getBoundingClientRect(),x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;let best=-1,d=Infinity;q.data.forEach((p,i)=>{const distance=Math.hypot(px(p[0])-x,py(p[1])-y);if(distance<d){best=i;d=distance;}});$('point-info').textContent=d<28?'Punto '+(best+1)+': ('+q.data[best][0]+', '+q.data[best][1]+')':'';}
+  overlay.addEventListener('pointermove',pointInfo);overlay.addEventListener('pointerdown',pointInfo);overlay.addEventListener('pointerleave',()=>{$('point-info').textContent='';});svg.append(overlay);
+  host.replaceChildren(svg);
+ }
+ function saveBlob(content,type,name){const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);}
+ $('calculate').addEventListener('click',run);
+ $('data-rows').addEventListener('input',()=>invalidate('Puntos modificados. Pulsa Ajustar polinomio.'));
+ $('data-rows').addEventListener('keydown',e=>{
+  const target=e.target;if(target.tagName!=='INPUT')return;const row=Number(target.dataset.row),col=Number(target.dataset.col);
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();return;}
+  if(e.key==='Enter'||e.key==='Tab'&&!e.shiftKey&&row===$('data-rows').children.length-1&&col===1){
+   const pos=row*2+col+(e.shiftKey?-1:1);if(pos<0)return;e.preventDefault();const r=Math.floor(pos/2),c=pos%2;if(r>=$('data-rows').children.length&&!addRow())return;cell(r,c).focus();
+  }else if(e.key==='ArrowUp'||e.key==='ArrowDown'){const r=row+(e.key==='ArrowDown'?1:-1);if(cell(r,col)){e.preventDefault();cell(r,col).focus();}}
+ });
+ $('data-rows').addEventListener('paste',e=>{
+  if(e.target.tagName!=='INPUT')return;const raw=e.clipboardData.getData('text').trim();
+  if(!/[\t\r\n;]/.test(raw)&&!raw.startsWith('['))return;
+  e.preventDefault();
+  try{const row=Number(e.target.dataset.row),col=Number(e.target.dataset.col),matrix=parsePasted(raw,col);
+   if(row+matrix.length>2000)throw Error('Usa como máximo 2000 filas.');
+   while($('data-rows').children.length<row+matrix.length)addRow();
+   matrix.forEach((r,i)=>r.forEach((v,j)=>cell(row+i,col+j).value=v));invalidate('Puntos pegados. Pulsa Ajustar polinomio.');cell(row+matrix.length-1,col+matrix[matrix.length-1].length-1).focus();
+  }catch(err){error(err.message);}
+ });
+ document.querySelectorAll('input[name="degree"]').forEach(input=>input.addEventListener('change',()=>{updateHeads();if(current)run();else invalidate('');}));
+ $('add-row').addEventListener('click',()=>{if(addRow())cell($('data-rows').children.length-1,0).focus();});
+ $('remove-row').addEventListener('click',()=>{if($('data-rows').children.length>3){const row=$('data-rows').lastElementChild,filled=Array.from(row.querySelectorAll('input')).some(el=>el.value.trim());row.remove();if(filled)invalidate('Fila eliminada. Pulsa Ajustar polinomio.');}});
+ $('clear').addEventListener('click',()=>{reset();invalidate('Listo para ingresar nuevos puntos.');cell(0,0).focus();});
+ ['sx','sy','xlabel','ylabel','precision'].forEach(id=>$(id).addEventListener('input',render));
+ $('copy').addEventListener('click',async()=>{
+  if(!current)return;
+  try{
+   let copied=false;
+   if(navigator.clipboard&&window.isSecureContext){try{await navigator.clipboard.writeText(plainFormula);copied=true;}catch{}}
+   if(!copied){const ta=document.createElement('textarea');ta.value=plainFormula;ta.style.position='fixed';ta.style.opacity='0';document.body.append(ta);ta.select();copied=document.execCommand('copy');ta.remove();}
+   $('action-status').textContent=copied?'Fórmula copiada.':'No se pudo copiar automáticamente. Selecciona la fórmula y cópiala.';
+  }catch{$('action-status').textContent='Selecciona la fórmula y cópiala.';}
+ });
+ $('download').addEventListener('click',()=>{if(!current||!$('chart').querySelector('svg'))return;saveBlob(new XMLSerializer().serializeToString($('chart').querySelector('svg')),'image/svg+xml;charset=utf-8','ajuste_polinomico.svg');});
+ $('download-data').addEventListener('click',()=>{if(!current)return;const s=symbols(),csv=s.x+','+s.y+'\n'+current.data.map(p=>p.join(',')).join('\n');saveBlob('\uFEFF'+csv,'text/csv;charset=utf-8','puntos_ajuste.csv');});
+ if(typeof ResizeObserver!=='undefined'){new ResizeObserver(()=>{if(current)draw();}).observe($('chart'));}else window.addEventListener('resize',draw);
+ reset();invalidate('');
+}
+</script>
+</body></html>
