@@ -6,7 +6,7 @@
 // para no borrar las de otras apps publicadas en el mismo sitio.
 
 const PREFIJO = "area-marco:";
-const CACHE_APP = PREFIJO + "app-v2";
+const CACHE_APP = PREFIJO + "app-v3";
 const CACHE_PYTHON = PREFIJO + "pyodide-314.0.7";
 const PROPIOS = [
   "./",
@@ -35,10 +35,14 @@ self.addEventListener("activate", (evento) => {
   );
 });
 
-function guardar(nombre, peticion, respuesta) {
+async function guardar(nombre, peticion, respuesta) {
   if (respuesta.ok || respuesta.type === "opaque") {
-    const copia = respuesta.clone();
-    caches.open(nombre).then((cache) => cache.put(peticion, copia));
+    try {
+      const cache = await caches.open(nombre);
+      await cache.put(peticion, respuesta.clone());
+    } catch (_) {
+      // Una cuota insuficiente no impide usar la respuesta en línea.
+    }
   }
   return respuesta;
 }
@@ -58,11 +62,11 @@ self.addEventListener("fetch", (evento) => {
   }
 
   // Archivos propios: primero la red, para recibir actualizaciones, y la copia guardada sin conexión.
-  if (url.origin === self.location.origin) {
+  if (url.href.startsWith(self.registration.scope)) {
     evento.respondWith(
       fetch(peticion)
         .then((r) => guardar(CACHE_APP, peticion, r))
-        .catch(() => caches.match(peticion, { ignoreSearch: true }))
+        .catch(() => caches.match(peticion, { cacheName: CACHE_APP, ignoreSearch: true }))
     );
   }
 });

@@ -54,7 +54,7 @@
   .nota { color: var(--tenue); font-size: 0.9rem; margin: 10px 0 0; }
   .campos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   label { display: block; font-size: 0.9rem; color: var(--tenue); margin-bottom: 4px; }
-  input[type=text] {
+  select, input[type=text] {
     width: 100%;
     font: inherit;
     font-size: 1.15rem;
@@ -65,6 +65,8 @@
     color: var(--tinta);
   }
   input[type=text]:focus { outline: 2px solid var(--azul); outline-offset: 1px; border-color: transparent; }
+  select { min-height: 44px; font-size: 1rem; }
+  .ajustes { margin-top: 12px; }
   .unidad { position: relative; }
   .unidad::after { content: "mm"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--tenue); pointer-events: none; }
   .unidad input { padding-right: 44px; }
@@ -177,6 +179,24 @@
       <img id="miniatura" alt="Fotografía elegida" hidden>
     </div>
 
+    <details id="ajustes" class="tarjeta">
+      <summary>Ajustes de detección</summary>
+      <div class="campos ajustes">
+        <div><label for="perfilMarco">Perfil del marco</label>
+          <select id="perfilMarco"><option value="flexible">Flexible</option><option value="equilibrado" selected>Equilibrado</option><option value="estricto">Estricto</option></select></div>
+        <div><label for="perfilFigura">Perfil del contorno</label>
+          <select id="perfilFigura"><option value="flexible">Flexible</option><option value="equilibrado" selected>Equilibrado</option><option value="estricto">Estricto</option></select></div>
+      </div>
+      <p class="ayuda">El perfil flexible admite un marco más pequeño o un contorno más grueso. El estricto exige más evidencia para aceptar la medida.</p>
+      <div class="ajustes"><label for="contraste">Contraste mínimo del trazo</label>
+        <select id="contraste"><option value="3">Bajo · lápiz tenue</option><option value="6" selected>Medio</option><option value="12">Alto · descartar sombras suaves</option></select></div>
+      <div class="campos ajustes">
+        <div><label for="cierreMarco">Cierre del marco</label><select id="cierreMarco"><option value="0" selected>Sin cierre</option><option value="1">Radio de 1 px</option><option value="2">Radio de 2 px</option><option value="3">Radio de 3 px</option></select></div>
+        <div><label for="cierreFigura">Cierre del contorno</label><select id="cierreFigura"><option value="0" selected>Sin cierre</option><option value="1">Radio de 1 px</option><option value="2">Radio de 2 px</option><option value="3">Radio de 3 px</option></select></div>
+      </div>
+      <p class="ayuda">Para unir una interrupción pequeña, empieza con 1 px. Revisa en magenta los píxeles añadidos en «Ver trazos detectados».</p>
+    </details>
+
     <div id="errorFormulario" class="tarjeta error" hidden><p id="errorFormularioTexto"></p></div>
 
     <button id="medir" class="primario" type="button">Medir área</button>
@@ -198,6 +218,9 @@
       <button id="si" class="si" type="button">Sí</button>
     </div>
     <p id="ayudaSeleccion" class="ayuda"></p>
+    <details id="detalleOpcion" class="ajustes"><summary>Detalles de la detección</summary>
+      <p class="nota" id="detalleTexto"></p>
+    </details>
     <button class="sutil verTrazos" type="button">Ver trazos detectados</button>
     <img class="imagen imagenTrazos" alt="Trazos detectados" hidden style="margin-top:10px">
   </section>
@@ -206,10 +229,10 @@
   <section id="vistaError" class="tarjeta error" hidden>
     <h2>No se pudo completar la medición</h2>
     <p id="errorTexto"></p>
-    <button id="volverError" class="primario" type="button">Volver</button>
+    <button id="volverError" class="primario" type="button">Revisar foto y ajustes</button>
     <button class="sutil verTrazos" type="button">Ver trazos detectados</button>
     <img class="imagen imagenTrazos" alt="Trazos detectados" hidden style="margin-top:10px">
-    <p class="ayuda imagenTrazosNota" hidden>En los trazos detectados, el marco y la figura deben verse como líneas blancas continuas y separadas.</p>
+    <p class="ayuda imagenTrazosNota" hidden>En los trazos detectados, el marco y la figura deben verse separados. El blanco muestra la tinta detectada y el magenta, los píxeles añadidos por el cierre.</p>
   </section>
 
   <!-- ============ RESULTADO ============ -->
@@ -218,12 +241,15 @@
       <h2>Área estimada</h2>
       <p class="area" id="areaCm2"></p>
       <p class="nota" id="areaMm2" style="margin-top:0"></p>
-      <table class="datos">
+      <details class="ajustes" id="detalleArea">
+        <summary>Revisar el efecto del grosor del trazo</summary>
+        <table class="datos">
         <tr><td>Área del borde interior</td><td id="areaInt"></td></tr>
         <tr><td>Área del borde exterior</td><td id="areaExt"></td></tr>
-        <tr><td id="celdasEtiqueta">Equivalencia</td><td id="celdas"></td></tr>
+        <tr><td>Separación de cada borde al promedio</td><td id="bandaArea"></td></tr>
       </table>
-      <p class="nota">El promedio de bordes aproxima el área encerrada por un trazo delgado y simple. Los decimales no garantizan precisión experimental.</p>
+        <p class="nota">El porcentaje compara la mitad de la diferencia entre las dos áreas con su promedio. Describe cuánto influye en la lectura elegir un borde u otro.</p>
+      </details>
     </div>
     <div class="tarjeta">
       <figure>
@@ -399,9 +425,14 @@ function aURL(bytesPython) {
   return url;
 }
 
-let urlTrazos = null;
+let trazosPorEtapa = {};
 
 function prepararTrazos() {
+  const etapa = med ? med.etapa_mascara : null;
+  if (etapa && !trazosPorEtapa[etapa]) {
+    trazosPorEtapa[etapa] = aURL(med.imagen_binaria(etapa));
+  }
+  const urlTrazos = trazosPorEtapa[etapa];
   const hay = Boolean(urlTrazos);
   document.querySelectorAll(".verTrazos").forEach((b) => { b.hidden = !hay; b.textContent = "Ver trazos detectados"; });
   document.querySelectorAll(".imagenTrazos").forEach((img) => { img.hidden = true; if (hay) img.src = urlTrazos; });
@@ -509,7 +540,7 @@ function liberarMedicion() {
   if (med) { med.destroy(); med = null; }
   for (const u of urlsMedicion) URL.revokeObjectURL(u);
   urlsMedicion = [];
-  urlTrazos = null;
+  trazosPorEtapa = {};
   resultadoActual = null;
 }
 
@@ -533,8 +564,9 @@ $("medir").addEventListener("click", async () => {
       }
     }
     await ocupado("Detectando trazos…");
-    med = core.Medicion.desde_rgba(datos, ancho, alto);
-    urlTrazos = aURL(med.imagen_binaria());
+    med = core.Medicion.desde_rgba(datos, ancho, alto, $("perfilMarco").value,
+      $("perfilFigura").value, Number($("contraste").value),
+      Number($("cierreMarco").value), Number($("cierreFigura").value));
     const total = med.detectar();
     mostrarOpcion("marco", 0, total);
   } catch (e) {
@@ -555,6 +587,8 @@ function mostrarOpcion(tipo, indice, total) {
   const bytes = tipo === "marco" ? med.opcion_marco(indice) : med.opcion_figura(indice);
   $("imagenOpcion").src = aURL(bytes);
   $("pregunta").textContent = PREGUNTAS[tipo];
+  $("detalleOpcion").open = false;
+  $("detalleTexto").textContent = tipo === "marco" ? med.detalle_marco(indice) : med.detalle_figura(indice);
   $("contador").textContent = total > 1 ? `Opción ${indice + 1} de ${total}` : "Única opción encontrada";
   $("ayudaSeleccion").textContent = AYUDAS[tipo];
   $("no").textContent = indice + 1 < total ? "No, ver otra" : "No";
@@ -608,8 +642,8 @@ function mostrarResultado(r) {
   $("areaMm2").textContent = `${num(r.area_mm2, 1)} mm², promedio de los bordes interior y exterior`;
   $("areaInt").textContent = `${num(r.interior_cm2, 2)} cm²`;
   $("areaExt").textContent = `${num(r.exterior_cm2, 2)} cm²`;
-  $("celdasEtiqueta").textContent = `Celdas de ${num(r.celda_mm, 0)} × ${num(r.celda_mm, 0)} mm`;
-  $("celdas").textContent = num(r.celdas, 1);
+  $("detalleArea").open = false;
+  $("bandaArea").textContent = num(50 * (r.exterior_cm2 - r.interior_cm2) / r.area_cm2, 2) + " %";
   $("imagenVista").src = urlDeBytes(r.img_vista);
   $("imagenResultado").src = urlDeBytes(r.img_resultado);
   $("compartir").hidden = !puedeCompartir(r);
@@ -653,7 +687,10 @@ $("otra").addEventListener("click", () => {
   mostrar("vistaFormulario");
 });
 
-$("volverError").addEventListener("click", () => mostrar("vistaFormulario"));
+$("volverError").addEventListener("click", () => {
+  $("ajustes").open = true;
+  mostrar("vistaFormulario");
+});
 
 // ==============================
 // INSTALACIÓN EN EL CELULAR
